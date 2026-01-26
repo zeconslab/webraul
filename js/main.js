@@ -169,3 +169,38 @@
             updateCarousel(currentIndex);
             startAutoPlay();
         })();
+
+        // Scroll Reveal Animations (Fallback para navegadores sin animation-timeline)
+        (function() {
+            // Verificar soporte de animation-timeline
+            const supportsAnimationTimeline = CSS.supports('animation-timeline: view()');
+            
+            if (!supportsAnimationTimeline) {
+                const revealElements = document.querySelectorAll('.reveal-up, .reveal-left, .reveal-right, .reveal-scale');
+                
+                const observerOptions = {
+                    threshold: 0.15,
+                    rootMargin: '0px 0px -10% 0px'
+                };
+                
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach((entry, index) => {
+                        if (entry.isIntersecting) {
+                            // Agregar delay stagger si tiene clase stagger
+                            const delay = entry.target.classList.contains('stagger-1') ? 0 :
+                                         entry.target.classList.contains('stagger-2') ? 100 :
+                                         entry.target.classList.contains('stagger-3') ? 200 :
+                                         entry.target.classList.contains('stagger-4') ? 300 : 0;
+                            
+                            setTimeout(() => {
+                                entry.target.classList.add('is-visible');
+                            }, delay);
+                            
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, observerOptions);
+                
+                revealElements.forEach(el => observer.observe(el));
+            }
+        })();
