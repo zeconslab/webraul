@@ -179,18 +179,18 @@
                 const revealElements = document.querySelectorAll('.reveal-up, .reveal-left, .reveal-right, .reveal-scale');
                 
                 const observerOptions = {
-                    threshold: 0.15,
-                    rootMargin: '0px 0px -10% 0px'
+                    threshold: 0.1,
+                    rootMargin: '0px 0px -8% 0px'
                 };
                 
                 const observer = new IntersectionObserver((entries) => {
-                    entries.forEach((entry, index) => {
+                    entries.forEach((entry) => {
                         if (entry.isIntersecting) {
                             // Agregar delay stagger si tiene clase stagger
-                            const delay = entry.target.classList.contains('stagger-1') ? 0 :
-                                         entry.target.classList.contains('stagger-2') ? 100 :
-                                         entry.target.classList.contains('stagger-3') ? 200 :
-                                         entry.target.classList.contains('stagger-4') ? 300 : 0;
+                            const delay = entry.target.classList.contains('stagger-1') ? 50 :
+                                         entry.target.classList.contains('stagger-2') ? 150 :
+                                         entry.target.classList.contains('stagger-3') ? 250 :
+                                         entry.target.classList.contains('stagger-4') ? 350 : 0;
                             
                             setTimeout(() => {
                                 entry.target.classList.add('is-visible');
@@ -203,4 +203,12 @@
                 
                 revealElements.forEach(el => observer.observe(el));
             }
+            
+            // Agregar animación suave a los elementos hover
+            const cards = document.querySelectorAll('.group');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transition = 'all 0.4s cubic-bezier(0.23, 1, 0.32, 1)';
+                });
+            });
         })();

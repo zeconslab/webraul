@@ -193,11 +193,14 @@
         }
 
         .hero-init {
-            animation: fade-in-up 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: fade-in-up 1.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+            animation-delay: 0.1s;
+            opacity: 0;
         }
 
         .hero-init-delay {
-            animation: fade-in-up 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+            animation: scale-up-fade 1.4s cubic-bezier(0.23, 1, 0.32, 1) 0.3s both;
+            opacity: 0;
         }
 
         .stagger-1 {
@@ -354,49 +357,99 @@
             transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* Scroll Reveal Animations */
+        /* Scroll Reveal Animations - Mejoradas */
         @keyframes fade-in-up {
             from {
                 opacity: 0;
-                transform: translateY(40px);
+                transform: translateY(50px);
+                filter: blur(8px);
             }
             to {
                 opacity: 1;
                 transform: translateY(0);
+                filter: blur(0);
             }
         }
 
         @keyframes slide-in-left {
             from {
                 opacity: 0;
-                transform: translateX(-60px);
+                transform: translateX(-80px) rotate(-3deg);
+                filter: blur(6px);
             }
             to {
                 opacity: 1;
-                transform: translateX(0);
+                transform: translateX(0) rotate(0deg);
+                filter: blur(0);
             }
         }
 
         @keyframes slide-in-right {
             from {
                 opacity: 0;
-                transform: translateX(60px);
+                transform: translateX(80px) rotate(3deg);
+                filter: blur(6px);
             }
             to {
                 opacity: 1;
-                transform: translateX(0);
+                transform: translateX(0) rotate(0deg);
+                filter: blur(0);
             }
         }
 
         @keyframes scale-up-fade {
             from {
                 opacity: 0;
-                transform: scale(0.9);
+                transform: scale(0.85) translateY(20px);
+                filter: blur(4px);
             }
             to {
                 opacity: 1;
-                transform: scale(1);
+                transform: scale(1) translateY(0);
+                filter: blur(0);
             }
+        }
+
+        /* Animaciones mejoradas con configuración actualizada */
+        .reveal-up {
+            animation: fade-in-up 1s cubic-bezier(0.23, 1, 0.32, 1) both;
+            animation-timeline: view();
+            animation-range: entry 5% cover 35%;
+        }
+
+        .reveal-left {
+            animation: slide-in-left 1s cubic-bezier(0.23, 1, 0.32, 1) both;
+            animation-timeline: view();
+            animation-range: entry 5% cover 35%;
+        }
+
+        .reveal-right {
+            animation: slide-in-right 1s cubic-bezier(0.23, 1, 0.32, 1) both;
+            animation-timeline: view();
+            animation-range: entry 5% cover 35%;
+        }
+
+        .reveal-scale {
+            animation: scale-up-fade 0.9s cubic-bezier(0.23, 1, 0.32, 1) both;
+            animation-timeline: view();
+            animation-range: entry 5% cover 35%;
+        }
+
+        /* Delays stagger mejorados */
+        .stagger-1 {
+            animation-delay: 0.05s;
+        }
+
+        .stagger-2 {
+            animation-delay: 0.15s;
+        }
+
+        .stagger-3 {
+            animation-delay: 0.25s;
+        }
+
+        .stagger-4 {
+            animation-delay: 0.35s;
         }
 
         /* Fallback para navegadores sin soporte de animation-timeline */
@@ -406,25 +459,21 @@
             .reveal-right,
             .reveal-scale {
                 opacity: 0;
-                transform: translateY(30px);
             }
 
-            .reveal-up.is-visible,
-            .reveal-left.is-visible,
-            .reveal-right.is-visible,
-            .reveal-scale.is-visible {
-                animation: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            .reveal-up.is-visible {
+                animation: fade-in-up 1s cubic-bezier(0.23, 1, 0.32, 1) forwards;
             }
 
             .reveal-left.is-visible {
-                animation-name: slide-in-left;
+                animation: slide-in-left 1s cubic-bezier(0.23, 1, 0.32, 1) forwards;
             }
 
             .reveal-right.is-visible {
-                animation-name: slide-in-right;
+                animation: slide-in-right 1s cubic-bezier(0.23, 1, 0.32, 1) forwards;
             }
 
             .reveal-scale.is-visible {
-                animation-name: scale-up-fade;
+                animation: scale-up-fade 0.9s cubic-bezier(0.23, 1, 0.32, 1) forwards;
             }
         }
