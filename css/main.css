@@ -21,27 +21,49 @@
         }
 
         .glass-card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.75) 100%);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06),
+                        0 1px 3px rgba(0, 0, 0, 0.03);
         }
 
         .dark .glass-card {
-            background: rgba(16, 22, 34, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: linear-gradient(135deg, rgba(16, 22, 34, 0.85) 0%, rgba(26, 31, 54, 0.75) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+                        0 1px 3px rgba(0, 0, 0, 0.2);
         }
 
         .testimonial-glass {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.6) 100%);
+            backdrop-filter: blur(15px) saturate(180%);
+            -webkit-backdrop-filter: blur(15px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .testimonial-glass::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(19, 91, 236, 0.08), transparent);
+            transition: left 0.7s;
+        }
+
+        .testimonial-glass:hover::before {
+            left: 100%;
         }
 
         .dark .testimonial-glass {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: linear-gradient(135deg, rgba(26, 31, 54, 0.85) 0%, rgba(16, 22, 34, 0.75) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
         @keyframes scroll-progress {
@@ -220,11 +242,42 @@
         }
 
         .neon-btn-glow {
-            box-shadow: 0 0 15px rgba(19, 91, 236, 0.4), 0 0 5px rgba(0, 242, 254, 0.2);
+            box-shadow: 0 4px 20px rgba(19, 91, 236, 0.35),
+                        0 0 40px rgba(19, 91, 236, 0.15),
+                        0 2px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .neon-btn-glow::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .neon-btn-glow:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         .neon-btn-glow:hover {
-            box-shadow: 0 0 25px rgba(19, 91, 236, 0.6), 0 0 10px rgba(0, 242, 254, 0.4);
+            box-shadow: 0 6px 30px rgba(19, 91, 236, 0.5),
+                        0 0 60px rgba(19, 91, 236, 0.3),
+                        0 0 80px rgba(0, 242, 254, 0.2),
+                        0 3px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .neon-btn-glow:active {
+            transform: translateY(0);
         }
 
         .active-filter-glow {
@@ -234,14 +287,43 @@
         .active-card {
             transform: scale(1.1);
             z-index: 10;
-            border-color: rgba(19, 91, 236, 0.5);
-            box-shadow: 0 0 40px rgba(19, 91, 236, 0.25);
+            border-color: rgba(19, 91, 236, 0.5) !important;
+            box-shadow: 0 0 40px rgba(19, 91, 236, 0.3),
+                        0 20px 60px rgba(19, 91, 236, 0.2),
+                        0 0 0 1px rgba(19, 91, 236, 0.1);
+            position: relative;
+        }
+
+        .active-card::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: inherit;
+            background: linear-gradient(135deg, 
+                rgba(19, 91, 236, 0.2) 0%, 
+                rgba(0, 242, 254, 0.1) 100%);
+            z-index: -1;
+            opacity: 0.5;
+            filter: blur(20px);
         }
 
         .portfolio-glass-overlay {
-            background: rgba(19, 91, 236, 0.65);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            background: linear-gradient(135deg, 
+                rgba(19, 91, 236, 0.97) 0%, 
+                rgba(14, 68, 179, 0.99) 50%,
+                rgba(0, 242, 254, 0.95) 100%);
+            backdrop-filter: blur(12px) saturate(180%);
+            -webkit-backdrop-filter: blur(12px) saturate(180%);
+            border-top: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .portfolio-glass-overlay::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 30% 50%, 
+                rgba(255, 255, 255, 0.1) 0%, 
+                transparent 60%);
         }
 
         @property --count {
@@ -476,4 +558,182 @@
             .reveal-scale.is-visible {
                 animation: scale-up-fade 0.9s cubic-bezier(0.23, 1, 0.32, 1) forwards;
             }
+        }
+
+        /* Mejoras visuales adicionales */
+        
+        /* Efecto de brillo en tarjetas de servicios al hacer hover */
+        #servicios .group:hover {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 1) 0%, 
+                rgba(249, 250, 251, 1) 100%);
+        }
+
+        .dark #servicios .group:hover {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.12) 0%, 
+                rgba(255, 255, 255, 0.08) 100%);
+        }
+
+        /* Animación de los íconos de servicio */
+        #servicios .group .size-12 {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #servicios .group:hover .size-12 {
+            transform: translateY(-5px) rotate(5deg);
+        }
+
+        /* Efecto glassmorphism mejorado para modales */
+        .glass-modal {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.95) 0%, 
+                rgba(255, 255, 255, 0.9) 100%);
+            backdrop-filter: blur(40px) saturate(200%);
+            -webkit-backdrop-filter: blur(40px) saturate(200%);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.15),
+                        0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark .glass-modal {
+            background: linear-gradient(135deg, 
+                rgba(16, 22, 34, 0.98) 0%, 
+                rgba(26, 31, 54, 0.95) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.5),
+                        0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Mejora del badge activo con gradiente */
+        .active-badge {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.35) 0%, 
+                rgba(255, 255, 255, 0.2) 100%);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            font-weight: 800;
+        }
+
+        /* Efecto de profundidad en los filtros de proyecto */
+        .active-filter-glow {
+            box-shadow: 0 0 20px rgba(19, 91, 236, 0.4),
+                        0 4px 16px rgba(19, 91, 236, 0.2);
+        }
+
+        /* Animación suave del carrusel */
+        .carousel-track {
+            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Efecto hover mejorado en botones de navegación del carrusel */
+        .carousel-glow {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .carousel-glow:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(19, 91, 236, 0.4),
+                        0 4px 16px rgba(19, 91, 236, 0.2);
+        }
+
+        .carousel-glow:active {
+            transform: scale(0.95);
+        }
+
+        /* Mejora de los dots del carrusel */
+        .carousel-dot {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .carousel-dot:hover {
+            transform: scale(1.5);
+            opacity: 0.8;
+        }
+
+        /* Efecto de gradiente animado en sección CTA */
+        section:has(.bg-gradient-to-br) {
+            position: relative;
+            overflow: hidden;
+        }
+
+        section:has(.bg-gradient-to-br)::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 30% 50%, 
+                rgba(255, 255, 255, 0.1) 0%, 
+                transparent 60%);
+            animation: shimmer 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes shimmer {
+            0% { opacity: 0.5; transform: translateX(-10%); }
+            100% { opacity: 1; transform: translateX(10%); }
+        }
+
+        /* Mejora visual de los inputs del formulario */
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: rgba(19, 91, 236, 0.5);
+            box-shadow: 0 0 0 3px rgba(19, 91, 236, 0.1),
+                        0 2px 12px rgba(19, 91, 236, 0.15);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Efecto de desenfoque mejorado en tarjetas inactivas del carrusel */
+        .testimonial-card.opacity-40 {
+            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Animación de entrada del spinner */
+        @keyframes spin-fade {
+            0% { 
+                opacity: 0;
+                transform: rotate(0deg) scale(0.8);
+            }
+            100% { 
+                opacity: 1;
+                transform: rotate(360deg) scale(1);
+            }
+        }
+
+        .btn-spinner {
+            animation: spin-fade 0.4s ease-out;
+        }
+
+        /* Efecto de hover en links del footer */
+        footer a {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        footer a:hover {
+            transform: translateY(-3px);
+            filter: drop-shadow(0 4px 8px rgba(19, 91, 236, 0.3));
+        }
+
+        /* Mejora visual de las imágenes de proyecto con efecto de zoom suave */
+        .group img {
+            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Degradado sutil en el header cuando hace scroll */
+        .header-inner-content::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(19, 91, 236, 0.3) 50%, 
+                transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .header-scroll-container:has(.header-inner-content) .header-inner-content::after {
+            opacity: 1;
         }
