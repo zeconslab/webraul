@@ -1,0 +1,355 @@
+        @layer base {
+            html {
+                scroll-behavior: smooth;
+            }
+        }
+
+        .mesh-gradient {
+            background-color: #ffffff;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(19, 91, 236, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(19, 91, 236, 0.1) 0px, transparent 50%),
+                radial-gradient(at 50% 100%, rgba(19, 91, 236, 0.05) 0px, transparent 50%);
+        }
+
+        .dark .mesh-gradient {
+            background-color: #101622;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(19, 91, 236, 0.2) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(19, 91, 236, 0.1) 0px, transparent 50%),
+                radial-gradient(at 50% 100%, rgba(19, 91, 236, 0.05) 0px, transparent 50%);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .dark .glass-card {
+            background: rgba(16, 22, 34, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .testimonial-glass {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .dark .testimonial-glass {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @keyframes scroll-progress {
+            from {
+                transform: scaleX(0);
+            }
+
+            to {
+                transform: scaleX(1);
+            }
+        }
+
+        .progress-bar-fill {
+            transform-origin: 0% 50%;
+            animation: scroll-progress auto linear;
+            animation-timeline: scroll();
+            box-shadow: 0 0 12px rgba(0, 242, 254, 0.6), 0 0 4px rgba(19, 91, 236, 0.5);
+        }
+
+        @keyframes header-reveal {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .header-container {
+            animation: header-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes header-scroll-wrapper {
+            to {
+                padding-top: 0;
+                padding-bottom: 0;
+                padding-left: 0;
+                padding-right: 0;
+            }
+        }
+
+        @keyframes header-scroll-content {
+            to {
+                max-width: 100%;
+                border-radius: 0px;
+                padding-top: 0.75rem;
+                padding-bottom: 0.75rem;
+                background-color: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(24px);
+                border-left-width: 0px;
+                border-right-width: 0px;
+                border-top-width: 0px;
+                border-bottom: none;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.04);
+            }
+        }
+
+        @keyframes header-scroll-content-dark {
+            to {
+                max-width: 100%;
+                border-radius: 0px;
+                padding-top: 0.75rem;
+                padding-bottom: 0.75rem;
+                background-color: rgba(16, 22, 34, 0.98);
+                backdrop-filter: blur(24px);
+                border-left-width: 0px;
+                border-right-width: 0px;
+                border-top-width: 0px;
+                border-bottom: none;
+                box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), 0 5px 15px rgba(0, 0, 0, 0.3);
+            }
+        }
+
+        .header-scroll-container {
+            animation: header-scroll-wrapper auto linear forwards;
+            animation-timeline: scroll();
+            animation-range: 0 60px;
+        }
+
+        .header-inner-content {
+            animation: header-scroll-content auto linear forwards;
+            animation-timeline: scroll();
+            animation-range: 0 60px;
+        }
+
+        .dark .header-inner-content {
+            animation: header-scroll-content-dark auto linear forwards;
+            animation-timeline: scroll();
+            animation-range: 0 60px;
+        }
+
+        #servicios {
+            view-timeline: --servicios-section block;
+        }
+
+        #proceso {
+            view-timeline: --proceso-section block;
+        }
+
+        #proyectos {
+            view-timeline: --proyectos-section block;
+        }
+
+        #testimonios {
+            view-timeline: --testimonios-section block;
+        }
+
+        #faq {
+            view-timeline: --faq-section block;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: theme('colors.primary');
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .reveal-up {
+            animation: fade-in-up both;
+            animation-timeline: view();
+            animation-range: entry 10% cover 30%;
+        }
+
+        .reveal-left {
+            animation: slide-in-left both;
+            animation-timeline: view();
+            animation-range: entry 10% cover 30%;
+        }
+
+        .reveal-right {
+            animation: slide-in-right both;
+            animation-timeline: view();
+            animation-range: entry 10% cover 30%;
+        }
+
+        .reveal-scale {
+            animation: scale-up-fade both;
+            animation-timeline: view();
+            animation-range: entry 10% cover 30%;
+        }
+
+        .hero-init {
+            animation: fade-in-up 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .hero-init-delay {
+            animation: fade-in-up 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+        }
+
+        .stagger-1 {
+            animation-delay: 0s;
+        }
+
+        .stagger-2 {
+            animation-delay: 0.1s;
+        }
+
+        .stagger-3 {
+            animation-delay: 0.2s;
+        }
+
+        .stagger-4 {
+            animation-delay: 0.3s;
+        }
+
+        .neon-btn-glow {
+            box-shadow: 0 0 15px rgba(19, 91, 236, 0.4), 0 0 5px rgba(0, 242, 254, 0.2);
+        }
+
+        .neon-btn-glow:hover {
+            box-shadow: 0 0 25px rgba(19, 91, 236, 0.6), 0 0 10px rgba(0, 242, 254, 0.4);
+        }
+
+        .active-filter-glow {
+            box-shadow: 0 0 15px rgba(19, 91, 236, 0.3);
+        }
+
+        .active-card {
+            transform: scale(1.1);
+            z-index: 10;
+            border-color: rgba(19, 91, 236, 0.5);
+            box-shadow: 0 0 40px rgba(19, 91, 236, 0.25);
+        }
+
+        .portfolio-glass-overlay {
+            background: rgba(19, 91, 236, 0.65);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        @property --count {
+            syntax: "<integer>";
+            initial-value: 0;
+            inherits: false;
+        }
+
+        .counter-glow {
+            text-shadow: 0 0 8px rgba(19, 91, 236, 0.4);
+            animation-duration: 1.2s;
+            animation-fill-mode: forwards;
+            animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+            counter-reset: num var(--count);
+        }
+
+        .counter-glow::after {
+            content: counter(num);
+        }
+
+        .active-badge {
+            background: rgba(255, 255, 255, 0.25);
+            color: white;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .modal-overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            transform: scale(0.9);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .glass-modal {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .dark .glass-modal {
+            background: rgba(16, 22, 34, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .form-btn-loading {
+            opacity: 0.85;
+            pointer-events: none;
+            animation: pulse-glow 2s infinite;
+        }
+
+        @keyframes pulse-glow {
+            0% {
+                box-shadow: 0 0 15px rgba(19, 91, 236, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 30px rgba(19, 91, 236, 0.7), 0 0 12px rgba(0, 242, 254, 0.5);
+            }
+
+            100% {
+                box-shadow: 0 0 15px rgba(19, 91, 236, 0.4);
+            }
+        }
+
+        .carousel-glow {
+            box-shadow: 0 0 15px rgba(19, 91, 236, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .carousel-glow:hover {
+            box-shadow: 0 0 25px rgba(19, 91, 236, 0.5);
+        }
+
+        @keyframes carousel-slide {
+            0% {
+                transform: translateX(0);
+                opacity: 0.4;
+                filter: blur(2px);
+                scale: 0.9;
+            }
+
+            50% {
+                opacity: 1;
+                filter: blur(0);
+                scale: 1.1;
+            }
+
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+                filter: blur(0);
+                scale: 1.1;
+            }
+        }
+
+        .carousel-track {
+            transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
