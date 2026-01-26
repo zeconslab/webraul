@@ -1,0 +1,1138 @@
+﻿<html class="light scroll-smooth" lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Raúl Web Dev - Scroll Reveal Landing Page</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "accent-cyan": "#00f2fe",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            html {
+                scroll-behavior: smooth;
+            }
+        }
+        .mesh-gradient {
+            background-color: #ffffff;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(19, 91, 236, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(19, 91, 236, 0.1) 0px, transparent 50%),
+                radial-gradient(at 50% 100%, rgba(19, 91, 236, 0.05) 0px, transparent 50%);
+        }
+        .dark .mesh-gradient {
+            background-color: #101622;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(19, 91, 236, 0.2) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(19, 91, 236, 0.1) 0px, transparent 50%),
+                radial-gradient(at 50% 100%, rgba(19, 91, 236, 0.05) 0px, transparent 50%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark .glass-card {
+            background: rgba(16, 22, 34, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .testimonial-glass {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        .dark .testimonial-glass {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        @keyframes scroll-progress {
+            from { transform: scaleX(0); }
+            to { transform: scaleX(1); }
+        }
+        .progress-bar-fill {
+            transform-origin: 0% 50%;
+            animation: scroll-progress auto linear;
+            animation-timeline: scroll();
+            box-shadow: 0 0 12px rgba(0, 242, 254, 0.6), 0 0 4px rgba(19, 91, 236, 0.5);
+        }
+        @keyframes header-reveal {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .header-container {
+            animation: header-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes header-scroll-wrapper {
+            to { padding-top: 0; padding-bottom: 0; padding-left: 0; padding-right: 0; }
+        }
+        @keyframes header-scroll-content {
+            to {
+                max-width: 100%;
+                border-radius: 0px;
+                padding-top: 0.75rem;
+                padding-bottom: 0.75rem;
+                background-color: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(24px);
+                border-left-width: 0px;
+                border-right-width: 0px;
+                border-top-width: 0px;
+                border-bottom: none;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.04);
+            }
+        }
+        @keyframes header-scroll-content-dark {
+            to {
+                max-width: 100%;
+                border-radius: 0px;
+                padding-top: 0.75rem;
+                padding-bottom: 0.75rem;
+                background-color: rgba(16, 22, 34, 0.98);
+                backdrop-filter: blur(24px);
+                border-left-width: 0px;
+                border-right-width: 0px;
+                border-top-width: 0px;
+                border-bottom: none;
+                box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), 0 5px 15px rgba(0, 0, 0, 0.3);
+            }
+        }
+        .header-scroll-container {
+            animation: header-scroll-wrapper auto linear forwards;
+            animation-timeline: scroll();
+            animation-range: 0 60px;
+        }
+        .header-inner-content {
+            animation: header-scroll-content auto linear forwards;
+            animation-timeline: scroll();
+            animation-range: 0 60px;
+        }
+        .dark .header-inner-content {
+            animation: header-scroll-content-dark auto linear forwards;
+            animation-timeline: scroll();
+            animation-range: 0 60px;
+        }
+        #servicios { view-timeline: --servicios-section block; }
+        #proceso { view-timeline: --proceso-section block; }
+        #proyectos { view-timeline: --proyectos-section block; }
+        #testimonios { view-timeline: --testimonios-section block; }
+        #faq { view-timeline: --faq-section block; }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: theme('colors.primary');
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        .reveal-up {
+            animation: fade-in-up both;
+            animation-timeline: view();
+            animation-range: entry 10% cover 30%;
+        }
+        .reveal-left {
+            animation: slide-in-left both;
+            animation-timeline: view();
+            animation-range: entry 10% cover 30%;
+        }
+        .reveal-right {
+            animation: slide-in-right both;
+            animation-timeline: view();
+            animation-range: entry 10% cover 30%;
+        }
+        .reveal-scale {
+            animation: scale-up-fade both;
+            animation-timeline: view();
+            animation-range: entry 10% cover 30%;
+        }
+        .hero-init {
+            animation: fade-in-up 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .hero-init-delay {
+            animation: fade-in-up 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+        }
+        .stagger-1 { animation-delay: 0s; }
+        .stagger-2 { animation-delay: 0.1s; }
+        .stagger-3 { animation-delay: 0.2s; }
+        .stagger-4 { animation-delay: 0.3s; }
+        .neon-btn-glow {
+            box-shadow: 0 0 15px rgba(19, 91, 236, 0.4), 0 0 5px rgba(0, 242, 254, 0.2);
+        }
+        .neon-btn-glow:hover {
+            box-shadow: 0 0 25px rgba(19, 91, 236, 0.6), 0 0 10px rgba(0, 242, 254, 0.4);
+        }
+        .active-filter-glow {
+            box-shadow: 0 0 15px rgba(19, 91, 236, 0.3);
+        }
+        .active-card {
+            transform: scale(1.1);
+            z-index: 10;
+            border-color: rgba(19, 91, 236, 0.5);
+            box-shadow: 0 0 40px rgba(19, 91, 236, 0.25);
+        }
+        .portfolio-glass-overlay {
+            background: rgba(19, 91, 236, 0.65);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        @property --count {
+            syntax: "<integer>";
+            initial-value: 0;
+            inherits: false;
+        }
+        .counter-glow {
+            text-shadow: 0 0 8px rgba(19, 91, 236, 0.4);
+            animation-duration: 1.2s;
+            animation-fill-mode: forwards;
+            animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+            counter-reset: num var(--count);
+        }
+        .counter-glow::after {
+            content: counter(num);
+        }
+        .active-badge {
+            background: rgba(255, 255, 255, 0.25);
+            color: white;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        .modal-overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            transform: scale(0.9);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+        .glass-modal {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        .dark .glass-modal {
+            background: rgba(16, 22, 34, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .form-btn-loading {
+            opacity: 0.85;
+            pointer-events: none;
+            animation: pulse-glow 2s infinite;
+        }
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 15px rgba(19, 91, 236, 0.4); }
+            50% { box-shadow: 0 0 30px rgba(19, 91, 236, 0.7), 0 0 12px rgba(0, 242, 254, 0.5); }
+            100% { box-shadow: 0 0 15px rgba(19, 91, 236, 0.4); }
+        }
+    </style>
+</head>
+
+<body class="font-display bg-background-light dark:bg-background-dark text-[#111318] dark:text-gray-100 transition-colors duration-300">
+
+    <header class="fixed top-0 left-0 right-0 z-50 header-container">
+        <div class="px-6 py-6 header-scroll-container w-full transition-all duration-300">
+            <div
+                class="max-w-[1200px] mx-auto glass-card rounded-xl px-8 py-4 flex items-center justify-between relative transition-all duration-300 header-inner-content border-none shadow-sm overflow-hidden">
+                <div class="flex items-center gap-3 shrink-0">
+                    <div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+                        <span class="material-symbols-outlined text-xl">terminal</span>
+                    </div>
+                    <h1 class="text-lg font-bold tracking-tight">Raúl Web Dev</h1>
+                </div>
+                <nav class="hidden md:flex items-center gap-8">
+                    <a class="nav-link link-servicios text-sm font-semibold hover:text-primary transition-colors py-1 relative"
+                        href="#servicios">Servicios</a>
+                    <a class="nav-link link-proceso text-sm font-semibold hover:text-primary transition-colors py-1 relative"
+                        href="#proceso">Proceso</a>
+                    <a class="nav-link link-proyectos text-sm font-semibold hover:text-primary transition-colors py-1 relative"
+                        href="#proyectos">Proyectos</a>
+                    <a class="nav-link link-testimonios text-sm font-semibold hover:text-primary transition-colors py-1 relative"
+                        href="#testimonios">Testimonios</a>
+                    <a class="nav-link link-faq text-sm font-semibold hover:text-primary transition-colors py-1 relative"
+                        href="#faq">FAQ</a>
+                </nav>
+                <div class="flex items-center gap-4 shrink-0">
+                    <button
+                        class="bg-primary text-white text-sm font-bold px-5 py-2.5 rounded-lg neon-btn-glow hover:scale-105 transition-all">
+                        Empieza tu proyecto
+                    </button>
+                </div>
+                <div class="absolute bottom-0 left-0 w-full h-[3px] bg-gray-100/30 dark:bg-white/5">
+                    <div
+                        class="progress-bar-fill h-full w-full bg-gradient-to-r from-accent-cyan via-primary to-primary">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main>
+        <section class="relative pt-64 pb-20 px-6 mesh-gradient overflow-hidden" id="hero">
+            <div class="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="flex flex-col gap-8 z-10 hero-init">
+                    <div
+                        class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider w-fit">
+                        <span class="relative flex h-2 w-2">
+                            <span
+                                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                        </span>
+                        Disponible para nuevos proyectos
+                    </div>
+                    <h1
+                        class="text-5xl md:text-6xl font-black leading-[1.1] tracking-tight text-gray-900 dark:text-white">
+                        Transformo tu visión en una <span class="text-primary">web que impulsa</span> tu negocio
+                    </h1>
+                    <p class="text-lg text-gray-600 dark:text-gray-400 max-w-lg leading-relaxed">
+                        Especialista en soluciones a medida para pequeñas y medianas empresas. Diseño profesional
+                        enfocado en conversión y resultados reales.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <button
+                            class="bg-primary text-white px-8 py-4 rounded-xl text-base font-bold neon-btn-glow hover:bg-primary/90 transition-all flex items-center gap-2">
+                            Empieza tu proyecto
+                            <span class="material-symbols-outlined">arrow_forward</span>
+                        </button>
+                        <button
+                            class="bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 px-8 py-4 rounded-xl text-base font-bold hover:bg-gray-50 dark:hover:bg-white/10 transition-all">
+                            Ver Portafolio
+                        </button>
+                    </div>
+                </div>
+                <div class="relative lg:h-[500px] flex items-center justify-center hero-init-delay">
+                    <div class="glass-card w-full rounded-2xl p-4 shadow-2xl relative overflow-hidden group">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="flex gap-1.5">
+                                <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-400"></div>
+                            </div>
+                            <div
+                                class="bg-gray-100 dark:bg-white/10 h-6 px-4 rounded-full flex-1 mx-4 text-[10px] flex items-center text-gray-400">
+                                www.tuproyecto.com
+                            </div>
+                        </div>
+                        <div class="aspect-video w-full rounded-lg bg-center bg-cover border border-gray-100 dark:border-white/5 shadow-inner"
+                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDGolLWy0tYbz1ePHgY2UK_8sfzsNbp0PhkR2V6qxv1NIySvZKWJV_HRK4aR1o-5ApTso1IM28RT5iMLHRn4C973GfdJVg3WCwM9btGE-i-zQI6ynPX6SOAhbRBrpinnfERKnVNYuq_OxVjlCylvBET1jyt4kYrxdy9z7KJ6a8-a7Zu9LHVtGTdHTjd9gubMudoR-7RDRduo9WW4wuyWSXYjkdFRRPah-16sLM0Q92pWR-A6OadcteS9Ei2-vIiWuCcgu7vb6SBRcb8");'>
+                        </div>
+                        <div class="absolute -bottom-6 -right-6 w-48 h-48 bg-primary/20 rounded-full blur-3xl"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="py-24 px-6 bg-white dark:bg-background-dark scroll-mt-24" id="servicios">
+            <div class="max-w-[1200px] mx-auto">
+                <div class="flex flex-col gap-4 mb-16 max-w-2xl reveal-up">
+                    <h2 class="text-primary font-bold text-sm tracking-[0.2em] uppercase">Expertise</h2>
+                    <h3 class="text-4xl font-bold tracking-tight">Servicios Profesionales</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-lg">
+                        Soluciones digitales diseñadas para escalar tu negocio, combinando estética impecable con
+                        rendimiento técnico superior.
+                    </p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div
+                        class="group p-8 rounded-xl border border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-2 transition-all duration-300 reveal-up stagger-1 flex flex-col">
+                        <div
+                            class="size-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
+                            <span class="material-symbols-outlined text-2xl">code</span>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3">Web a Medida</h4>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-6">
+                            Desarrollo único desde cero, adaptado a tus necesidades específicas sin plantillas
+                            limitantes.
+                        </p>
+                        <button class="mt-auto inline-flex items-center gap-1 text-primary text-sm font-bold group/btn"
+                            onclick="document.getElementById('modal-service-1').classList.add('active')">
+                            Saber más
+                            <span
+                                class="material-symbols-outlined text-sm transition-transform group-hover/btn:translate-x-1">arrow_forward</span>
+                        </button>
+                    </div>
+                    <div
+                        class="group p-8 rounded-xl border border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-2 transition-all duration-300 reveal-up stagger-2 flex flex-col">
+                        <div
+                            class="size-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
+                            <span class="material-symbols-outlined text-2xl">devices</span>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3">Diseño Responsive</h4>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-6">
+                            Tu sitio se verá perfecto y funcionará de forma intuitiva en móviles, tablets y ordenadores.
+                        </p>
+                        <button class="mt-auto inline-flex items-center gap-1 text-primary text-sm font-bold group/btn"
+                            onclick="document.getElementById('modal-service-2').classList.add('active')">
+                            Saber más
+                            <span
+                                class="material-symbols-outlined text-sm transition-transform group-hover/btn:translate-x-1">arrow_forward</span>
+                        </button>
+                    </div>
+                    <div
+                        class="group p-8 rounded-xl border border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-2 transition-all duration-300 reveal-up stagger-3 flex flex-col">
+                        <div
+                            class="size-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
+                            <span class="material-symbols-outlined text-2xl">public</span>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3">Google Integration</h4>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-6">
+                            Configuración completa de Google My Business, Analytics, Search Console y Google Maps.
+                        </p>
+                        <button class="mt-auto inline-flex items-center gap-1 text-primary text-sm font-bold group/btn"
+                            onclick="document.getElementById('modal-service-3').classList.add('active')">
+                            Saber más
+                            <span
+                                class="material-symbols-outlined text-sm transition-transform group-hover/btn:translate-x-1">arrow_forward</span>
+                        </button>
+                    </div>
+                    <div
+                        class="group p-8 rounded-xl border border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-2 transition-all duration-300 reveal-up stagger-4 flex flex-col">
+                        <div
+                            class="size-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
+                            <span class="material-symbols-outlined text-2xl">trending_up</span>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3">Optimización SEO</h4>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-6">
+                            Estructura técnica optimizada para escalar posiciones en buscadores y atraer tráfico
+                            cualificado.
+                        </p>
+                        <button class="mt-auto inline-flex items-center gap-1 text-primary text-sm font-bold group/btn"
+                            onclick="document.getElementById('modal-service-4').classList.add('active')">
+                            Saber más
+                            <span
+                                class="material-symbols-outlined text-sm transition-transform group-hover/btn:translate-x-1">arrow_forward</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div class="modal-overlay fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/40 backdrop-blur-sm"
+            id="modal-service-1">
+            <div
+                class="modal-content glass-modal w-full max-w-2xl rounded-3xl p-8 md:p-12 relative shadow-2xl overflow-y-auto max-h-[90vh]">
+                <button
+                    class="absolute top-6 right-6 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                    onclick="document.getElementById('modal-service-1').classList.remove('active')">
+                    <span class="material-symbols-outlined text-3xl">close</span>
+                </button>
+                <div class="flex flex-col items-center text-center">
+                    <div
+                        class="size-24 bg-primary rounded-3xl flex items-center justify-center text-white mb-8 shadow-xl shadow-primary/20">
+                        <span class="material-symbols-outlined text-5xl">code</span>
+                    </div>
+                    <h3 class="text-3xl md:text-4xl font-black mb-4">Web a Medida</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-10 max-w-xl">
+                        Creamos soluciones digitales únicas desde el primer píxel. Sin límites creativos ni técnicos,
+                        centrados exclusivamente en los objetivos de tu negocio y la experiencia de tus usuarios.
+                    </p>
+                    <div
+                        class="w-full text-left bg-gray-50 dark:bg-white/5 rounded-2xl p-6 md:p-8 mb-10 border border-gray-100 dark:border-white/5">
+                        <h4
+                            class="font-bold text-gray-900 dark:text-white mb-6 uppercase tracking-wider text-sm flex items-center gap-2">
+                            <span class="w-8 h-px bg-primary"></span>
+                            ¿Qué incluye este servicio?
+                        </h4>
+                        <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <li class="flex items-start gap-3 text-gray-600 dark:text-gray-400">
+                                <span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                <span>Arquitectura escalable</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-gray-600 dark:text-gray-400">
+                                <span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                <span>Panel de administración personalizado</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-gray-600 dark:text-gray-400">
+                                <span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                <span>Código limpio y optimizado</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-gray-600 dark:text-gray-400">
+                                <span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                <span>Integraciones de API externas</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <button
+                        class="bg-primary text-white px-10 py-4 rounded-xl text-lg font-bold neon-btn-glow hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-3">
+                        Solicitar este servicio
+                        <span class="material-symbols-outlined">send</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="modal-overlay fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/40 backdrop-blur-sm"
+            id="modal-service-2">
+            <div
+                class="modal-content glass-modal w-full max-w-2xl rounded-3xl p-8 md:p-12 relative shadow-2xl overflow-y-auto max-h-[90vh]">
+                <button
+                    class="absolute top-6 right-6 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                    onclick="document.getElementById('modal-service-2').classList.remove('active')">
+                    <span class="material-symbols-outlined text-3xl">close</span>
+                </button>
+                <div class="flex flex-col items-center text-center">
+                    <div
+                        class="size-24 bg-primary rounded-3xl flex items-center justify-center text-white mb-8 shadow-xl shadow-primary/20">
+                        <span class="material-symbols-outlined text-5xl">devices</span>
+                    </div>
+                    <h3 class="text-3xl md:text-4xl font-black mb-4">Diseño Responsive</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-10 max-w-xl">
+                        Aseguramos que tu marca brille en cualquier pantalla. El 70% del tráfico actual es móvil; no
+                        permitas que tus usuarios tengan una mala experiencia.
+                    </p>
+                    <div
+                        class="w-full text-left bg-gray-50 dark:bg-white/5 rounded-2xl p-6 md:p-8 mb-10 border border-gray-100 dark:border-white/5">
+                        <h4
+                            class="font-bold text-gray-900 dark:text-white mb-6 uppercase tracking-wider text-sm flex items-center gap-2">
+                            <span class="w-8 h-px bg-primary"></span>
+                            ¿Qué incluye este servicio?
+                        </h4>
+                        <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <li class="flex items-start gap-3 text-gray-600 dark:text-gray-400">
+                                <span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                <span>Interfaces 'Mobile-First'</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-gray-600 dark:text-gray-400">
+                                <span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                <span>Navegación táctil optimizada</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-gray-600 dark:text-gray-400">
+                                <span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                <span>Adaptación de activos multimedia</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-gray-600 dark:text-gray-400">
+                                <span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                <span>Pruebas en múltiples dispositivos</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <button
+                        class="bg-primary text-white px-10 py-4 rounded-xl text-lg font-bold neon-btn-glow hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-3">
+                        Solicitar este servicio
+                        <span class="material-symbols-outlined">send</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="modal-overlay fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/40 backdrop-blur-sm"
+            id="modal-service-3">
+            <div
+                class="modal-content glass-modal w-full max-w-2xl rounded-3xl p-8 md:p-12 relative shadow-2xl overflow-y-auto max-h-[90vh]">
+                <button
+                    class="absolute top-6 right-6 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                    onclick="document.getElementById('modal-service-3').classList.remove('active')">
+                    <span class="material-symbols-outlined text-3xl">close</span>
+                </button>
+                <div class="flex flex-col items-center text-center">
+                    <div
+                        class="size-24 bg-primary rounded-3xl flex items-center justify-center text-white mb-8 shadow-xl shadow-primary/20">
+                        <span class="material-symbols-outlined text-5xl">public</span>
+                    </div>
+                    <h3 class="text-3xl md:text-4xl font-black mb-4">Google Integration</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-10 max-w-xl">
+                        No basta con tener una web; el mundo debe encontrarla. Conectamos tu negocio con el ecosistema
+                        de Google para maximizar tu visibilidad local y global.
+                    </p>
+                    <div
+                        class="w-full text-left bg-gray-50 dark:bg-white/5 rounded-2xl p-6 md:p-8 mb-10 border border-gray-100 dark:border-white/5">
+                        <h4
+                            class="font-bold text-gray-900 dark:text-white mb-6 uppercase tracking-wider text-sm flex items-center gap-2">
+                            <span class="w-8 h-px bg-primary"></span>
+                            ¿Qué incluye este servicio?
+                        </h4>
+                        <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <li class="flex items-start gap-3 text-gray-600 dark:text-gray-400">
+                                <span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                <span>Google My Business Setup</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-gray-600 dark:text-gray-400">
+                                <span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                <span>Analytics 4 &amp; Tag Manager</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-gray-600 dark:text-gray-400">
+                                <span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                <span>Indexación en Search Console</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-gray-600 dark:text-gray-400">
+                                <span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                <span>Integración de Maps API</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <button
+                        class="bg-primary text-white px-10 py-4 rounded-xl text-lg font-bold neon-btn-glow hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-3">
+                        Solicitar este servicio
+                        <span class="material-symbols-outlined">send</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="modal-overlay fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/40 backdrop-blur-sm"
+            id="modal-service-4">
+            <div
+                class="modal-content glass-modal w-full max-w-2xl rounded-3xl p-8 md:p-12 relative shadow-2xl overflow-y-auto max-h-[90vh]">
+                <button
+                    class="absolute top-6 right-6 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                    onclick="document.getElementById('modal-service-4').classList.remove('active')">
+                    <span class="material-symbols-outlined text-3xl">close</span>
+                </button>
+                <div class="flex flex-col items-center text-center">
+                    <div
+                        class="size-24 bg-primary rounded-3xl flex items-center justify-center text-white mb-8 shadow-xl shadow-primary/20">
+                        <span class="material-symbols-outlined text-5xl">trending_up</span>
+                    </div>
+                    <h3 class="text-3xl md:text-4xl font-black mb-4">Optimización SEO</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-lg leading-relaxed mb-10 max-w-xl">
+                        Construimos los cimientos para que tu web escale posiciones orgánicas. Optimizamos cada detalle
+                        técnico para que los algoritmos de búsqueda amen tu sitio.
+                    </p>
+                    <div
+                        class="w-full text-left bg-gray-50 dark:bg-white/5 rounded-2xl p-6 md:p-8 mb-10 border border-gray-100 dark:border-white/5">
+                        <h4
+                            class="font-bold text-gray-900 dark:text-white mb-6 uppercase tracking-wider text-sm flex items-center gap-2">
+                            <span class="w-8 h-px bg-primary"></span>
+                            ¿Qué incluye este servicio?
+                        </h4>
+                        <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <li class="flex items-start gap-3 text-gray-600 dark:text-gray-400">
+                                <span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                <span>SEO On-Page Técnico</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-gray-600 dark:text-gray-400">
+                                <span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                <span>Optimización Core Web Vitals</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-gray-600 dark:text-gray-400">
+                                <span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                <span>Estructura de Datos (Schema)</span>
+                            </li>
+                            <li class="flex items-start gap-3 text-gray-600 dark:text-gray-400">
+                                <span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                <span>Análisis de palabras clave</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <button
+                        class="bg-primary text-white px-10 py-4 rounded-xl text-lg font-bold neon-btn-glow hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-3">
+                        Solicitar este servicio
+                        <span class="material-symbols-outlined">send</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <section class="py-24 px-6 bg-background-light dark:bg-background-dark/50" id="beneficios">
+            <div class="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+                <div class="order-2 lg:order-1 reveal-left">
+                    <div
+                        class="bg-white dark:bg-white/5 p-8 rounded-2xl shadow-xl shadow-gray-200/50 dark:shadow-none relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full"></div>
+                        <h3 class="text-2xl font-bold mb-8">¿Por qué trabajar conmigo?</h3>
+                        <div class="space-y-6">
+                            <div class="flex gap-4">
+                                <div
+                                    class="size-6 rounded-full bg-primary flex items-center justify-center text-white shrink-0 mt-1">
+                                    <span class="material-symbols-outlined text-[16px]">check</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-lg">Comunicación Directa</h4>
+                                    <p class="text-gray-600 dark:text-gray-400">Sin intermediarios. Hablarás
+                                        directamente con el desarrollador durante todo el proceso.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <div
+                                    class="size-6 rounded-full bg-primary flex items-center justify-center text-white shrink-0 mt-1">
+                                    <span class="material-symbols-outlined text-[16px]">check</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-lg">Resultados de Negocio</h4>
+                                    <p class="text-gray-600 dark:text-gray-400">Diseño enfocado no solo en estética,
+                                        sino en métricas de conversión y ROI.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <div
+                                    class="size-6 rounded-full bg-primary flex items-center justify-center text-white shrink-0 mt-1">
+                                    <span class="material-symbols-outlined text-[16px]">check</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-lg">Soporte Técnico Continuo</h4>
+                                    <p class="text-gray-600 dark:text-gray-400">Mantenimiento y actualizaciones
+                                        post-lanzamiento para que nunca estés solo.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="order-1 lg:order-2 flex flex-col gap-6 reveal-right">
+                    <h3 class="text-4xl font-bold tracking-tight">Tu aliado estratégico en el mundo digital</h3>
+                    <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+                        Entiendo que tu sitio web es la cara de tu negocio. Por eso, mi enfoque se basa en construir
+                        relaciones a largo plazo basadas en la confianza y la transparencia técnica.
+                    </p>
+                    <div class="grid grid-cols-2 gap-6 mt-4">
+                        <div class="p-6 rounded-xl bg-primary/5 border border-primary/10">
+                            <div class="text-3xl font-black text-primary mb-1">100%</div>
+                            <div class="text-sm font-bold text-gray-500 uppercase tracking-tighter">Satisfacción</div>
+                        </div>
+                        <div class="p-6 rounded-xl bg-primary/5 border border-primary/10">
+                            <div class="text-3xl font-black text-primary mb-1">50+</div>
+                            <div class="text-sm font-bold text-gray-500 uppercase tracking-tighter">Proyectos</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="py-24 px-6 scroll-mt-24" id="proceso">
+            <div class="max-w-[1200px] mx-auto">
+                <div class="text-center max-w-2xl mx-auto mb-20 reveal-up">
+                    <h3 class="text-3xl font-bold mb-4">Un proceso sencillo y efectivo</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Desde la idea hasta el lanzamiento, paso a paso para
+                        asegurar el éxito.</p>
+                </div>
+                <div class="relative grid grid-cols-1 md:grid-cols-3 gap-12">
+                    <div
+                        class="hidden md:block absolute top-12 left-24 right-24 h-0.5 bg-gray-100 dark:bg-white/10 z-0">
+                    </div>
+                    <div class="relative z-10 flex flex-col items-center text-center reveal-scale">
+                        <div
+                            class="size-24 rounded-full bg-white dark:bg-background-dark border-4 border-primary/10 flex items-center justify-center text-primary mb-6 shadow-xl shadow-primary/5">
+                            <div class="size-16 rounded-full bg-primary/10 flex items-center justify-center group">
+                                <span class="material-symbols-outlined text-3xl">psychology</span>
+                            </div>
+                        </div>
+                        <div class="bg-primary text-white text-xs font-bold px-3 py-1 rounded-full mb-4">PASO 1</div>
+                        <h4 class="text-xl font-bold mb-3">Análisis y Estrategia</h4>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm">Entendemos tus objetivos, tu competencia y
+                            definimos el mapa del sitio.</p>
+                    </div>
+                    <div class="relative z-10 flex flex-col items-center text-center reveal-scale">
+                        <div
+                            class="size-24 rounded-full bg-white dark:bg-background-dark border-4 border-primary/10 flex items-center justify-center text-primary mb-6 shadow-xl shadow-primary/5">
+                            <div class="size-16 rounded-full bg-primary/10 flex items-center justify-center group">
+                                <span class="material-symbols-outlined text-3xl">rocket_launch</span>
+                            </div>
+                        </div>
+                        <div class="bg-primary text-white text-xs font-bold px-3 py-1 rounded-full mb-4">PASO 2</div>
+                        <h4 class="text-xl font-bold mb-3">Desarrollo y Diseño</h4>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm">Construcción del sitio con las últimas
+                            tecnologías y revisiones constantes.</p>
+                    </div>
+                    <div class="relative z-10 flex flex-col items-center text-center reveal-scale">
+                        <div
+                            class="size-24 rounded-full bg-white dark:bg-background-dark border-4 border-primary/10 flex items-center justify-center text-primary mb-6 shadow-xl shadow-primary/5">
+                            <div class="size-16 rounded-full bg-primary/10 flex items-center justify-center group">
+                                <span class="material-symbols-outlined text-3xl">verified</span>
+                            </div>
+                        </div>
+                        <div class="bg-primary text-white text-xs font-bold px-3 py-1 rounded-full mb-4">PASO 3</div>
+                        <h4 class="text-xl font-bold mb-3">Entrega y Lanzamiento</h4>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm">Pruebas finales, optimización de velocidad y
+                            puesta en producción.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="py-24 px-6 bg-background-light dark:bg-background-dark scroll-mt-24" id="proyectos">
+            <div class="max-w-[1200px] mx-auto">
+                <div class="flex flex-col gap-4 mb-10 text-center reveal-up">
+                    <h2 class="text-primary font-bold text-sm tracking-[0.2em] uppercase">Portfolio</h2>
+                    <h3 class="text-4xl font-bold tracking-tight">Últimos Proyectos</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-lg max-w-2xl mx-auto">
+                        Una selección de mis trabajos más recientes donde la tecnología y el diseño se unen para crear
+                        experiencias memorables.
+                    </p>
+                </div>
+                <div class="flex flex-wrap items-center justify-center gap-4 mb-16 reveal-up stagger-2">
+                    <button
+                        class="px-5 py-2.5 rounded-full bg-primary text-white font-bold text-sm active-filter-glow transition-all hover:scale-105 flex items-center gap-3">
+                        Todos
+                        <span class="px-2.5 py-0.5 rounded-full active-badge text-[11px] font-bold">18</span>
+                    </button>
+                    <button
+                        class="group px-5 py-2.5 rounded-full border border-gray-300 dark:border-gray-700 text-gray-600 dark:text-gray-400 font-bold text-sm hover:border-primary hover:text-primary transition-all hover:scale-105 flex items-center gap-3">
+                        Landing Pages
+                        <span
+                            class="px-2.5 py-0.5 rounded-full bg-gray-100 dark:bg-white/5 text-[11px] text-gray-500 dark:text-gray-400 font-bold group-hover:bg-primary/10 group-hover:text-primary transition-colors">8</span>
+                    </button>
+                    <button
+                        class="group px-5 py-2.5 rounded-full border border-gray-300 dark:border-gray-700 text-gray-600 dark:text-gray-400 font-bold text-sm hover:border-primary hover:text-primary transition-all hover:scale-105 flex items-center gap-3">
+                        E-commerce
+                        <span
+                            class="px-2.5 py-0.5 rounded-full bg-gray-100 dark:bg-white/5 text-[11px] text-gray-500 dark:text-gray-400 font-bold group-hover:bg-primary/10 group-hover:text-primary transition-colors">6</span>
+                    </button>
+                    <button
+                        class="group px-5 py-2.5 rounded-full border border-gray-300 dark:border-gray-700 text-gray-600 dark:text-gray-400 font-bold text-sm hover:border-primary hover:text-primary transition-all hover:scale-105 flex items-center gap-3">
+                        Corporativas
+                        <span
+                            class="px-2.5 py-0.5 rounded-full bg-gray-100 dark:bg-white/5 text-[11px] text-gray-500 dark:text-gray-400 font-bold group-hover:bg-primary/10 group-hover:text-primary transition-colors">4</span>
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div
+                        class="group relative aspect-video rounded-2xl overflow-hidden shadow-xl border border-gray-100 dark:border-white/5 cursor-pointer reveal-scale">
+                        <img alt="Fintech Project"
+                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTzivLt9EbuH3ibaRyZ-4aDZ9aUpEWu5dTLM40YrPqdVcrxQBeEzyde2skiA1OhusDbXg54neDUbNOJLpHpqFS4myUO1Y6PI9TpfVRsH9gWUu7CtXllWY89P4Cdwse3MHbx6mqODquEqd2oe46ujFt0lV-FbINxUwDpvUJshA5tMRCZS0p0mt4IXquvOPT7-3PoTle9ZD5gkBWEnwgWt_-JpB2hwj8Jm0cAuq8Bn2JlAgPhQYEOtGgo8m77dQqRsddBQIbiw4svXOp" />
+                        <div
+                            class="absolute inset-0 portfolio-glass-overlay flex flex-col items-center justify-center p-8 text-center opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
+                            <h4 class="text-2xl font-bold text-white mb-2">Plataforma NeoBank</h4>
+                            <p class="text-blue-100 mb-6 text-sm font-medium">React, Next.js &amp; Tailwind CSS</p>
+                            <button
+                                class="bg-white text-primary px-6 py-2.5 rounded-lg font-bold text-sm flex items-center gap-2 hover:scale-105 transition-all shadow-[0_0_15px_rgba(255,255,255,0.4)]">
+                                Ver Proyecto
+                                <span class="material-symbols-outlined text-sm">open_in_new</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div
+                        class="group relative aspect-video rounded-2xl overflow-hidden shadow-xl border border-gray-100 dark:border-white/5 cursor-pointer reveal-scale">
+                        <img alt="E-commerce Project"
+                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAFOhakrl1NjgFnMWe7gHoJhOErMupU9Dc0g0iPEj6CfSA5PG1jKD0npoNLuUNNNi2qoQcN6NkOfeUTbz4-bAzsDnvd5SCBfG_vEmx5g26N11kkGd4Kf-3PYZ7qvEWvPAX4A40iYdr4K7QjrRvTfpU6RN9I0DMYhWBmqcv_Anqd4KFLHPth4HNSuiNjBxpWUUru3VS937frLvfp_aVYrTWn0LlJ2yQrMsD8YbhqX2iLDr5PRN8m0DVgm_2De6dRmmDaHIMJi_j8LzK" />
+                        <div
+                            class="absolute inset-0 portfolio-glass-overlay flex flex-col items-center justify-center p-8 text-center opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
+                            <h4 class="text-2xl font-bold text-white mb-2">Fashion Store Hub</h4>
+                            <p class="text-blue-100 mb-6 text-sm font-medium">Headless Shopify &amp; Vue.js</p>
+                            <button
+                                class="bg-white text-primary px-6 py-2.5 rounded-lg font-bold text-sm flex items-center gap-2 hover:scale-105 transition-all shadow-[0_0_15px_rgba(255,255,255,0.4)]">
+                                Ver Proyecto
+                                <span class="material-symbols-outlined text-sm">open_in_new</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div
+                        class="group relative aspect-video rounded-2xl overflow-hidden shadow-xl border border-gray-100 dark:border-white/5 cursor-pointer reveal-scale">
+                        <img alt="Real Estate Project"
+                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxEmJjZvDOsCKQTeivaqQhI3Sgc6t6i6nS1XXvy1F7DDCSOTNzEoY1qHb1A5UgT85bT6h7P8GeXoHsNDl-WE7XwuepgRoiRPpg5uiC-nvEMT50q_lv6c03n2q8_6EVvz4KFqjODo3aacN26_u3ILij5swWdW_fONOFejdCyuj6PmifJdo08bpX9Biecpafd58f2Mpg5VKMj3HUjw_cwHb7NH-G4BesdE0kT7MtVDeAAZlurhmwIS6TAqCnK3MBHnzS_LkF_RfOUuWH" />
+                        <div
+                            class="absolute inset-0 portfolio-glass-overlay flex flex-col items-center justify-center p-8 text-center opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
+                            <h4 class="text-2xl font-bold text-white mb-2">InmoPremium Pro</h4>
+                            <p class="text-blue-100 mb-6 text-sm font-medium">Astro, TypeScript &amp; Sanity CMS</p>
+                            <button
+                                class="bg-white text-primary px-6 py-2.5 rounded-lg font-bold text-sm flex items-center gap-2 hover:scale-105 transition-all shadow-[0_0_15px_rgba(255,255,255,0.4)]">
+                                Ver Proyecto
+                                <span class="material-symbols-outlined text-sm">open_in_new</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="py-24 px-6 mesh-gradient overflow-hidden relative scroll-mt-24" id="testimonios">
+            <div class="max-w-[1200px] mx-auto relative carousel-container group/carousel">
+                <div class="text-center max-w-2xl mx-auto mb-16 reveal-up">
+                    <h2 class="text-primary font-bold text-sm tracking-[0.2em] uppercase mb-4">Opiniones</h2>
+                    <h3 class="text-4xl font-bold tracking-tight mb-4">Lo que dicen mis clientes</h3>
+                    <p class="text-gray-600 dark:text-gray-400">La confianza de mis clientes es mi mayor activo. Aquí
+                        algunos resultados de nuestro trabajo juntos.</p>
+                </div>
+                <div class="relative px-4 md:px-12 flex items-center overflow-hidden">
+                    <button
+                        class="absolute left-4 z-30 size-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all carousel-glow">
+                        <span class="material-symbols-outlined">chevron_left</span>
+                    </button>
+                    <div class="flex items-center gap-8 py-12 px-4 w-full justify-center">
+                        <div
+                            class="testimonial-glass p-8 rounded-2xl shadow-lg flex flex-col gap-6 opacity-40 scale-90 blur-[2px] hidden lg:flex min-w-[350px] transition-all duration-700 hover:scale-95 hover:opacity-60 cursor-pointer reveal-scale">
+                            <div class="flex items-center gap-4">
+                                <img alt="Elena Rivas"
+                                    class="size-12 rounded-full object-cover border-2 border-primary/20"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKylnkZr0bpxwGMJIDfCWVulYUl0RDmer9CN9cZSvLHQ955oR0Nz1eBH-HNiz4sr2Uubd4L-n92534U1TDAul8M6h1fRwybexX-OvJF8KjdiIq2nMOCSYrSTuJvonojhdfL829XzdGy2m9jTfQr7ge76fAoYlfK_3SeRWzWzLV2QlomuiThNZfeWb3sftQyty1INDOud2kJZC6LgKUP7VQP15o9mFjijwdLcduBA1oSKG98NzaR2FMHcdln_Vzjzrjy2ENqy7mBd51" />
+                                <div>
+                                    <h4 class="font-bold text-gray-900 dark:text-white">Elena Rivas</h4>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Fundadora de EcoModa</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-0.5">
+                                <span class="material-symbols-outlined text-primary text-[20px] fill-1">star</span>
+                                <span class="material-symbols-outlined text-primary text-[20px] fill-1">star</span>
+                                <span class="material-symbols-outlined text-primary text-[20px] fill-1">star</span>
+                                <span class="material-symbols-outlined text-primary text-[20px] fill-1">star</span>
+                                <span class="material-symbols-outlined text-primary text-[20px] fill-1">star</span>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm italic leading-relaxed">
+                                "Buscábamos un diseño minimalista y elegante. El resultado superó nuestras
+                                expectativas."
+                            </p>
+                        </div>
+                        <div
+                            class="testimonial-glass p-10 rounded-2xl active-card min-w-[380px] md:min-w-[500px] transition-all duration-700 border-2 relative cursor-pointer group reveal-scale">
+                            <div class="flex items-center gap-4">
+                                <img alt="Carlos Méndez"
+                                    class="size-16 rounded-full object-cover border-2 border-primary/40"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCK_N7r9ziECl8fOtuALZJSqZuGSrVSIDhoJLk3UvXfoJsL1VtN8MlH73BWT6uqeiGNvgppMj4Jkpg4wnVhdxRUJ27vfTXQx1PwuX418me_X2stuszXWFDbynHk-Wx0JGlq3Yx-TBeCk5qn1JWpz1s6JUJMqA_NmXRvOhLxYQaLopcgPcXI7xwS7ezeAohUcEKKbRf9huXPmwEqFX5i74Zy2lsPyqTQ1bmUWJTR3a1_jLy6qiMsQcPkKIEIKvIGZR3IvZJMhQ_dt0GR" />
+                                <div>
+                                    <h4 class="text-lg font-bold text-gray-900 dark:text-white">Carlos Méndez</h4>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">CEO en TechSolutions</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-0.5 my-2">
+                                <span class="material-symbols-outlined text-primary text-[24px] fill-1">star</span>
+                                <span class="material-symbols-outlined text-primary text-[24px] fill-1">star</span>
+                                <span class="material-symbols-outlined text-primary text-[24px] fill-1">star</span>
+                                <span class="material-symbols-outlined text-primary text-[24px] fill-1">star</span>
+                                <span class="material-symbols-outlined text-primary text-[24px] fill-1">star</span>
+                            </div>
+                            <p class="text-gray-700 dark:text-gray-200 text-lg italic leading-relaxed">
+                                "Raúl entendió perfectamente lo que necesitábamos. Nuestra tasa de conversión aumentó un
+                                40% tras el rediseño de la web. Profesionalismo puro de principio a fin."
+                            </p>
+                        </div>
+                        <div
+                            class="testimonial-glass p-8 rounded-2xl shadow-lg flex flex-col gap-6 opacity-40 scale-90 blur-[2px] hidden lg:flex min-w-[350px] transition-all duration-700 hover:scale-95 hover:opacity-60 cursor-pointer reveal-scale">
+                            <div class="flex items-center gap-4">
+                                <img alt="David Ortiz"
+                                    class="size-12 rounded-full object-cover border-2 border-primary/20"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCllO7_VLJGse7ym7Q-DGulWZpTLAhLm05AnRbjlKu7uZaBUb8YyW6fQGqDK0EYh50gN4dmDlHJYdLYnJmOtyfVN9eKFQggai5oA1Xll10SMWdWC5KpiloTb7-BvaUc_bUCB1o6y3uIqPY4AQ6KySalNju7UMfd92Rh4aSjx5ah6EQxeCGIzmhUEEIzQwPRrgSAu0EkPlxrPA-siyaeD1bmefPrEE5E71VHR4fxPAJUXmbupABY2BfIQx_Xhy7KGBTRCTGm7sysMNwz" />
+                                <div>
+                                    <h4 class="font-bold text-gray-900 dark:text-white">David Ortiz</h4>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Consultor Independiente</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-0.5">
+                                <span class="material-symbols-outlined text-primary text-[20px] fill-1">star</span>
+                                <span class="material-symbols-outlined text-primary text-[20px] fill-1">star</span>
+                                <span class="material-symbols-outlined text-primary text-[20px] fill-1">star</span>
+                                <span class="material-symbols-outlined text-primary text-[20px] fill-1">star</span>
+                                <span class="material-symbols-outlined text-primary text-[20px] fill-1">star</span>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-300 text-sm italic leading-relaxed">
+                                "La optimización SEO y la velocidad de carga son impresionantes. He recibido
+                                felicitaciones de clientes."
+                            </p>
+                        </div>
+                    </div>
+                    <button
+                        class="absolute right-4 z-30 size-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all carousel-glow">
+                        <span class="material-symbols-outlined">chevron_right</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+        <section class="py-24 px-6 bg-white dark:bg-background-dark scroll-mt-24" id="faq">
+            <div class="max-w-[800px] mx-auto reveal-up">
+                <h3 class="text-3xl font-bold mb-12 text-center">Preguntas Frecuentes</h3>
+                <div class="space-y-4">
+                    <details
+                        class="group border border-gray-100 dark:border-white/5 rounded-xl bg-gray-50/50 dark:bg-white/5 reveal-up stagger-1"
+                        open="">
+                        <summary
+                            class="flex items-center justify-between p-6 cursor-pointer list-none font-bold text-lg">
+                            ¿Cuánto tiempo toma desarrollar una web?
+                            <span
+                                class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+                        </summary>
+                        <div class="px-6 pb-6 text-gray-600 dark:text-gray-400 leading-relaxed">
+                            Un proyecto típico suele tomar entre 4 y 6 semanas, dependiendo de la complejidad y las
+                            funcionalidades requeridas. Siempre definimos un cronograma claro al inicio.
+                        </div>
+                    </details>
+                    <details
+                        class="group border border-gray-100 dark:border-white/5 rounded-xl bg-gray-50/50 dark:bg-white/5 reveal-up stagger-2">
+                        <summary
+                            class="flex items-center justify-between p-6 cursor-pointer list-none font-bold text-lg">
+                            ¿El sitio será autogestionable?
+                            <span
+                                class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+                        </summary>
+                        <div class="px-6 pb-6 text-gray-600 dark:text-gray-400 leading-relaxed">
+                            Sí, todos mis desarrollos están preparados para que puedas actualizar textos e imágenes de
+                            forma sencilla sin necesidad de conocimientos técnicos avanzados.
+                        </div>
+                    </details>
+                    <details
+                        class="group border border-gray-100 dark:border-white/5 rounded-xl bg-gray-50/50 dark:bg-white/5 reveal-up stagger-3">
+                        <summary
+                            class="flex items-center justify-between p-6 cursor-pointer list-none font-bold text-lg">
+                            ¿Incluyes servicios de hosting y dominio?
+                            <span
+                                class="material-symbols-outlined group-open:rotate-180 transition-transform">expand_more</span>
+                        </summary>
+                        <div class="px-6 pb-6 text-gray-600 dark:text-gray-400 leading-relaxed">
+                            Te asesoro en la elección del mejor proveedor y me encargo de toda la configuración técnica,
+                            aunque la titularidad y pagos siempre quedan a nombre del cliente.
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </section>
+        <section class="py-20 px-6 reveal-scale">
+            <div
+                class="max-w-[1200px] mx-auto rounded-3xl bg-primary bg-gradient-to-br from-primary to-[#0e44b3] p-12 md:p-20 text-center text-white relative overflow-hidden">
+                <div class="absolute inset-0 opacity-10"
+                    style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 20px 20px;">
+                </div>
+                <div class="relative z-10">
+                    <h2 class="text-4xl md:text-5xl font-black mb-6">¿Listo para llevar tu negocio al siguiente nivel?
+                    </h2>
+                    <p class="text-xl opacity-90 mb-10 max-w-2xl mx-auto">Solicita una auditoría gratuita de tu sitio
+                        actual o cuéntame tu nueva idea. Juntos lo haremos realidad.</p>
+                    <button
+                        class="bg-white text-primary px-10 py-5 rounded-xl text-lg font-black hover:bg-gray-50 transition-all hover:scale-105 shadow-[0_0_20px_rgba(255,255,255,0.4)] neon-btn-glow">
+                        Empieza tu proyecto ahora
+                    </button>
+                </div>
+            </div>
+        </section>
+        <section class="py-24 px-6 bg-white dark:bg-background-dark">
+            <div class="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20">
+                <div class="reveal-left">
+                    <h3 class="text-3xl font-bold mb-6">Hablemos de tu proyecto</h3>
+                    <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
+                        Rellena el formulario y me pondré en contacto contigo en menos de 24 horas para agendar una
+                        primera llamada gratuita.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="size-12 rounded-lg bg-gray-100 dark:bg-white/5 flex items-center justify-center text-primary">
+                                <span class="material-symbols-outlined">mail</span>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-500 font-medium">Email</div>
+                                <div class="font-bold">hola@raulwebdev.com</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="size-12 rounded-lg bg-gray-100 dark:bg-white/5 flex items-center justify-center text-primary">
+                                <span class="material-symbols-outlined">location_on</span>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-500 font-medium">Ubicación</div>
+                                <div class="font-bold">Remoto (Disponible Worldwide)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="bg-gray-50 dark:bg-white/5 p-10 rounded-2xl border border-gray-100 dark:border-white/5 reveal-right">
+                    <form class="space-y-6" id="contactForm"
+                        onsubmit="event.preventDefault(); const btn = document.getElementById('submitBtn'); btn.classList.add('form-btn-loading'); btn.querySelector('.btn-text').classList.add('hidden'); btn.querySelector('.btn-spinner').classList.remove('hidden'); setTimeout(function() { btn.classList.remove('form-btn-loading'); btn.querySelector('.btn-text').classList.remove('hidden'); btn.querySelector('.btn-spinner').classList.add('hidden'); }, 3000);">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-gray-700 dark:text-gray-300">Nombre</label>
+                                <input
+                                    class="w-full bg-white dark:bg-background-dark border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none"
+                                    placeholder="Tu nombre" type="text" />
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-gray-700 dark:text-gray-300">Email</label>
+                                <input
+                                    class="w-full bg-white dark:bg-background-dark border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none"
+                                    placeholder="tu@email.com" type="email" />
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-gray-700 dark:text-gray-300">Mensaje</label>
+                            <textarea
+                                class="w-full bg-white dark:bg-background-dark border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none"
+                                placeholder="Cuéntame un poco sobre tu proyecto..." rows="4"></textarea>
+                        </div>
+                        <button
+                            class="w-full bg-primary text-white py-4 rounded-xl font-bold text-lg hover:bg-primary/90 transition-all neon-btn-glow relative flex items-center justify-center overflow-hidden"
+                            id="submitBtn">
+                            <span class="btn-text">Enviar mensaje</span>
+                            <div class="btn-spinner hidden">
+                                <svg class="animate-spin h-6 w-6 text-white" fill="none" viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                        stroke-width="4"></circle>
+                                    <path class="opacity-75"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                        fill="currentColor"></path>
+                                </svg>
+                            </div>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="py-12 px-6 border-t border-gray-100 dark:border-white/5 bg-background-light dark:bg-background-dark">
+        <div class="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="flex items-center gap-3">
+                <div class="size-6 bg-primary rounded flex items-center justify-center text-white">
+                    <span class="material-symbols-outlined text-[14px]">terminal</span>
+                </div>
+                <h2 class="text-md font-bold tracking-tight">Raúl Web Dev</h2>
+            </div>
+            <div class="text-gray-500 text-sm">
+                © 2024 Raúl Web Dev. Todos los derechos reservados.
+            </div>
+            <div class="flex items-center gap-6">
+                <a class="text-gray-400 hover:text-primary transition-colors" href="#"><span
+                        class="material-symbols-outlined">alternate_email</span></a>
+                <a class="text-gray-400 hover:text-primary transition-colors" href="#"><span
+                        class="material-symbols-outlined">share</span></a>
+                <a class="text-gray-400 hover:text-primary transition-colors" href="#"><span
+                        class="material-symbols-outlined">public</span></a>
+            </div>
+        </div>
+    </footer>
+    <script>
+        // Progress bar: update width based on scroll progress
+        (function () {
+            const bar = document.querySelector('.progress-bar-fill');
+            if (!bar) return;
+            bar.style.transformOrigin = '0% 50%';
+            function updateProgress() {
+                const doc = document.documentElement;
+                const scrollTop = window.scrollY || doc.scrollTop || document.body.scrollTop;
+                const max = doc.scrollHeight - window.innerHeight;
+                const progress = max > 0 ? Math.min(Math.max(scrollTop / max, 0), 1) : 0;
+                bar.style.transform = `scaleX(${progress})`;
+            }
+            updateProgress();
+            window.addEventListener('scroll', updateProgress, { passive: true });
+            window.addEventListener('resize', updateProgress);
+        })();
+
+        // Modal overlay close handler
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
