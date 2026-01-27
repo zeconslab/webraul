@@ -42,24 +42,34 @@
     <header class="fixed top-0 left-0 right-0 z-50 header-container">
         <div class="px-6 py-6 header-scroll-container w-full transition-all duration-300">
             <div
-                class="max-w-[1200px] mx-auto glass-card rounded-xl px-8 py-4 flex items-center justify-between relative transition-all duration-300 header-inner-content border-none shadow-sm overflow-hidden">
+                class="max-w-[1200px] mx-auto glass-card rounded-xl px-8 py-4 flex items-center justify-between relative transition-all duration-300 header-inner-content border-none shadow-sm">
                 <div class="flex items-center gap-3 shrink-0">
                     <div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
                         <span class="material-symbols-outlined text-xl">terminal</span>
                     </div>
                     <h1 class="text-lg font-bold tracking-tight">Raúl Web Dev</h1>
                 </div>
-                <nav class="hidden md:flex items-center gap-8">
-                    <a class="nav-link link-servicios text-sm font-semibold hover:text-primary transition-colors py-1 relative"
-                        href="#servicios">Servicios</a>
-                    <a class="nav-link link-proceso text-sm font-semibold hover:text-primary transition-colors py-1 relative"
-                        href="#proceso">Proceso</a>
-                    <a class="nav-link link-proyectos text-sm font-semibold hover:text-primary transition-colors py-1 relative"
-                        href="#proyectos">Proyectos</a>
-                    <a class="nav-link link-testimonios text-sm font-semibold hover:text-primary transition-colors py-1 relative"
-                        href="#testimonios">Testimonios</a>
-                    <a class="nav-link link-faq text-sm font-semibold hover:text-primary transition-colors py-1 relative"
-                        href="#faq">FAQ</a>
+                <nav class="hidden md:flex items-center gap-6">
+                    <a class="nav-icon-link group" href="#servicios" data-tooltip="Servicios">
+                        <span class="material-symbols-outlined">handyman</span>
+                        <span class="nav-tooltip">Servicios</span>
+                    </a>
+                    <a class="nav-icon-link group" href="#proceso" data-tooltip="Proceso">
+                        <span class="material-symbols-outlined">timeline</span>
+                        <span class="nav-tooltip">Proceso</span>
+                    </a>
+                    <a class="nav-icon-link group" href="#proyectos" data-tooltip="Proyectos">
+                        <span class="material-symbols-outlined">grid_view</span>
+                        <span class="nav-tooltip">Proyectos</span>
+                    </a>
+                    <a class="nav-icon-link group" href="#testimonios" data-tooltip="Testimonios">
+                        <span class="material-symbols-outlined">rate_review</span>
+                        <span class="nav-tooltip">Testimonios</span>
+                    </a>
+                    <a class="nav-icon-link group" href="#faq" data-tooltip="FAQ">
+                        <span class="material-symbols-outlined">help</span>
+                        <span class="nav-tooltip">FAQ</span>
+                    </a>
                 </nav>
                 <div class="flex items-center gap-4 shrink-0">
                     <button
