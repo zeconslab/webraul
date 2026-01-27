@@ -737,3 +737,56 @@
         .header-scroll-container:has(.header-inner-content) .header-inner-content::after {
             opacity: 1;
         }
+
+        /* Animación suave para el acordeón de FAQ */
+        details {
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        details summary {
+            transition: color 0.3s ease;
+        }
+
+        details summary::-webkit-details-marker {
+            display: none;
+        }
+
+        details[open] summary {
+            color: #135bec;
+        }
+
+        details[open] summary .material-symbols-outlined {
+            transform: rotate(180deg);
+        }
+
+        details summary .material-symbols-outlined {
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Animación del contenido usando max-height con ease-in-out */
+        details > div {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.65, 0, 0.35, 1),
+                        padding 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        details[open] > div {
+            max-height: 500px;
+        }
+
+        details:not([open]) > div {
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+        }
+
+        /* Efecto hover mejorado en FAQ */
+        details:hover {
+            border-color: rgba(19, 91, 236, 0.3) !important;
+            box-shadow: 0 2px 12px rgba(19, 91, 236, 0.08);
+        }
+
+        details[open] {
+            border-color: rgba(19, 91, 236, 0.4) !important;
+            box-shadow: 0 4px 16px rgba(19, 91, 236, 0.12);
+        }
