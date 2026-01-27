@@ -1,4 +1,235 @@
 
+        // ======================
+        // LOADING SCREEN
+        // ======================
+        (function() {
+            const loadingScreen = document.getElementById('loadingScreen');
+            const progressBar = document.getElementById('loadingProgressBar');
+            
+            if (!loadingScreen || !progressBar) return;
+            
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += Math.random() * 30;
+                if (progress > 100) progress = 100;
+                progressBar.style.width = progress + '%';
+                
+                if (progress === 100) {
+                    clearInterval(progressInterval);
+                    setTimeout(() => {
+                        loadingScreen.classList.add('loaded');
+                    }, 300);
+                }
+            }, 200);
+            
+            // Asegurar que se oculte después de 3 segundos máximo
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    progress = 100;
+                    progressBar.style.width = '100%';
+                    clearInterval(progressInterval);
+                    setTimeout(() => {
+                        loadingScreen.classList.add('loaded');
+                    }, 300);
+                }, 1000);
+            });
+        })();
+
+        // ======================
+        // CUSTOM CURSOR
+        // ======================
+        (function() {
+            const cursor = document.getElementById('customCursor');
+            const cursorDot = document.getElementById('customCursorDot');
+            
+            if (!cursor || !cursorDot) return;
+            
+            let mouseX = 0, mouseY = 0;
+            let cursorX = 0, cursorY = 0;
+            let dotX = 0, dotY = 0;
+            
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                
+                cursor.classList.add('active');
+                cursorDot.classList.add('active');
+            });
+            
+            // Animación suave del cursor
+            function animateCursor() {
+                // Cursor principal con retraso
+                cursorX += (mouseX - cursorX) * 0.1;
+                cursorY += (mouseY - cursorY) * 0.1;
+                cursor.style.left = cursorX - 20 + 'px';
+                cursor.style.top = cursorY - 20 + 'px';
+                
+                // Punto central sin retraso
+                dotX += (mouseX - dotX) * 0.3;
+                dotY += (mouseY - dotY) * 0.3;
+                cursorDot.style.left = dotX - 4 + 'px';
+                cursorDot.style.top = dotY - 4 + 'px';
+                
+                requestAnimationFrame(animateCursor);
+            }
+            animateCursor();
+            
+            // Efecto hover en elementos interactivos
+            const interactiveElements = document.querySelectorAll('a, button, .ripple, .filter-btn, .project-item');
+            interactiveElements.forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    cursor.classList.add('hover');
+                    cursorDot.classList.add('hover');
+                });
+                el.addEventListener('mouseleave', () => {
+                    cursor.classList.remove('hover');
+                    cursorDot.classList.remove('hover');
+                });
+            });
+        })();
+
+        // ======================
+        // PARTICLES ANIMATION
+        // ======================
+        (function() {
+            const canvas = document.getElementById('particlesCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            let animationId;
+            
+            // Configurar tamaño del canvas
+            function resizeCanvas() {
+                canvas.width = canvas.offsetWidth;
+                canvas.height = canvas.offsetHeight;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            // Clase Partícula
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 3 + 1;
+                    this.speedX = Math.random() * 1 - 0.5;
+                    this.speedY = Math.random() * 1 - 0.5;
+                    this.opacity = Math.random() * 0.5 + 0.2;
+                }
+                
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    
+                    if (this.x > canvas.width) this.x = 0;
+                    if (this.x < 0) this.x = canvas.width;
+                    if (this.y > canvas.height) this.y = 0;
+                    if (this.y < 0) this.y = canvas.height;
+                }
+                
+                draw() {
+                    ctx.fillStyle = `rgba(19, 91, 236, ${this.opacity})`;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            
+            // Crear partículas
+            function createParticles() {
+                const particleCount = Math.floor((canvas.width * canvas.height) / 15000);
+                particles = [];
+                for (let i = 0; i < particleCount; i++) {
+                    particles.push(new Particle());
+                }
+            }
+            createParticles();
+            window.addEventListener('resize', createParticles);
+            
+            // Conectar partículas cercanas
+            function connectParticles() {
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (distance < 100) {
+                            ctx.strokeStyle = `rgba(19, 91, 236, ${0.2 * (1 - distance / 100)})`;
+                            ctx.lineWidth = 1;
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+            
+            // Animar partículas
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                particles.forEach(particle => {
+                    particle.update();
+                    particle.draw();
+                });
+                
+                connectParticles();
+                animationId = requestAnimationFrame(animate);
+            }
+            animate();
+            
+            // Pausar animación cuando no está visible
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    cancelAnimationFrame(animationId);
+                } else {
+                    animate();
+                }
+            });
+        })();
+
+        // ======================
+        // ENHANCED SCROLL REVEAL
+        // ======================
+        (function() {
+            const revealElements = document.querySelectorAll('.reveal-up, .reveal-down, .reveal-left, .reveal-right, .reveal-scale, .reveal-zoom, .reveal-rotate');
+            
+            if (revealElements.length === 0) return;
+            
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -80px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+            
+            revealElements.forEach(el => {
+                observer.observe(el);
+            });
+            
+            // Verificar elementos que ya están en viewport al cargar
+            setTimeout(() => {
+                revealElements.forEach(el => {
+                    const rect = el.getBoundingClientRect();
+                    const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+                    
+                    if (rect.top < windowHeight - 100) {
+                        el.classList.add('visible');
+                    }
+                });
+            }, 100);
+        })();
+
         // Scroll to Top Button
         (function() {
             const scrollToTopBtn = document.getElementById('scrollToTopBtn');

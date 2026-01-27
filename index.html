@@ -92,6 +92,7 @@
     </header>
     <main>
         <section class="relative pt-64 pb-20 px-6 mesh-gradient overflow-hidden min-h-screen" id="hero">
+            <canvas id="particlesCanvas" class="particles-canvas"></canvas>
             <div class="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div class="flex flex-col gap-8 z-10 hero-init">
                     <div
@@ -146,8 +147,9 @@
         </section>
         <section class="py-24 px-6 bg-white dark:bg-background-dark scroll-mt-24 relative overflow-hidden" id="servicios">
             <!-- Fondo decorativo -->
+            <div class="animated-gradient-overlay"></div>
             <div class="parallax-bg absolute inset-0 opacity-[0.03] dark:opacity-[0.02]" 
-                 style="background-image: url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200&q=80'); background-size: cover; background-position: center;"></div>
+                 style="background: linear-gradient(45deg, #135bec 0%, #0e44b3 50%, #135bec 100%); background-size: 200% 200%; animation: gradient-shift 15s ease infinite;"></div>
             <div class="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
             <div class="absolute bottom-0 left-0 w-96 h-96 bg-accent-cyan/5 rounded-full blur-3xl"></div>
             
@@ -449,7 +451,7 @@
         <section class="py-24 px-6 bg-background-light dark:bg-background-dark/50 relative overflow-hidden" id="beneficios">
             <!-- Fondo decorativo mejorado -->
             <div class="parallax-bg absolute inset-0 opacity-[0.03] dark:opacity-[0.02]" 
-                 style="background-image: url('https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=1200&q=80'); background-size: cover; background-position: center;"></div>
+                 style="background: repeating-linear-gradient(45deg, #135bec, #135bec 10px, transparent 10px, transparent 20px);"></div>
             <div class="absolute top-10 right-10 w-80 h-80 bg-primary/10 rounded-full blur-3xl"></div>
             <div class="absolute bottom-10 left-10 w-80 h-80 bg-accent-cyan/10 rounded-full blur-3xl"></div>
             
@@ -517,8 +519,9 @@
         </section>
         <section class="py-24 px-6 scroll-mt-24 relative overflow-hidden" id="proceso">
             <!-- Fondo decorativo -->
+            <div class="animated-gradient-overlay"></div>
             <div class="parallax-bg absolute inset-0 opacity-[0.04] dark:opacity-[0.03]" 
-                 style="background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&q=80'); background-size: cover; background-position: center;"></div>
+                 style="background: radial-gradient(circle at 20% 50%, #135bec 0%, transparent 50%), radial-gradient(circle at 80% 50%, #00f2fe 0%, transparent 50%);"></div>
             <div class="absolute inset-0 bg-gradient-to-b from-background-light/50 via-background-light/80 to-background-light/50 dark:from-background-dark/50 dark:via-background-dark/80 dark:to-background-dark/50"></div>
             
             <div class="max-w-[1200px] mx-auto relative z-10">
@@ -531,7 +534,7 @@
                     <div
                         class="hidden md:block absolute top-12 left-24 right-24 h-0.5 bg-gray-100 dark:bg-white/10 z-0">
                     </div>
-                    <div class="relative z-10 flex flex-col items-center text-center reveal-scale">
+                    <div class="relative z-10 flex flex-col items-center text-center reveal-zoom">
                         <div
                             class="size-24 rounded-full bg-white dark:bg-background-dark border-4 border-primary/10 flex items-center justify-center text-primary mb-6 shadow-xl shadow-primary/5">
                             <div class="size-16 rounded-full bg-primary/10 flex items-center justify-center group">
@@ -543,7 +546,7 @@
                         <p class="text-gray-500 dark:text-gray-400 text-sm">Entendemos tus objetivos, tu competencia y
                             definimos el mapa del sitio.</p>
                     </div>
-                    <div class="relative z-10 flex flex-col items-center text-center reveal-scale">
+                    <div class="relative z-10 flex flex-col items-center text-center reveal-down">
                         <div
                             class="size-24 rounded-full bg-white dark:bg-background-dark border-4 border-primary/10 flex items-center justify-center text-primary mb-6 shadow-xl shadow-primary/5">
                             <div class="size-16 rounded-full bg-primary/10 flex items-center justify-center group">
@@ -555,7 +558,7 @@
                         <p class="text-gray-500 dark:text-gray-400 text-sm">Construcción del sitio con las últimas
                             tecnologías y revisiones constantes.</p>
                     </div>
-                    <div class="relative z-10 flex flex-col items-center text-center reveal-scale">
+                    <div class="relative z-10 flex flex-col items-center text-center reveal-rotate">
                         <div
                             class="size-24 rounded-full bg-white dark:bg-background-dark border-4 border-primary/10 flex items-center justify-center text-primary mb-6 shadow-xl shadow-primary/5">
                             <div class="size-16 rounded-full bg-primary/10 flex items-center justify-center group">
@@ -573,7 +576,7 @@
         <section class="py-24 px-6 bg-background-light dark:bg-background-dark scroll-mt-24 relative overflow-hidden" id="proyectos">
             <!-- Fondo decorativo -->
             <div class="absolute inset-0 opacity-[0.03] dark:opacity-[0.02]" 
-                 style="background-image: url('https://images.unsplash.com/photo-1557821552-17105176677c?w=1200&q=80'); background-size: cover; background-position: center;"></div>
+                 style="background: linear-gradient(90deg, #135bec 1px, transparent 1px), linear-gradient(0deg, #135bec 1px, transparent 1px); background-size: 50px 50px;"></div>
             <div class="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-pulse"></div>
             <div class="absolute bottom-20 right-10 w-72 h-72 bg-accent-cyan/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
             
@@ -664,7 +667,7 @@
                         class="project-item group relative aspect-video rounded-2xl overflow-hidden shadow-xl border border-gray-100 dark:border-white/5 cursor-pointer reveal-scale">
                         <img alt="Agency Landing"
                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                            src="https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800&q=80" />
+                            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 450'%3E%3Cdefs%3E%3ClinearGradient id='g1' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23667eea;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23764ba2;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='800' height='450' fill='url(%23g1)'/%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='48' fill='white' text-anchor='middle' dy='.3em'%3ECreative Agency%3C/text%3E%3C/svg%3E" />
                         <div
                             class="absolute inset-0 portfolio-glass-overlay flex flex-col items-center justify-center p-8 text-center opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
                             <h4 class="text-2xl font-bold text-white mb-2">Creative Agency</h4>
@@ -680,7 +683,7 @@
                         class="project-item group relative aspect-video rounded-2xl overflow-hidden shadow-xl border border-gray-100 dark:border-white/5 cursor-pointer reveal-scale">
                         <img alt="Tech Store"
                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                            src="https://images.unsplash.com/photo-1498049794561-7780e7231661?w=800&q=80" />
+                            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 450'%3E%3Cdefs%3E%3ClinearGradient id='g2' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%2311998e;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%2338ef7d;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='800' height='450' fill='url(%23g2)'/%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='48' fill='white' text-anchor='middle' dy='.3em'%3ETech Store%3C/text%3E%3C/svg%3E" />
                         <div
                             class="absolute inset-0 portfolio-glass-overlay flex flex-col items-center justify-center p-8 text-center opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
                             <h4 class="text-2xl font-bold text-white mb-2">Tech Gadgets Pro</h4>
@@ -696,7 +699,7 @@
                         class="project-item group relative aspect-video rounded-2xl overflow-hidden shadow-xl border border-gray-100 dark:border-white/5 cursor-pointer reveal-scale">
                         <img alt="Law Firm"
                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                            src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&q=80" />
+                            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 450'%3E%3Cdefs%3E%3ClinearGradient id='g3' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%231e3a8a;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%233b82f6;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='800' height='450' fill='url(%23g3)'/%3E%3Ctext x='50%25' y='50%25' font-family='Arial' font-size='48' fill='white' text-anchor='middle' dy='.3em'%3ELaw Firm%3C/text%3E%3C/svg%3E" />
                         <div
                             class="absolute inset-0 portfolio-glass-overlay flex flex-col items-center justify-center p-8 text-center opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
                             <h4 class="text-2xl font-bold text-white mb-2">Bufete Legal Pro</h4>
@@ -813,7 +816,7 @@
         <section class="py-24 px-6 bg-white dark:bg-background-dark scroll-mt-24 relative overflow-hidden" id="faq">
             <!-- Fondo decorativo -->
             <div class="absolute inset-0 opacity-[0.02] dark:opacity-[0.015]" 
-                 style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1200&q=80'); background-size: cover; background-position: center;"></div>
+                 style="background: radial-gradient(circle, #135bec 1px, transparent 1px); background-size: 30px 30px;"></div>
             <div class="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
             <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-accent-cyan/5 rounded-full blur-3xl"></div>
             

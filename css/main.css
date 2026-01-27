@@ -4,6 +4,161 @@
             }
         }
 
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(135deg, #135bec 0%, #0e44b3 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .loading-screen.loaded {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loading-content {
+            text-align: center;
+            color: white;
+        }
+
+        .loading-logo {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 30px;
+        }
+
+        .loading-circle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: loading-spin 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+        }
+
+        .loading-circle-2 {
+            width: 70%;
+            height: 70%;
+            top: 15%;
+            left: 15%;
+            animation-duration: 1.2s;
+            animation-direction: reverse;
+        }
+
+        .loading-circle-3 {
+            width: 40%;
+            height: 40%;
+            top: 30%;
+            left: 30%;
+            animation-duration: 0.9s;
+        }
+
+        @keyframes loading-spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: 0.1em;
+            animation: loading-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes loading-pulse {
+            0%, 100% {
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .loading-progress {
+            width: 200px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .loading-progress-bar {
+            height: 100%;
+            background: white;
+            border-radius: 2px;
+            width: 0;
+            transition: width 0.3s ease;
+        }
+
+        /* Custom Cursor */
+        .custom-cursor {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            border: 2px solid #135bec;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transition: transform 0.15s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .custom-cursor.active {
+            opacity: 1;
+        }
+
+        .custom-cursor.hover {
+            transform: scale(1.5);
+            background: rgba(19, 91, 236, 0.1);
+        }
+
+        .custom-cursor-dot {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: #135bec;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .custom-cursor-dot.active {
+            opacity: 1;
+        }
+
+        .custom-cursor-dot.hover {
+            transform: scale(0);
+        }
+
+        /* Particles Canvas */
+        .particles-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
         .mesh-gradient {
             background-color: #ffffff;
             background-image:
@@ -18,6 +173,43 @@
                 radial-gradient(at 0% 0%, rgba(19, 91, 236, 0.2) 0px, transparent 50%),
                 radial-gradient(at 100% 0%, rgba(19, 91, 236, 0.1) 0px, transparent 50%),
                 radial-gradient(at 50% 100%, rgba(19, 91, 236, 0.05) 0px, transparent 50%);
+        }
+
+        /* Animated Gradients */
+        .animated-gradient-bg {
+            background: linear-gradient(-45deg, #135bec, #0e44b3, #00f2fe, #135bec);
+            background-size: 400% 400%;
+            animation: gradient-shift 15s ease infinite;
+        }
+
+        @keyframes gradient-shift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .animated-gradient-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(45deg, transparent, rgba(19, 91, 236, 0.1), transparent);
+            background-size: 200% 200%;
+            animation: gradient-move 8s ease infinite;
+            pointer-events: none;
+        }
+
+        @keyframes gradient-move {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
         }
 
         .glass-card {
@@ -334,27 +526,104 @@
         }
 
         .reveal-up {
-            animation: fade-in-up both;
-            animation-timeline: view();
-            animation-range: entry 10% cover 30%;
+            opacity: 0 !important;
+            transform: translateY(50px) !important;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .reveal-up.visible {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
+
+        .reveal-down {
+            opacity: 0 !important;
+            transform: translateY(-50px) !important;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .reveal-down.visible {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
         }
 
         .reveal-left {
-            animation: slide-in-left both;
-            animation-timeline: view();
-            animation-range: entry 10% cover 30%;
+            opacity: 0 !important;
+            transform: translateX(-50px) !important;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .reveal-left.visible {
+            opacity: 1 !important;
+            transform: translateX(0) !important;
         }
 
         .reveal-right {
-            animation: slide-in-right both;
-            animation-timeline: view();
-            animation-range: entry 10% cover 30%;
+            opacity: 0 !important;
+            transform: translateX(50px) !important;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .reveal-right.visible {
+            opacity: 1 !important;
+            transform: translateX(0) !important;
         }
 
         .reveal-scale {
-            animation: scale-up-fade both;
-            animation-timeline: view();
-            animation-range: entry 10% cover 30%;
+            opacity: 0 !important;
+            transform: scale(0.9) !important;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .reveal-scale.visible {
+            opacity: 1 !important;
+            transform: scale(1) !important;
+        }
+
+        .reveal-zoom {
+            opacity: 0 !important;
+            transform: scale(0.7) !important;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .reveal-zoom.visible {
+            opacity: 1 !important;
+            transform: scale(1) !important;
+        }
+
+        .reveal-rotate {
+            opacity: 0 !important;
+            transform: rotate(-10deg) scale(0.9) !important;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .reveal-rotate.visible {
+            opacity: 1 !important;
+            transform: rotate(0deg) scale(1) !important;
+        }
+
+        /* Stagger delays for sequential animations */
+        .stagger-1 {
+            transition-delay: 0.1s;
+        }
+
+        .stagger-2 {
+            transition-delay: 0.2s;
+        }
+
+        .stagger-3 {
+            transition-delay: 0.3s;
+        }
+
+        .stagger-4 {
+            transition-delay: 0.4s;
         }
 
         .hero-init {
@@ -631,6 +900,45 @@
             to {
                 opacity: 1;
                 transform: scale(1) translateY(0);
+                filter: blur(0);
+            }
+        }
+
+        @keyframes fade-in-down {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+                filter: blur(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                filter: blur(0);
+            }
+        }
+
+        @keyframes zoom-in-fade {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+                filter: blur(10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+                filter: blur(0);
+            }
+        }
+
+        @keyframes rotate-in-fade {
+            from {
+                opacity: 0;
+                transform: rotate(-15deg) scale(0.8);
+                filter: blur(6px);
+            }
+            to {
+                opacity: 1;
+                transform: rotate(0deg) scale(1);
                 filter: blur(0);
             }
         }
