@@ -763,12 +763,23 @@
         }
 
         /* Modal */
+        /* Hidden state controlled via opacity/visibility to allow smooth transitions */
         #projectModal {
-            display: none;
+            display: flex; /* keep layout; hide via opacity/visibility so transitions work */
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transform: translateY(8px) scale(0.995);
+            transition: opacity 260ms cubic-bezier(0.2, 0.9, 0.2, 1), transform 260ms cubic-bezier(0.2, 0.9, 0.2, 1);
         }
-        
+
         #projectModal.modal-active {
-            display: flex !important;
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transform: translateY(0) scale(1);
         }
 
         .glass-card {
