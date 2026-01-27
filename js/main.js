@@ -936,6 +936,38 @@
             }
         });
 
+        // Observar cambios en la clase del modal para bloquear el scroll cuando esté abierto
+        (function() {
+            const modal = document.getElementById('projectModal');
+            if (!modal) return;
+
+            function applyBodyLock(isLocked) {
+                if (isLocked) {
+                    // Guardar scroll position y bloquear
+                    document.documentElement.style.overflow = 'hidden';
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    // Restaurar
+                    document.documentElement.style.overflow = '';
+                    document.body.style.overflow = '';
+                }
+            }
+
+            // Inicial
+            applyBodyLock(modal.classList.contains('modal-active') || modal.classList.contains('active'));
+
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach(m => {
+                    if (m.attributeName === 'class') {
+                        const isOpen = modal.classList.contains('modal-active') || modal.classList.contains('active');
+                        applyBodyLock(isOpen);
+                    }
+                });
+            });
+
+            observer.observe(modal, { attributes: true, attributeFilter: ['class'] });
+        })();
+
         // Validación de Formulario de Contacto
         (function() {
             const form = document.getElementById('contactForm');
