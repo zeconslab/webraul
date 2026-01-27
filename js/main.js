@@ -782,21 +782,21 @@
                 tech: 'HTML5, GSAP, Three.js',
                 description: 'Landing page innovadora con animaciones 3D, efectos parallax y experiencias interactivas inmersivas.',
                 features: ['Animaciones 3D', 'WebGL effects', 'Scroll interactivo', 'Performance optimizado'],
-                image: 'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800&q=80'
+                image: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"%3E%3Cdefs%3E%3ClinearGradient id="ag1" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%239333ea;stop-opacity:1" /%3E%3Cstop offset="50%25" style="stop-color:%23ec4899;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%23fb923c;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="800" height="450" fill="url(%23ag1)"/%3E%3Ctext x="50%25" y="45%25" font-family="Arial" font-size="80" text-anchor="middle"%3E%E2%9C%A8%3C/text%3E%3Ctext x="50%25" y="65%25" font-family="Arial" font-size="32" fill="white" text-anchor="middle" font-weight="bold"%3ECreative Agency%3C/text%3E%3C/svg%3E'
             },
             techstore: {
                 title: 'Tech Gadgets Pro',
                 tech: 'WooCommerce, WordPress',
                 description: 'Tienda online especializada en tecnología con comparador de productos y reseñas verificadas.',
                 features: ['Comparador', 'Reseñas verificadas', 'Soporte live chat', 'Envío tracking'],
-                image: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=800&q=80'
+                image: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"%3E%3Cdefs%3E%3ClinearGradient id="tg1" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%2310b981;stop-opacity:1" /%3E%3Cstop offset="50%25" style="stop-color:%2314b8a6;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%2306b6d4;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="800" height="450" fill="url(%23tg1)"/%3E%3Ctext x="50%25" y="45%25" font-family="Arial" font-size="80" text-anchor="middle"%3E%F0%9F%92%BB%3C/text%3E%3Ctext x="50%25" y="65%25" font-family="Arial" font-size="32" fill="white" text-anchor="middle" font-weight="bold"%3ETech Gadgets Pro%3C/text%3E%3C/svg%3E'
             },
             lawfirm: {
                 title: 'Bufete Legal Pro',
                 tech: 'PHP, Laravel',
                 description: 'Portal corporativo para bufete de abogados con sistema de citas online y gestión documental.',
                 features: ['Reserva de citas', 'Gestión documental', 'Chat consultas', 'Blog legal'],
-                image: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&q=80'
+                image: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"%3E%3Cdefs%3E%3ClinearGradient id="lf1" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%231e3a8a;stop-opacity:1" /%3E%3Cstop offset="50%25" style="stop-color:%232563eb;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%233b82f6;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="800" height="450" fill="url(%23lf1)"/%3E%3Ctext x="50%25" y="45%25" font-family="Arial" font-size="80" text-anchor="middle"%3E%E2%9A%96%EF%B8%8F%3C/text%3E%3Ctext x="50%25" y="65%25" font-family="Arial" font-size="32" fill="white" text-anchor="middle" font-weight="bold"%3EBufete Legal Pro%3C/text%3E%3C/svg%3E'
             }
         };
 
@@ -808,30 +808,57 @@
             if (!project) return;
             
             content.innerHTML = `
-                <div class="space-y-6">
-                    <img src="${project.image}" alt="${project.title}" class="w-full aspect-video object-cover rounded-2xl shadow-xl">
-                    <div class="space-y-4">
-                        <h3 class="text-3xl md:text-4xl font-black">${project.title}</h3>
-                        <p class="text-primary font-bold">${project.tech}</p>
-                        <p class="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">${project.description}</p>
-                        <div class="space-y-3">
-                            <h4 class="font-bold text-xl">Características principales:</h4>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                    <!-- Imagen a la izquierda -->
+                    <div class="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-100 dark:border-white/10 sticky top-0">
+                        <img src="${project.image}" alt="${project.title}" class="w-full aspect-video object-cover">
+                        <div class="absolute top-4 right-4">
+                            <span class="px-4 py-2 bg-white/90 dark:bg-black/70 backdrop-blur-sm rounded-full text-xs font-bold text-primary">
+                                ${project.tech.split(',')[0]}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Información a la derecha -->
+                    <div class="space-y-6">
+                        <div>
+                            <h3 class="text-3xl lg:text-4xl font-black mb-3 bg-gradient-to-r from-primary to-accent-cyan bg-clip-text text-transparent">
+                                ${project.title}
+                            </h3>
+                            <div class="flex flex-wrap gap-2">
+                                ${project.tech.split(',').map(tech => `
+                                    <span class="px-3 py-1.5 bg-primary/10 text-primary text-xs font-bold rounded-lg">${tech.trim()}</span>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <p class="text-base text-gray-600 dark:text-gray-300 leading-relaxed">
+                            ${project.description}
+                        </p>
+                        
+                        <div class="bg-gray-50 dark:bg-white/5 rounded-xl p-5 border border-gray-100 dark:border-white/10">
+                            <h4 class="font-bold text-lg mb-4 flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary">stars</span>
+                                Características principales
+                            </h4>
+                            <div class="space-y-3">
                                 ${project.features.map(feature => `
-                                    <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-                                        <span class="material-symbols-outlined text-primary text-xl">check_circle</span>
-                                        <span>${feature}</span>
+                                    <div class="flex items-start gap-3 text-gray-700 dark:text-gray-300">
+                                        <span class="material-symbols-outlined text-primary text-xl shrink-0">check_circle</span>
+                                        <span class="font-medium text-sm">${feature}</span>
                                     </div>
                                 `).join('')}
                             </div>
                         </div>
-                        <div class="flex gap-4 pt-4">
-                            <button class="bg-primary text-white px-8 py-3 rounded-xl font-bold hover:scale-105 transition-all neon-btn-glow flex items-center gap-2">
-                                Ver Demo
+                        
+                        <div class="flex flex-col gap-3 pt-4">
+                            <button class="w-full bg-primary text-white px-6 py-4 rounded-xl font-bold hover:scale-[1.02] active:scale-[0.98] transition-all neon-btn-glow flex items-center justify-center gap-2 shadow-lg shadow-primary/20">
                                 <span class="material-symbols-outlined">open_in_new</span>
+                                Ver Proyecto Completo
                             </button>
-                            <button class="border-2 border-primary text-primary px-8 py-3 rounded-xl font-bold hover:scale-105 transition-all">
-                                Contactar
+                            <button class="w-full border-2 border-primary text-primary px-6 py-4 rounded-xl font-bold hover:bg-primary hover:text-white transition-all flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined">chat</span>
+                                Contactar sobre este proyecto
                             </button>
                         </div>
                     </div>

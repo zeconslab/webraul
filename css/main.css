@@ -1496,9 +1496,9 @@
         }
 
         /* Efecto de resplandor pulsante */
-        .glow-pulse {
+        /* .glow-pulse {
             animation: glow-pulse-anim 2s ease-in-out infinite;
-        }
+        } */
 
         @keyframes glow-pulse-anim {
             0%, 100% {
