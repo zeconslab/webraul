@@ -1,4 +1,33 @@
 
+        // Scroll to Top Button
+        (function() {
+            const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+            if (!scrollToTopBtn) return;
+            
+            // Mostrar/ocultar botón basado en la posición del scroll
+            function toggleScrollButton() {
+                if (window.pageYOffset > 300) {
+                    scrollToTopBtn.classList.add('show');
+                } else {
+                    scrollToTopBtn.classList.remove('show');
+                }
+            }
+            
+            // Hacer scroll hacia arriba al hacer clic
+            scrollToTopBtn.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // Escuchar el evento de scroll
+            window.addEventListener('scroll', toggleScrollButton, { passive: true });
+            
+            // Verificar posición inicial
+            toggleScrollButton();
+        })();
+
         // Progress bar: update width based on scroll progress
         (function () {
             const bar = document.querySelector('.progress-bar-fill');
