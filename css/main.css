@@ -1213,3 +1213,43 @@
         .will-animate {
             will-change: transform, opacity;
         }
+
+        /* Botón de WhatsApp flotante */
+        .whatsapp-btn {
+            animation: float-shadow 3s ease-in-out infinite;
+        }
+
+        .whatsapp-btn:hover {
+            animation-play-state: paused;
+        }
+
+        @media (max-width: 768px) {
+            .whatsapp-btn {
+                width: 3.5rem;
+                height: 3.5rem;
+                bottom: 6rem;
+                right: 1.5rem;
+            }
+            
+            .whatsapp-btn svg {
+                width: 1.5rem;
+                height: 1.5rem;
+            }
+        }
+
+        /* Estilos para transiciones de filtros de proyectos */
+        .project-item {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        /* Animación para inputs con error */
+        input.border-red-500,
+        textarea.border-red-500 {
+            animation: shake 0.3s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
