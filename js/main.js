@@ -761,42 +761,61 @@
                 tech: 'React, Next.js, Tailwind CSS',
                 description: 'Una plataforma fintech completa con gestión de cuentas, transferencias y análisis financiero en tiempo real.',
                 features: ['Dashboard interactivo', 'Transferencias seguras', 'Análisis de gastos', 'Multi-currency'],
-                image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDTzivLt9EbuH3ibaRyZ-4aDZ9aUpEWu5dTLM40YrPqdVcrxQBeEzyde2skiA1OhusDbXg54neDUbNOJLpHpqFS4myUO1Y6PI9TpfVRsH9gWUu7CtXllWY89P4Cdwse3MHbx6mqODquEqd2oe46ujFt0lV-FbINxUwDpvUJshA5tMRCZS0p0mt4IXquvOPT7-3PoTle9ZD5gkBWEnwgWt_-JpB2hwj8Jm0cAuq8Bn2JlAgPhQYEOtGgo8m77dQqRsddBQIbiw4svXOp'
+                images: [
+                    'https://lh3.googleusercontent.com/aida-public/AB6AXuDTzivLt9EbuH3ibaRyZ-4aDZ9aUpEWu5dTLM40YrPqdVcrxQBeEzyde2skiA1OhusDbXg54neDUbNOJLpHpqFS4myUO1Y6PI9TpfVRsH9gWUu7CtXllWY89P4Cdwse3MHbx6mqODquEqd2oe46ujFt0lV-FbINxUwDpvUJshA5tMRCZS0p0mt4IXquvOPT7-3PoTle9ZD5gkBWEnwgWt_-JpB2hwj8Jm0cAuq8Bn2JlAgPhQYEOtGgo8m77dQqRsddBQIbiw4svXOp',
+                    'https://lh3.googleusercontent.com/aida-public/AB6AXuDGolLWy0tYbz1ePHgY2UK_8sfzsNbp0PhkR2V6qxv1NIySvZKWJV_HRK4aR1o-5ApTso1IM28RT5iMLHRn4C973GfdJVg3WCwM9btGE-i-zQI6ynPX6SOAhbRBrpinnfERKnVNYuq_OxVjlCylvBET1jyt4kYrxdy9z7KJ6a8-a7Zu9LHVtGTdHTjd9gubMudoR-7RDRduo9WW4wuyWSXYjkdFRRPah-16sLM0Q92pWR-A6OadcteS9Ei2-vIiWuCcgu7vb6SBRcb8'
+                ]
             },
             fashion: {
                 title: 'Fashion Store Hub',
                 tech: 'Headless Shopify, Vue.js',
                 description: 'E-commerce de moda con experiencia de compra personalizada y sistema de recomendaciones basado en IA.',
                 features: ['Carrito inteligente', 'Búsqueda visual', 'Wish list', 'Checkout optimizado'],
-                image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDAFOhakrl1NjgFnMWe7gHoJhOErMupU9Dc0g0iPEj6CfSA5PG1jKD0npoNLuUNNNi2qoQcN6NkOfeUTbz4-bAzsDnvd5SCBfG_vEmx5g26N11kkGd4Kf-3PYZ7qvEWvPAX4A40iYdr4K7QjrRvTfpU6RN9I0DMYhWBmqcv_Anqd4KFLHPth4HNSuiNjBxpWUUru3VS937frLvfp_aVYrTWn0LlJ2yQrMsD8YbhqX2iLDr5PRN8m0DVgm_2De6dRmmDaHIMJi_j8LzK'
+                images: [
+                    'https://lh3.googleusercontent.com/aida-public/AB6AXuDAFOhakrl1NjgFnMWe7gHoJhOErMupU9Dc0g0iPEj6CfSA5PG1jKD0npoNLuUNNNi2qoQcN6NkOfeUTbz4-bAzsDnvd5SCBfG_vEmx5g26N11kkGd4Kf-3PYZ7qvEWvPAX4A40iYdr4K7QjrRvTfpU6RN9I0DMYhWBmqcv_Anqd4KFLHPth4HNSuiNjBxpWUUru3VS937frLvfp_aVYrTWn0LlJ2yQrMsD8YbhqX2iLDr5PRN8m0DVgm_2De6dRmmDaHIMJi_j8LzK',
+                    'https://lh3.googleusercontent.com/aida-public/AB6AXuDGolLWy0tYbz1ePHgY2UK_8sfzsNbp0PhkR2V6qxv1NIySvZKWJV_HRK4aR1o-5ApTso1IM28RT5iMLHRn4C973GfdJVg3WCwM9btGE-i-zQI6ynPX6SOAhbRBrpinnfERKnVNYuq_OxVjlCylvBET1jyt4kYrxdy9z7KJ6a8-a7Zu9LHVtGTdHTjd9gubMudoR-7RDRduo9WW4wuyWSXYjkdFRRPah-16sLM0Q92pWR-A6OadcteS9Ei2-vIiWuCcgu7vb6SBRcb8'
+                ]
             },
             inmopremium: {
                 title: 'InmoPremium Pro',
                 tech: 'Astro, TypeScript, Sanity CMS',
                 description: 'Portal inmobiliario con búsqueda avanzada, tours virtuales 360° y sistema de gestión de propiedades.',
                 features: ['Tours virtuales', 'Geolocalización', 'Filtros avanzados', 'CRM integrado'],
-                image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAxEmJjZvDOsCKQTeivaqQhI3Sgc6t6i6nS1XXvy1F7DDCSOTNzEoY1qHb1A5UgT85bT6h7P8GeXoHsNDl-WE7XwuepgRoiRPpg5uiC-nvEMT50q_lv6c03n2q8_6EVvz4KFqjODo3aacN26_u3ILij5swWdW_fONOFejdCyuj6PmifJdo08bpX9Biecpafd58f2Mpg5VKMj3HUjw_cwHb7NH-G4BesdE0kT7MtVDeAAZlurhmwIS6TAqCnK3MBHnzS_LkF_RfOUuWH'
+                images: [
+                    'https://lh3.googleusercontent.com/aida-public/AB6AXuAxEmJjZvDOsCKQTeivaqQhI3Sgc6t6i6nS1XXvy1F7DDCSOTNzEoY1qHb1A5UgT85bT6h7P8GeXoHsNDl-WE7XwuepgRoiRPpg5uiC-nvEMT50q_lv6c03n2q8_6EVvz4KFqjODo3aacN26_u3ILij5swWdW_fONOFejdCyuj6PmifJdo08bpX9Biecpafd58f2Mpg5VKMj3HUjw_cwHb7NH-G4BesdE0kT7MtVDeAAZlurhmwIS6TAqCnK3MBHnzS_LkF_RfOUuWH',
+                    'https://lh3.googleusercontent.com/aida-public/AB6AXuDTzivLt9EbuH3ibaRyZ-4aDZ9aUpEWu5dTLM40YrPqdVcrxQBeEzyde2skiA1OhusDbXg54neDUbNOJLpHpqFS4myUO1Y6PI9TpfVRsH9gWUu7CtXllWY89P4Cdwse3MHbx6mqODquEqd2oe46ujFt0lV-FbINxUwDpvUJshA5tMRCZS0p0mt4IXquvOPT7-3PoTle9ZD5gkBWEnwgWt_-JpB2hwj8Jm0cAuq8Bn2JlAgPhQYEOtGgo8m77dQqRsddBQIbiw4svXOp',
+                    'https://lh3.googleusercontent.com/aida-public/AB6AXuDAFOhakrl1NjgFnMWe7gHoJhOErMupU9Dc0g0iPEj6CfSA5PG1jKD0npoNLuUNNNi2qoQcN6NkOfeUTbz4-bAzsDnvd5SCBfG_vEmx5g26N11kkGd4Kf-3PYZ7qvEWvPAX4A40iYdr4K7QjrRvTfpU6RN9I0DMYhWBmqcv_Anqd4KFLHPth4HNSuiNjBxpWUUru3VS937frLvfp_aVYrTWn0LlJ2yQrMsD8YbhqX2iLDr5PRN8m0DVgm_2De6dRmmDaHIMJi_j8LzK'
+                ]
             },
             agency: {
                 title: 'Creative Agency',
                 tech: 'HTML5, GSAP, Three.js',
                 description: 'Landing page innovadora con animaciones 3D, efectos parallax y experiencias interactivas inmersivas.',
                 features: ['Animaciones 3D', 'WebGL effects', 'Scroll interactivo', 'Performance optimizado'],
-                image: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"%3E%3Cdefs%3E%3ClinearGradient id="ag1" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%239333ea;stop-opacity:1" /%3E%3Cstop offset="50%25" style="stop-color:%23ec4899;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%23fb923c;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="800" height="450" fill="url(%23ag1)"/%3E%3Ctext x="50%25" y="45%25" font-family="Arial" font-size="80" text-anchor="middle"%3E%E2%9C%A8%3C/text%3E%3Ctext x="50%25" y="65%25" font-family="Arial" font-size="32" fill="white" text-anchor="middle" font-weight="bold"%3ECreative Agency%3C/text%3E%3C/svg%3E'
+                images: [
+                    'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"%3E%3Cdefs%3E%3ClinearGradient id="ag1" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%239333ea;stop-opacity:1" /%3E%3Cstop offset="50%25" style="stop-color:%23ec4899;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%23fb923c;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="800" height="450" fill="url(%23ag1)"/%3E%3Ctext x="50%25" y="45%25" font-family="Arial" font-size="80" text-anchor="middle"%3E%E2%9C%A8%3C/text%3E%3Ctext x="50%25" y="65%25" font-family="Arial" font-size="32" fill="white" text-anchor="middle" font-weight="bold"%3ECreative Agency%3C/text%3E%3C/svg%3E',
+                    'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"%3E%3Cdefs%3E%3ClinearGradient id="ag2" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%23ec4899;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%23fb923c;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="800" height="450" fill="url(%23ag2)"/%3E%3Ctext x="50%25" y="50%25" font-family="Arial" font-size="48" fill="white" text-anchor="middle" font-weight="bold"%3E3D Animations%3C/text%3E%3C/svg%3E'
+                ]
             },
             techstore: {
                 title: 'Tech Gadgets Pro',
                 tech: 'WooCommerce, WordPress',
                 description: 'Tienda online especializada en tecnología con comparador de productos y reseñas verificadas.',
                 features: ['Comparador', 'Reseñas verificadas', 'Soporte live chat', 'Envío tracking'],
-                image: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"%3E%3Cdefs%3E%3ClinearGradient id="tg1" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%2310b981;stop-opacity:1" /%3E%3Cstop offset="50%25" style="stop-color:%2314b8a6;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%2306b6d4;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="800" height="450" fill="url(%23tg1)"/%3E%3Ctext x="50%25" y="45%25" font-family="Arial" font-size="80" text-anchor="middle"%3E%F0%9F%92%BB%3C/text%3E%3Ctext x="50%25" y="65%25" font-family="Arial" font-size="32" fill="white" text-anchor="middle" font-weight="bold"%3ETech Gadgets Pro%3C/text%3E%3C/svg%3E'
+                images: [
+                    'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"%3E%3Cdefs%3E%3ClinearGradient id="tg1" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%2310b981;stop-opacity:1" /%3E%3Cstop offset="50%25" style="stop-color:%2314b8a6;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%2306b6d4;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="800" height="450" fill="url(%23tg1)"/%3E%3Ctext x="50%25" y="45%25" font-family="Arial" font-size="80" text-anchor="middle"%3E%F0%9F%92%BB%3C/text%3E%3Ctext x="50%25" y="65%25" font-family="Arial" font-size="32" fill="white" text-anchor="middle" font-weight="bold"%3ETech Gadgets Pro%3C/text%3E%3C/svg%3E',
+                    'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"%3E%3Cdefs%3E%3ClinearGradient id="tg2" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%2314b8a6;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%2306b6d4;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="800" height="450" fill="url(%23tg2)"/%3E%3Ctext x="50%25" y="50%25" font-family="Arial" font-size="48" fill="white" text-anchor="middle" font-weight="bold"%3EE-commerce%3C/text%3E%3C/svg%3E'
+                ]
             },
             lawfirm: {
                 title: 'Bufete Legal Pro',
                 tech: 'PHP, Laravel',
                 description: 'Portal corporativo para bufete de abogados con sistema de citas online y gestión documental.',
                 features: ['Reserva de citas', 'Gestión documental', 'Chat consultas', 'Blog legal'],
-                image: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"%3E%3Cdefs%3E%3ClinearGradient id="lf1" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%231e3a8a;stop-opacity:1" /%3E%3Cstop offset="50%25" style="stop-color:%232563eb;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%233b82f6;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="800" height="450" fill="url(%23lf1)"/%3E%3Ctext x="50%25" y="45%25" font-family="Arial" font-size="80" text-anchor="middle"%3E%E2%9A%96%EF%B8%8F%3C/text%3E%3Ctext x="50%25" y="65%25" font-family="Arial" font-size="32" fill="white" text-anchor="middle" font-weight="bold"%3EBufete Legal Pro%3C/text%3E%3C/svg%3E'
+                images: [
+                    'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"%3E%3Cdefs%3E%3ClinearGradient id="lf1" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%231e3a8a;stop-opacity:1" /%3E%3Cstop offset="50%25" style="stop-color:%232563eb;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%233b82f6;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="800" height="450" fill="url(%23lf1)"/%3E%3Ctext x="50%25" y="45%25" font-family="Arial" font-size="80" text-anchor="middle"%3E%E2%9A%96%EF%B8%8F%3C/text%3E%3Ctext x="50%25" y="65%25" font-family="Arial" font-size="32" fill="white" text-anchor="middle" font-weight="bold"%3EBufete Legal Pro%3C/text%3E%3C/svg%3E',
+                    'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"%3E%3Cdefs%3E%3ClinearGradient id="lf2" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%232563eb;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%233b82f6;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="800" height="450" fill="url(%23lf2)"/%3E%3Ctext x="50%25" y="50%25" font-family="Arial" font-size="48" fill="white" text-anchor="middle" font-weight="bold"%3ELegal Services%3C/text%3E%3C/svg%3E'
+                ]
             }
         };
 
@@ -807,56 +826,81 @@
             
             if (!project) return;
             
+            // Bloquear scroll del body
+            document.body.style.overflow = 'hidden';
+            
             content.innerHTML = `
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-                    <!-- Imagen a la izquierda -->
-                    <div class="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-100 dark:border-white/10 sticky top-0">
-                        <img src="${project.image}" alt="${project.title}" class="w-full aspect-video object-cover">
-                        <div class="absolute top-4 right-4">
-                            <span class="px-4 py-2 bg-white/90 dark:bg-black/70 backdrop-blur-sm rounded-full text-xs font-bold text-primary">
-                                ${project.tech.split(',')[0]}
-                            </span>
-                        </div>
+                <div class="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-6 items-start h-full">
+                    <!-- Galería de imágenes a la izquierda -->
+                    <div class="space-y-3 flex flex-col max-h-full">
+                        ${project.images.map((img, index) => `
+                            <div class="relative group rounded-xl overflow-hidden shadow-md border border-gray-100 dark:border-white/10 hover:shadow-xl transition-all duration-300">
+                                <img src="${img}" alt="${project.title} - Vista ${index + 1}" class="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-500">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                ${index === 0 ? `
+                                    <div class="absolute top-4 right-4">
+                                        <span class="px-4 py-2 bg-white/95 dark:bg-black/80 backdrop-blur-md rounded-full text-xs font-bold text-primary shadow-lg">
+                                            ${project.tech.split(',')[0]}
+                                        </span>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `).join('')}
                     </div>
                     
                     <!-- Información a la derecha -->
-                    <div class="space-y-6">
-                        <div>
-                            <h3 class="text-3xl lg:text-4xl font-black mb-3 bg-gradient-to-r from-primary to-accent-cyan bg-clip-text text-transparent">
+                    <div class="space-y-4 overflow-y-auto max-h-[calc(70vh-5rem)] pr-2">
+                        <!-- Header con título y tech stack -->
+                        <div class="relative">
+                            <div class="absolute -left-4 top-0 w-1 h-full bg-primary rounded-full"></div>
+                            <h3 class="text-2xl lg:text-3xl font-black mb-3 text-gray-900 dark:text-white leading-tight">
                                 ${project.title}
                             </h3>
                             <div class="flex flex-wrap gap-2">
-                                ${project.tech.split(',').map(tech => `
-                                    <span class="px-3 py-1.5 bg-primary/10 text-primary text-xs font-bold rounded-lg">${tech.trim()}</span>
+                                ${project.tech.split(',').map((tech, i) => `
+                                    <span class="px-4 py-2 bg-primary/10 dark:bg-primary/20 text-primary dark:text-accent-cyan text-xs font-bold rounded-lg border border-primary/20 hover:bg-primary/15 dark:hover:bg-primary/30 transition-all cursor-default">
+                                        ${tech.trim()}
+                                    </span>
                                 `).join('')}
                             </div>
                         </div>
                         
-                        <p class="text-base text-gray-600 dark:text-gray-300 leading-relaxed">
-                            ${project.description}
-                        </p>
+                        <!-- Descripción -->
+                        <div class="bg-gray-50 dark:bg-white/5 rounded-xl p-4 border border-gray-200 dark:border-white/10">
+                            <p class="text-sm text-gray-700 dark:text-gray-200 leading-relaxed">
+                                ${project.description}
+                            </p>
+                        </div>
                         
-                        <div class="bg-gray-50 dark:bg-white/5 rounded-xl p-5 border border-gray-100 dark:border-white/10">
-                            <h4 class="font-bold text-lg mb-4 flex items-center gap-2">
-                                <span class="material-symbols-outlined text-primary">stars</span>
-                                Características principales
-                            </h4>
-                            <div class="space-y-3">
-                                ${project.features.map(feature => `
-                                    <div class="flex items-start gap-3 text-gray-700 dark:text-gray-300">
-                                        <span class="material-symbols-outlined text-primary text-xl shrink-0">check_circle</span>
-                                        <span class="font-medium text-sm">${feature}</span>
+                        <!-- Características principales -->
+                        <div class="bg-white dark:bg-white/5 rounded-xl p-4 border border-gray-100 dark:border-white/10 shadow-lg">
+                            <div class="flex items-center gap-2 mb-3">
+                                <div class="p-1.5 bg-primary/10 rounded-lg">
+                                    <span class="material-symbols-outlined text-primary text-lg">stars</span>
+                                </div>
+                                <h4 class="font-bold text-lg text-gray-900 dark:text-white">
+                                    Características principales
+                                </h4>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                ${project.features.map((feature, i) => `
+                                    <div class="group/feature flex items-start gap-3 p-3 rounded-xl hover:bg-primary/5 dark:hover:bg-white/5 transition-all duration-300">
+                                        <div class="mt-0.5 p-1 bg-primary/10 rounded-full group-hover/feature:bg-primary/20 transition-colors">
+                                            <span class="material-symbols-outlined text-primary text-lg">check_circle</span>
+                                        </div>
+                                        <span class="font-medium text-sm text-gray-700 dark:text-gray-200">${feature}</span>
                                     </div>
                                 `).join('')}
                             </div>
                         </div>
                         
-                        <div class="flex flex-col gap-3 pt-4">
-                            <button class="w-full bg-primary text-white px-6 py-4 rounded-xl font-bold hover:scale-[1.02] active:scale-[0.98] transition-all neon-btn-glow flex items-center justify-center gap-2 shadow-lg shadow-primary/20">
+                        <!-- Botones de acción -->
+                        <div class="flex flex-col gap-2.5">
+                            <button class="w-full bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2">
                                 <span class="material-symbols-outlined">open_in_new</span>
                                 Ver Proyecto Completo
                             </button>
-                            <button class="w-full border-2 border-primary text-primary px-6 py-4 rounded-xl font-bold hover:bg-primary hover:text-white transition-all flex items-center justify-center gap-2">
+                            <button class="group/btn2 w-full border-2 border-primary text-primary px-6 py-3 rounded-xl font-bold hover:bg-primary hover:text-white transition-all duration-300 flex items-center justify-center gap-2">
                                 <span class="material-symbols-outlined">chat</span>
                                 Contactar sobre este proyecto
                             </button>
@@ -871,6 +915,8 @@
         function closeProjectModal() {
             const modal = document.getElementById('projectModal');
             modal.classList.remove('active');
+            // Restaurar scroll del body
+            document.body.style.overflow = '';
         }
 
         // Cerrar modal al hacer clic fuera

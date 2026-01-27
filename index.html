@@ -1021,12 +1021,12 @@
     
     <!-- Modal de Proyecto -->
     <div id="projectModal" class="modal-overlay fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/40 backdrop-blur-sm">
-        <div class="modal-content glass-modal w-full max-w-4xl rounded-3xl p-8 md:p-12 relative shadow-2xl overflow-y-auto max-h-[90vh]">
+        <div class="modal-content glass-modal w-full max-w-5xl rounded-3xl p-6 md:p-8 relative shadow-2xl h-[60vh] flex flex-col">
             <button onclick="closeProjectModal()"
-                class="absolute top-6 right-6 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors z-10">
+                class="absolute top-4 right-4 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors z-10">
                 <span class="material-symbols-outlined text-3xl">close</span>
             </button>
-            <div id="projectModalContent">
+            <div id="projectModalContent" class="flex-1 overflow-hidden">
                 <!-- El contenido se cargará dinámicamente -->
             </div>
         </div>
