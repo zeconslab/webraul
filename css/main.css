@@ -720,22 +720,23 @@
         }
 
         .portfolio-glass-overlay {
-            background: linear-gradient(135deg, 
-                rgba(19, 91, 236, 0.97) 0%, 
-                rgba(14, 68, 179, 0.99) 50%,
-                rgba(0, 242, 254, 0.95) 100%);
-            backdrop-filter: blur(12px) saturate(180%);
-            -webkit-backdrop-filter: blur(12px) saturate(180%);
-            border-top: 2px solid rgba(255, 255, 255, 0.2);
+            /* Solid but transparent blue so the image behind remains visible */
+            background: rgba(19, 91, 236, 0.45);
+            backdrop-filter: blur(6px) saturate(120%);
+            -webkit-backdrop-filter: blur(6px) saturate(120%);
+            border-top: none;
+            transition: background-color 0.3s ease, opacity 0.35s ease, transform 0.35s ease;
         }
 
         .portfolio-glass-overlay::before {
             content: '';
             position: absolute;
             inset: 0;
+            /* Very subtle highlight to add depth without hiding the image */
             background: radial-gradient(circle at 30% 50%, 
-                rgba(255, 255, 255, 0.1) 0%, 
+                rgba(255, 255, 255, 0.04) 0%, 
                 transparent 60%);
+            pointer-events: none;
         }
 
         @property --count {
