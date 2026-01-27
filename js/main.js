@@ -293,3 +293,152 @@
                 });
             });
         })();
+
+        // ============================================
+        // NUEVAS ANIMACIONES Y EFECTOS AVANZADOS
+        // ============================================
+
+        // Efecto Parallax en fondos de secciones
+        (function() {
+            const parallaxElements = document.querySelectorAll('.parallax-bg');
+            if (parallaxElements.length === 0) return;
+
+            function updateParallax() {
+                parallaxElements.forEach(element => {
+                    const rect = element.getBoundingClientRect();
+                    const scrollPercent = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
+                    const translateY = (scrollPercent - 0.5) * 50;
+                    element.style.transform = `translateY(${translateY}px)`;
+                });
+            }
+
+            window.addEventListener('scroll', updateParallax, { passive: true });
+            updateParallax();
+        })();
+
+        // Contador numérico animado
+        (function() {
+            const counters = document.querySelectorAll('.counter');
+            if (counters.length === 0) return;
+
+            const animateCounter = (counter) => {
+                const target = parseInt(counter.getAttribute('data-target'));
+                const duration = 2000;
+                const step = target / (duration / 16);
+                let current = 0;
+
+                const updateCounter = () => {
+                    current += step;
+                    if (current < target) {
+                        counter.textContent = Math.floor(current);
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        counter.textContent = target;
+                        counter.classList.add('animated');
+                    }
+                };
+
+                updateCounter();
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
+                        animateCounter(entry.target);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            counters.forEach(counter => observer.observe(counter));
+        })();
+
+        // Efecto máquina de escribir
+        (function() {
+            const typewriterElements = document.querySelectorAll('.typewriter-text');
+            if (typewriterElements.length === 0) return;
+
+            typewriterElements.forEach((element) => {
+                const text = element.getAttribute('data-text') || element.textContent;
+                element.textContent = '';
+                element.style.visibility = 'visible';
+                let index = 0;
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const typeWriter = () => {
+                                if (index < text.length) {
+                                    element.textContent += text.charAt(index);
+                                    index++;
+                                    setTimeout(typeWriter, 50);
+                                }
+                            };
+                            typeWriter();
+                            observer.unobserve(element);
+                        }
+                    });
+                }, { threshold: 0.5 });
+
+                observer.observe(element);
+            });
+        })();
+
+        // Crear partículas flotantes en el hero
+        (function() {
+            const heroSection = document.getElementById('hero');
+            if (!heroSection) return;
+
+            const particleCount = 20;
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.opacity = Math.random() * 0.5 + 0.2;
+                heroSection.appendChild(particle);
+            }
+        })();
+
+        // Efecto de card 3D con mouse tracking
+        (function() {
+            const cards = document.querySelectorAll('.card-3d');
+            
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const rotateX = (y - centerY) / 10;
+                    const rotateY = (centerX - x) / 10;
+                    
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+                });
+            });
+        })();
+
+        // Agregar clases de animación a elementos cuando son visibles
+        (function() {
+            const animatedElements = document.querySelectorAll('.will-animate');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.willChange = 'transform, opacity';
+                    } else {
+                        entry.target.style.willChange = 'auto';
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            animatedElements.forEach(el => observer.observe(el));
+        })();
