@@ -852,21 +852,28 @@
                     <div class="space-y-4 overflow-y-auto max-h-[calc(70vh-5rem)] pr-2">
                         <!-- Header con título y tech stack -->
                         <div class="relative">
-                            <div class="absolute -left-4 top-0 w-1 h-full bg-primary rounded-full"></div>
-                            <h3 class="text-2xl lg:text-3xl font-black mb-3 text-gray-900 dark:text-white leading-tight">
+                            <div class="absolute -left-4 top-0 w-1.5 h-full bg-accent-cyan rounded-full shadow-lg shadow-accent-cyan/20"></div>
+                            <h3 class="text-2xl lg:text-3xl font-black mb-3 text-primary dark:text-white leading-tight">
                                 ${project.title}
                             </h3>
                             <div class="flex flex-wrap gap-2">
-                                ${project.tech.split(',').map((tech, i) => `
-                                    <span class="px-4 py-2 bg-primary/10 dark:bg-primary/20 text-primary dark:text-accent-cyan text-xs font-bold rounded-lg border border-primary/20 hover:bg-primary/15 dark:hover:bg-primary/30 transition-all cursor-default">
+                                ${project.tech.split(',').map((tech, i) => {
+                                    const colors = [
+                                        'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-500/30 hover:bg-blue-100 dark:hover:bg-blue-500/20',
+                                        'bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-500/30 hover:bg-purple-100 dark:hover:bg-purple-500/20',
+                                        'bg-cyan-50 dark:bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-200 dark:border-cyan-500/30 hover:bg-cyan-100 dark:hover:bg-cyan-500/20',
+                                        'bg-pink-50 dark:bg-pink-500/10 text-pink-600 dark:text-pink-400 border-pink-200 dark:border-pink-500/30 hover:bg-pink-100 dark:hover:bg-pink-500/20'
+                                    ];
+                                    return `
+                                    <span class="px-4 py-2 ${colors[i % colors.length]} text-xs font-bold rounded-lg border transition-all cursor-default">
                                         ${tech.trim()}
                                     </span>
-                                `).join('')}
+                                `}).join('')}
                             </div>
                         </div>
                         
                         <!-- Descripción -->
-                        <div class="bg-gray-50 dark:bg-white/5 rounded-xl p-4 border border-gray-200 dark:border-white/10">
+                        <div class="bg-blue-50/50 dark:bg-blue-500/5 rounded-xl p-4 border-l-4 border-primary border-y border-r border-gray-200 dark:border-white/10">
                             <p class="text-sm text-gray-700 dark:text-gray-200 leading-relaxed">
                                 ${project.description}
                             </p>
@@ -875,22 +882,25 @@
                         <!-- Características principales -->
                         <div class="bg-white dark:bg-white/5 rounded-xl p-4 border border-gray-100 dark:border-white/10 shadow-lg">
                             <div class="flex items-center gap-2 mb-3">
-                                <div class="p-1.5 bg-primary/10 rounded-lg">
-                                    <span class="material-symbols-outlined text-primary text-lg">stars</span>
+                                <div class="p-1.5 bg-accent-cyan/10 rounded-lg">
+                                    <span class="material-symbols-outlined text-accent-cyan text-lg">stars</span>
                                 </div>
                                 <h4 class="font-bold text-lg text-gray-900 dark:text-white">
                                     Características principales
                                 </h4>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                ${project.features.map((feature, i) => `
-                                    <div class="group/feature flex items-start gap-3 p-3 rounded-xl hover:bg-primary/5 dark:hover:bg-white/5 transition-all duration-300">
-                                        <div class="mt-0.5 p-1 bg-primary/10 rounded-full group-hover/feature:bg-primary/20 transition-colors">
-                                            <span class="material-symbols-outlined text-primary text-lg">check_circle</span>
+                                ${project.features.map((feature, i) => {
+                                    const iconColors = ['text-blue-500', 'text-purple-500', 'text-cyan-500', 'text-pink-500'];
+                                    const bgColors = ['bg-blue-50 dark:bg-blue-500/10', 'bg-purple-50 dark:bg-purple-500/10', 'bg-cyan-50 dark:bg-cyan-500/10', 'bg-pink-50 dark:bg-pink-500/10'];
+                                    return `
+                                    <div class="group/feature flex items-start gap-3 p-3 rounded-xl hover:${bgColors[i % bgColors.length]} transition-all duration-300">
+                                        <div class="mt-0.5 p-1 ${bgColors[i % bgColors.length]} rounded-full transition-colors">
+                                            <span class="material-symbols-outlined ${iconColors[i % iconColors.length]} text-lg">check_circle</span>
                                         </div>
                                         <span class="font-medium text-sm text-gray-700 dark:text-gray-200">${feature}</span>
                                     </div>
-                                `).join('')}
+                                `}).join('')}
                             </div>
                         </div>
                         
@@ -900,7 +910,7 @@
                                 <span class="material-symbols-outlined">open_in_new</span>
                                 Ver Proyecto Completo
                             </button>
-                            <button class="group/btn2 w-full border-2 border-primary text-primary px-6 py-3 rounded-xl font-bold hover:bg-primary hover:text-white transition-all duration-300 flex items-center justify-center gap-2">
+                            <button class="w-full border-2 border-accent-cyan text-accent-cyan px-6 py-3 rounded-xl font-bold hover:bg-accent-cyan hover:text-white transition-all duration-300 flex items-center justify-center gap-2">
                                 <span class="material-symbols-outlined">chat</span>
                                 Contactar sobre este proyecto
                             </button>
