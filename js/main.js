@@ -815,175 +815,139 @@
 
         // Modal de Proyectos
         const projectData = {
-            neobank: {
-                title: 'Plataforma NeoBank',
-                tech: 'React, Next.js, Tailwind CSS',
-                description: 'Una plataforma fintech completa con gestión de cuentas, transferencias y análisis financiero en tiempo real.',
-                features: ['Dashboard interactivo', 'Transferencias seguras', 'Análisis de gastos', 'Multi-currency'],
+            everglow: {
+                title: 'Everglow Spa',
+                tech: 'Laravel, MySQL, HTML, CSS',
+                description: 'Sistema integral para spa de masajes relajantes con gestión completa de citas, control de pacientes y seguimiento personalizado de tratamientos. Incluye panel administrativo para gestión de servicios, horarios y reportes.',
+                features: ['Sistema de citas online', 'Gestión de pacientes', 'Historial de tratamientos', 'Panel administrativo', 'Reportes y estadísticas', 'Notificaciones automáticas'],
+                website: 'https://everglow.com.mx/',
                 images: [
-                    'https://lh3.googleusercontent.com/aida-public/AB6AXuDTzivLt9EbuH3ibaRyZ-4aDZ9aUpEWu5dTLM40YrPqdVcrxQBeEzyde2skiA1OhusDbXg54neDUbNOJLpHpqFS4myUO1Y6PI9TpfVRsH9gWUu7CtXllWY89P4Cdwse3MHbx6mqODquEqd2oe46ujFt0lV-FbINxUwDpvUJshA5tMRCZS0p0mt4IXquvOPT7-3PoTle9ZD5gkBWEnwgWt_-JpB2hwj8Jm0cAuq8Bn2JlAgPhQYEOtGgo8m77dQqRsddBQIbiw4svXOp',
-                    'https://lh3.googleusercontent.com/aida-public/AB6AXuDGolLWy0tYbz1ePHgY2UK_8sfzsNbp0PhkR2V6qxv1NIySvZKWJV_HRK4aR1o-5ApTso1IM28RT5iMLHRn4C973GfdJVg3WCwM9btGE-i-zQI6ynPX6SOAhbRBrpinnfERKnVNYuq_OxVjlCylvBET1jyt4kYrxdy9z7KJ6a8-a7Zu9LHVtGTdHTjd9gubMudoR-7RDRduo9WW4wuyWSXYjkdFRRPah-16sLM0Q92pWR-A6OadcteS9Ei2-vIiWuCcgu7vb6SBRcb8'
-                ]
-            },
-            fashion: {
-                title: 'Fashion Store Hub',
-                tech: 'Headless Shopify, Vue.js',
-                description: 'E-commerce de moda con experiencia de compra personalizada y sistema de recomendaciones basado en IA.',
-                features: ['Carrito inteligente', 'Búsqueda visual', 'Wish list', 'Checkout optimizado'],
-                images: [
-                    'https://lh3.googleusercontent.com/aida-public/AB6AXuDAFOhakrl1NjgFnMWe7gHoJhOErMupU9Dc0g0iPEj6CfSA5PG1jKD0npoNLuUNNNi2qoQcN6NkOfeUTbz4-bAzsDnvd5SCBfG_vEmx5g26N11kkGd4Kf-3PYZ7qvEWvPAX4A40iYdr4K7QjrRvTfpU6RN9I0DMYhWBmqcv_Anqd4KFLHPth4HNSuiNjBxpWUUru3VS937frLvfp_aVYrTWn0LlJ2yQrMsD8YbhqX2iLDr5PRN8m0DVgm_2De6dRmmDaHIMJi_j8LzK',
-                    'https://lh3.googleusercontent.com/aida-public/AB6AXuDGolLWy0tYbz1ePHgY2UK_8sfzsNbp0PhkR2V6qxv1NIySvZKWJV_HRK4aR1o-5ApTso1IM28RT5iMLHRn4C973GfdJVg3WCwM9btGE-i-zQI6ynPX6SOAhbRBrpinnfERKnVNYuq_OxVjlCylvBET1jyt4kYrxdy9z7KJ6a8-a7Zu9LHVtGTdHTjd9gubMudoR-7RDRduo9WW4wuyWSXYjkdFRRPah-16sLM0Q92pWR-A6OadcteS9Ei2-vIiWuCcgu7vb6SBRcb8'
-                ]
-            },
-            inmopremium: {
-                title: 'InmoPremium Pro',
-                tech: 'Astro, TypeScript, Sanity CMS',
-                description: 'Portal inmobiliario con búsqueda avanzada, tours virtuales 360° y sistema de gestión de propiedades.',
-                features: ['Tours virtuales', 'Geolocalización', 'Filtros avanzados', 'CRM integrado'],
-                images: [
-                    'https://lh3.googleusercontent.com/aida-public/AB6AXuAxEmJjZvDOsCKQTeivaqQhI3Sgc6t6i6nS1XXvy1F7DDCSOTNzEoY1qHb1A5UgT85bT6h7P8GeXoHsNDl-WE7XwuepgRoiRPpg5uiC-nvEMT50q_lv6c03n2q8_6EVvz4KFqjODo3aacN26_u3ILij5swWdW_fONOFejdCyuj6PmifJdo08bpX9Biecpafd58f2Mpg5VKMj3HUjw_cwHb7NH-G4BesdE0kT7MtVDeAAZlurhmwIS6TAqCnK3MBHnzS_LkF_RfOUuWH',
-                    'https://lh3.googleusercontent.com/aida-public/AB6AXuDTzivLt9EbuH3ibaRyZ-4aDZ9aUpEWu5dTLM40YrPqdVcrxQBeEzyde2skiA1OhusDbXg54neDUbNOJLpHpqFS4myUO1Y6PI9TpfVRsH9gWUu7CtXllWY89P4Cdwse3MHbx6mqODquEqd2oe46ujFt0lV-FbINxUwDpvUJshA5tMRCZS0p0mt4IXquvOPT7-3PoTle9ZD5gkBWEnwgWt_-JpB2hwj8Jm0cAuq8Bn2JlAgPhQYEOtGgo8m77dQqRsddBQIbiw4svXOp',
-                    'https://lh3.googleusercontent.com/aida-public/AB6AXuDAFOhakrl1NjgFnMWe7gHoJhOErMupU9Dc0g0iPEj6CfSA5PG1jKD0npoNLuUNNNi2qoQcN6NkOfeUTbz4-bAzsDnvd5SCBfG_vEmx5g26N11kkGd4Kf-3PYZ7qvEWvPAX4A40iYdr4K7QjrRvTfpU6RN9I0DMYhWBmqcv_Anqd4KFLHPth4HNSuiNjBxpWUUru3VS937frLvfp_aVYrTWn0LlJ2yQrMsD8YbhqX2iLDr5PRN8m0DVgm_2De6dRmmDaHIMJi_j8LzK'
-                ]
-            },
-            agency: {
-                title: 'Creative Agency',
-                tech: 'HTML5, GSAP, Three.js',
-                description: 'Landing page innovadora con animaciones 3D, efectos parallax y experiencias interactivas inmersivas.',
-                features: ['Animaciones 3D', 'WebGL effects', 'Scroll interactivo', 'Performance optimizado'],
-                images: [
-                    'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"%3E%3Cdefs%3E%3ClinearGradient id="ag1" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%239333ea;stop-opacity:1" /%3E%3Cstop offset="50%25" style="stop-color:%23ec4899;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%23fb923c;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="800" height="450" fill="url(%23ag1)"/%3E%3Ctext x="50%25" y="45%25" font-family="Arial" font-size="80" text-anchor="middle"%3E%E2%9C%A8%3C/text%3E%3Ctext x="50%25" y="65%25" font-family="Arial" font-size="32" fill="white" text-anchor="middle" font-weight="bold"%3ECreative Agency%3C/text%3E%3C/svg%3E',
-                    'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"%3E%3Cdefs%3E%3ClinearGradient id="ag2" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%23ec4899;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%23fb923c;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="800" height="450" fill="url(%23ag2)"/%3E%3Ctext x="50%25" y="50%25" font-family="Arial" font-size="48" fill="white" text-anchor="middle" font-weight="bold"%3E3D Animations%3C/text%3E%3C/svg%3E'
-                ]
-            },
-            techstore: {
-                title: 'Tech Gadgets Pro',
-                tech: 'WooCommerce, WordPress',
-                description: 'Tienda online especializada en tecnología con comparador de productos y reseñas verificadas.',
-                features: ['Comparador', 'Reseñas verificadas', 'Soporte live chat', 'Envío tracking'],
-                images: [
-                    'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"%3E%3Cdefs%3E%3ClinearGradient id="tg1" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%2310b981;stop-opacity:1" /%3E%3Cstop offset="50%25" style="stop-color:%2314b8a6;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%2306b6d4;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="800" height="450" fill="url(%23tg1)"/%3E%3Ctext x="50%25" y="45%25" font-family="Arial" font-size="80" text-anchor="middle"%3E%F0%9F%92%BB%3C/text%3E%3Ctext x="50%25" y="65%25" font-family="Arial" font-size="32" fill="white" text-anchor="middle" font-weight="bold"%3ETech Gadgets Pro%3C/text%3E%3C/svg%3E',
-                    'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"%3E%3Cdefs%3E%3ClinearGradient id="tg2" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%2314b8a6;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%2306b6d4;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="800" height="450" fill="url(%23tg2)"/%3E%3Ctext x="50%25" y="50%25" font-family="Arial" font-size="48" fill="white" text-anchor="middle" font-weight="bold"%3EE-commerce%3C/text%3E%3C/svg%3E'
-                ]
-            },
-            lawfirm: {
-                title: 'Bufete Legal Pro',
-                tech: 'PHP, Laravel',
-                description: 'Portal corporativo para bufete de abogados con sistema de citas online y gestión documental.',
-                features: ['Reserva de citas', 'Gestión documental', 'Chat consultas', 'Blog legal'],
-                images: [
-                    'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"%3E%3Cdefs%3E%3ClinearGradient id="lf1" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%231e3a8a;stop-opacity:1" /%3E%3Cstop offset="50%25" style="stop-color:%232563eb;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%233b82f6;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="800" height="450" fill="url(%23lf1)"/%3E%3Ctext x="50%25" y="45%25" font-family="Arial" font-size="80" text-anchor="middle"%3E%E2%9A%96%EF%B8%8F%3C/text%3E%3Ctext x="50%25" y="65%25" font-family="Arial" font-size="32" fill="white" text-anchor="middle" font-weight="bold"%3EBufete Legal Pro%3C/text%3E%3C/svg%3E',
-                    'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450"%3E%3Cdefs%3E%3ClinearGradient id="lf2" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" style="stop-color:%232563eb;stop-opacity:1" /%3E%3Cstop offset="100%25" style="stop-color:%233b82f6;stop-opacity:1" /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="800" height="450" fill="url(%23lf2)"/%3E%3Ctext x="50%25" y="50%25" font-family="Arial" font-size="48" fill="white" text-anchor="middle" font-weight="bold"%3ELegal Services%3C/text%3E%3C/svg%3E'
+                    'assets/img/everglow.png',
+                    'assets/img/everglow-movil.png'
                 ]
             }
         };
 
+        let currentModalImageIndex = 0;
+        let currentProjectImages = [];
+
         function openProjectModal(projectId) {
             const modal = document.getElementById('projectModal');
             const content = document.getElementById('projectModalContent');
+            const modalActions = document.getElementById('modalActions');
             const project = projectData[projectId];
             
             if (!project) return;
             
+            // Guardar imágenes del proyecto actual
+            currentProjectImages = project.images || [];
+            currentModalImageIndex = 0;
+            
             // Bloquear scroll del body
             document.body.style.overflow = 'hidden';
             
+            // Actualizar imágenes
+            updateModalImages();
+            
+            // Generar contenido dinámico
             content.innerHTML = `
-                <div class="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-6 items-start h-full">
-                    <!-- Galería de imágenes a la izquierda -->
-                    <div class="space-y-3 flex flex-col max-h-full">
-                        ${project.images.map((img, index) => `
-                            <div class="relative group rounded-xl overflow-hidden shadow-md border border-gray-100 dark:border-white/10 hover:shadow-xl transition-all duration-300">
-                                <img src="${img}" alt="${project.title} - Vista ${index + 1}" class="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-500">
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                                ${index === 0 ? `
-                                    <div class="absolute top-4 right-4">
-                                        <span class="px-4 py-2 bg-white/95 dark:bg-black/80 backdrop-blur-md rounded-full text-xs font-bold text-primary shadow-lg">
-                                            ${project.tech.split(',')[0]}
-                                        </span>
-                                    </div>
-                                ` : ''}
+                <div>
+                    <span class="text-primary font-bold text-xs uppercase tracking-widest bg-primary/10 px-3 py-1 rounded-full">
+                        ${project.tech.split(',')[0].trim()}
+                    </span>
+                    <h2 class="text-3xl lg:text-4xl font-black mt-4 leading-tight">${project.title}</h2>
+                </div>
+                <div class="space-y-4">
+                    <h4 class="text-sm font-black uppercase text-gray-500 tracking-wider">Descripción del Proyecto</h4>
+                    <div class="grid gap-4">
+                        <div class="flex items-start gap-3">
+                            <span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">${project.description}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <h4 class="text-sm font-black uppercase text-gray-500 tracking-wider">Características Principales</h4>
+                    <div class="grid gap-2">
+                        ${project.features.map(feature => `
+                            <div class="flex items-start gap-3">
+                                <span class="material-symbols-outlined text-primary text-xl">check_circle</span>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">${feature}</p>
                             </div>
                         `).join('')}
                     </div>
-                    
-                    <!-- Información a la derecha -->
-                    <div class="space-y-4 overflow-y-auto max-h-[calc(70vh-5rem)] pr-2">
-                        <!-- Header con título y tech stack -->
-                        <div class="relative">
-                            <div class="absolute -left-4 top-0 w-1.5 h-full bg-accent-cyan rounded-full shadow-lg shadow-accent-cyan/20"></div>
-                            <h3 class="text-2xl lg:text-3xl font-black mb-3 text-primary dark:text-white leading-tight">
-                                ${project.title}
-                            </h3>
-                            <div class="flex flex-wrap gap-2">
-                                ${project.tech.split(',').map((tech, i) => {
-                                    const colors = [
-                                        'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-500/30 hover:bg-blue-100 dark:hover:bg-blue-500/20',
-                                        'bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-500/30 hover:bg-purple-100 dark:hover:bg-purple-500/20',
-                                        'bg-cyan-50 dark:bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-200 dark:border-cyan-500/30 hover:bg-cyan-100 dark:hover:bg-cyan-500/20',
-                                        'bg-pink-50 dark:bg-pink-500/10 text-pink-600 dark:text-pink-400 border-pink-200 dark:border-pink-500/30 hover:bg-pink-100 dark:hover:bg-pink-500/20'
-                                    ];
-                                    return `
-                                    <span class="px-4 py-2 ${colors[i % colors.length]} text-xs font-bold rounded-lg border transition-all cursor-default">
-                                        ${tech.trim()}
-                                    </span>
-                                `}).join('')}
+                </div>
+                <div class="space-y-4">
+                    <h4 class="text-sm font-black uppercase text-gray-500 tracking-wider">Stack Tecnológico</h4>
+                    <div class="flex gap-4">
+                        ${project.tech.split(',').map((tech, i) => {
+                            const icons = ['deployed_code', 'database', 'css', 'javascript'];
+                            return `
+                            <div class="size-11 bg-gray-100 dark:bg-white/5 rounded-xl flex items-center justify-center group hover:bg-primary/10 transition-colors" title="${tech.trim()}">
+                                <span class="material-symbols-outlined text-primary">${icons[i] || 'code'}</span>
                             </div>
-                        </div>
-                        
-                        <!-- Descripción -->
-                        <div class="bg-blue-50/50 dark:bg-blue-500/5 rounded-xl p-4 border-l-4 border-primary border-y border-r border-gray-200 dark:border-white/10">
-                            <p class="text-sm text-gray-700 dark:text-gray-200 leading-relaxed">
-                                ${project.description}
-                            </p>
-                        </div>
-                        
-                        <!-- Características principales -->
-                        <div class="bg-white dark:bg-white/5 rounded-xl p-4 border border-gray-100 dark:border-white/10 shadow-lg">
-                            <div class="flex items-center gap-2 mb-3">
-                                <div class="p-1.5 bg-accent-cyan/10 rounded-lg">
-                                    <span class="material-symbols-outlined text-accent-cyan text-lg">stars</span>
-                                </div>
-                                <h4 class="font-bold text-lg text-gray-900 dark:text-white">
-                                    Características principales
-                                </h4>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                ${project.features.map((feature, i) => {
-                                    const iconColors = ['text-blue-500', 'text-purple-500', 'text-cyan-500', 'text-pink-500'];
-                                    const bgColors = ['bg-blue-50 dark:bg-blue-500/10', 'bg-purple-50 dark:bg-purple-500/10', 'bg-cyan-50 dark:bg-cyan-500/10', 'bg-pink-50 dark:bg-pink-500/10'];
-                                    return `
-                                    <div class="group/feature flex items-start gap-3 p-3 rounded-xl hover:${bgColors[i % bgColors.length]} transition-all duration-300">
-                                        <div class="mt-0.5 p-1 ${bgColors[i % bgColors.length]} rounded-full transition-colors">
-                                            <span class="material-symbols-outlined ${iconColors[i % iconColors.length]} text-lg">check_circle</span>
-                                        </div>
-                                        <span class="font-medium text-sm text-gray-700 dark:text-gray-200">${feature}</span>
-                                    </div>
-                                `}).join('')}
-                            </div>
-                        </div>
-                        
-                        <!-- Botones de acción -->
-                        <div class="flex flex-col gap-2.5">
-                            <button class="w-full bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2">
-                                <span class="material-symbols-outlined">open_in_new</span>
-                                Ver Proyecto Completo
-                            </button>
-                            <button class="w-full border-2 border-accent-cyan text-accent-cyan px-6 py-3 rounded-xl font-bold hover:bg-accent-cyan hover:text-white transition-all duration-300 flex items-center justify-center gap-2">
-                                <span class="material-symbols-outlined">chat</span>
-                                Contactar sobre este proyecto
-                            </button>
-                        </div>
+                        `}).join('')}
                     </div>
                 </div>
             `;
             
-            modal.classList.add('active');
+            // Generar botones de acción
+            modalActions.innerHTML = `
+                ${project.website ? `
+                    <a href="${project.website}" target="_blank" rel="noopener noreferrer" 
+                       class="flex-1 bg-primary text-white py-4 rounded-xl font-bold text-sm lg:text-base neon-btn-glow hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
+                        Visitar Sitio Web
+                        <span class="material-symbols-outlined text-sm">open_in_new</span>
+                    </a>
+                ` : ''}
+                <button class="px-6 py-4 rounded-xl font-bold text-sm lg:text-base border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 transition-all" 
+                        onclick="closeProjectModal()">
+                    Cerrar
+                </button>
+            `;
+            
+            modal.classList.add('modal-active');
+        }
+
+        function updateModalImages() {
+            const desktopImg = document.getElementById('modalImageDesktop');
+            const mobileImg = document.getElementById('modalImageMobile');
+            const dotsContainer = document.getElementById('modalImageDots');
+            
+            if (currentProjectImages.length > 0) {
+                desktopImg.src = currentProjectImages[currentModalImageIndex];
+                mobileImg.src = currentProjectImages[currentModalImageIndex === 0 && currentProjectImages.length > 1 ? 1 : currentModalImageIndex];
+                
+                // Actualizar dots
+                dotsContainer.innerHTML = currentProjectImages.map((_, index) => `
+                    <span class="size-2 rounded-full ${index === currentModalImageIndex ? 'bg-white shadow-sm' : 'bg-white/40'} transition-all cursor-pointer" 
+                          onclick="setModalImage(${index})"></span>
+                `).join('');
+            }
+        }
+
+        function nextModalImage() {
+            if (currentProjectImages.length > 1) {
+                currentModalImageIndex = (currentModalImageIndex + 1) % currentProjectImages.length;
+                updateModalImages();
+            }
+        }
+
+        function previousModalImage() {
+            if (currentProjectImages.length > 1) {
+                currentModalImageIndex = (currentModalImageIndex - 1 + currentProjectImages.length) % currentProjectImages.length;
+                updateModalImages();
+            }
+        }
+
+        function setModalImage(index) {
+            currentModalImageIndex = index;
+            updateModalImages();
         }
 
         function closeProjectModal() {
             const modal = document.getElementById('projectModal');
-            modal.classList.remove('active');
+            modal.classList.remove('modal-active');
             // Restaurar scroll del body
             document.body.style.overflow = '';
         }
