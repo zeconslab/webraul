@@ -4,6 +4,48 @@
             }
         }
 
+        /* Mobile Menu Dropdown Styles */
+        .mobile-dropdown {
+            max-height: 0;
+            opacity: 0;
+        }
+
+        .mobile-dropdown.active {
+            max-height: 600px;
+            opacity: 1;
+        }
+
+        .mobile-nav-link {
+            transform: translateY(-10px);
+            opacity: 0;
+            transition: all 0.3s ease-out;
+        }
+
+        .mobile-dropdown.active .mobile-nav-link {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .mobile-dropdown.active .mobile-nav-link:nth-child(1) {
+            transition-delay: 0.05s;
+        }
+
+        .mobile-dropdown.active .mobile-nav-link:nth-child(2) {
+            transition-delay: 0.1s;
+        }
+
+        .mobile-dropdown.active .mobile-nav-link:nth-child(3) {
+            transition-delay: 0.15s;
+        }
+
+        .mobile-dropdown.active .mobile-nav-link:nth-child(4) {
+            transition-delay: 0.2s;
+        }
+
+        .mobile-dropdown.active .mobile-nav-link:nth-child(5) {
+            transition-delay: 0.25s;
+        }
+
         /* Loading Screen */
         .loading-screen {
             position: fixed;

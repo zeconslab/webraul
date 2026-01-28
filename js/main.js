@@ -1,5 +1,52 @@
 
         // ======================
+        // MOBILE MENU
+        // ======================
+        (function() {
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const mobileNavLinks = mobileMenu?.querySelectorAll('.mobile-nav-link');
+            const hamburgerIcon = mobileMenuToggle?.querySelector('.hamburger-icon');
+            const closeIcon = mobileMenuToggle?.querySelector('.close-icon');
+            
+            if (!mobileMenuToggle || !mobileMenu) return;
+            
+            // Toggle menú móvil
+            function toggleMobileMenu() {
+                const isActive = mobileMenu.classList.contains('active');
+                
+                if (isActive) {
+                    // Cerrar menú
+                    mobileMenu.classList.remove('active');
+                    hamburgerIcon?.classList.remove('hidden');
+                    closeIcon?.classList.add('hidden');
+                } else {
+                    // Abrir menú
+                    mobileMenu.classList.add('active');
+                    hamburgerIcon?.classList.add('hidden');
+                    closeIcon?.classList.remove('hidden');
+                }
+            }
+            
+            // Eventos
+            mobileMenuToggle.addEventListener('click', toggleMobileMenu);
+            
+            // Cerrar al hacer click en un link
+            mobileNavLinks?.forEach(link => {
+                link.addEventListener('click', () => {
+                    setTimeout(toggleMobileMenu, 200);
+                });
+            });
+            
+            // Cerrar con tecla Escape
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
+                    toggleMobileMenu();
+                }
+            });
+        })();
+
+        // ======================
         // LOADING SCREEN
         // ======================
         (function() {
@@ -681,35 +728,47 @@
         // Toggle de Modo Oscuro/Claro
         (function() {
             const themeToggle = document.getElementById('themeToggle');
-            if (!themeToggle) return;
+            const mobileThemeToggle = document.getElementById('mobileThemeToggle');
 
             const html = document.documentElement;
-            const lightIcon = themeToggle.querySelector('.theme-icon-light');
-            const darkIcon = themeToggle.querySelector('.theme-icon-dark');
+            const lightIcon = themeToggle?.querySelector('.theme-icon-light');
+            const darkIcon = themeToggle?.querySelector('.theme-icon-dark');
+            const mobileLightIcon = mobileThemeToggle?.querySelector('.mobile-theme-icon-light');
+            const mobileDarkIcon = mobileThemeToggle?.querySelector('.mobile-theme-icon-dark');
 
             // Verificar preferencia guardada o del sistema
             const savedTheme = localStorage.getItem('theme');
             const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             
+            function updateThemeIcons(isDark) {
+                if (isDark) {
+                    lightIcon?.classList.add('hidden');
+                    darkIcon?.classList.remove('hidden');
+                    mobileLightIcon?.classList.add('hidden');
+                    mobileDarkIcon?.classList.remove('hidden');
+                } else {
+                    lightIcon?.classList.remove('hidden');
+                    darkIcon?.classList.add('hidden');
+                    mobileLightIcon?.classList.remove('hidden');
+                    mobileDarkIcon?.classList.add('hidden');
+                }
+            }
+            
             if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
                 html.classList.add('dark');
-                lightIcon.classList.add('hidden');
-                darkIcon.classList.remove('hidden');
+                updateThemeIcons(true);
             }
 
-            themeToggle.addEventListener('click', () => {
+            function toggleTheme() {
                 html.classList.toggle('dark');
+                const isDark = html.classList.contains('dark');
                 
-                if (html.classList.contains('dark')) {
-                    localStorage.setItem('theme', 'dark');
-                    lightIcon.classList.add('hidden');
-                    darkIcon.classList.remove('hidden');
-                } else {
-                    localStorage.setItem('theme', 'light');
-                    lightIcon.classList.remove('hidden');
-                    darkIcon.classList.add('hidden');
-                }
-            });
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                updateThemeIcons(isDark);
+            }
+
+            themeToggle?.addEventListener('click', toggleTheme);
+            mobileThemeToggle?.addEventListener('click', toggleTheme);
         })();
 
         // Filtros de Proyectos
