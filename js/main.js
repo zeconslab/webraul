@@ -822,8 +822,8 @@
                 features: ['Sistema de citas online', 'Gestión de pacientes', 'Historial de tratamientos', 'Panel administrativo', 'Reportes y estadísticas', 'Notificaciones automáticas'],
                 website: 'https://everglow.com.mx/',
                 images: [
-                    'assets/img/everglow.png',
-                    'assets/img/everglow-movil.png'
+                    '/assets/img/everglow.png',
+                    '/assets/img/everglow-movil.png'
                 ]
             }
         };

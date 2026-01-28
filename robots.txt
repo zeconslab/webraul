@@ -1,0 +1,9 @@
+Sitemap: https://pimentel.cloud/sitemap.xml
+
+User-agent: *
+Allow: /
+
+# If you need to block any crawler paths, add:
+# Disallow: /path-to-block/
+# Add Crawl-delay if required by a specific bot (non-standard):
+# Crawl-delay: 10
