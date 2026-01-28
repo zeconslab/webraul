@@ -10,6 +10,15 @@
             const closeIcon = mobileMenuToggle?.querySelector('.close-icon');
             
             if (!mobileMenuToggle || !mobileMenu) return;
+
+            // Handler para cerrar el menú al clicar fuera
+            function handleOutsideClick(e) {
+                if (!mobileMenu.classList.contains('active')) return;
+                // Si el clic no está dentro del menú ni en el toggle, cerrar
+                if (!mobileMenu.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+                    toggleMobileMenu();
+                }
+            }
             
             // Toggle menú móvil
             function toggleMobileMenu() {
@@ -36,7 +45,9 @@
                     mobileMenu.style.top = '';
                     mobileMenu.style.left = '';
                     mobileMenu.style.right = '';
-                    mobileMenu.style.transition = 'top 180ms ease';
+                    mobileMenu.style.transition = '';
+                    // remove outside click listener
+                    document.removeEventListener('click', handleOutsideClick);
                     // remove scroll listener
                     window.removeEventListener('scroll', updateMobileMenuPosition);
                     window.removeEventListener('resize', updateMobileMenuPosition);
@@ -48,12 +59,15 @@
                     // fix the menu under the header and keep gap while scrolling
                     mobileMenu.style.position = 'fixed';
                     mobileMenu.style.width = '100%';
+                    mobileMenu.style.transition = 'top 180ms ease';
                     updateMobileMenuPosition();
                     // update position on scroll/resize to maintain gap
                     window.addEventListener('scroll', updateMobileMenuPosition, { passive: true });
                     window.addEventListener('resize', updateMobileMenuPosition);
+                    // add outside click listener after current event loop to avoid immediate close
+                    setTimeout(() => document.addEventListener('click', handleOutsideClick));
                 }
-                    mobileMenu.style.transition = '';
+                
             }
             
             // Eventos
