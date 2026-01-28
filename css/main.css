@@ -407,6 +407,45 @@
             }
         }
 
+        /* Align WhatsApp button with scroll-to-top on mobile */
+        @media (max-width: 768px) {
+            .whatsapp-btn {
+                right: 1.5rem; /* match scroll-to-top right offset */
+                bottom: 5.5rem; /* place above the scroll button */
+            }
+        }
+
+        /* Stronger alignment to ensure exact right offset and stacking on mobile */
+        @media (max-width: 768px) {
+            .scroll-to-top, .whatsapp-btn {
+                right: 1.5rem !important;
+                transform: none !important;
+            }
+            /* place WhatsApp just above the scroll button using calculated offset */
+            .whatsapp-btn {
+                /* small negative nudge to move the WhatsApp button slightly closer to the edge */
+                right: calc(1.5rem - 0.12rem) !important;
+                bottom: calc(1.5rem + 3rem + 0.5rem) !important; /* scroll bottom + scroll height + gap */
+            }
+        }
+
+        /* Ensure WhatsApp matches scroll button size and icon centering on mobile */
+        @media (max-width: 768px) {
+            .whatsapp-btn {
+                width: 3rem !important;
+                height: 3rem !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                border-radius: 50% !important;
+                padding: 0 !important;
+            }
+            .whatsapp-btn svg {
+                width: 1.25rem !important;
+                height: 1.25rem !important;
+            }
+        }
+
         /* Navigation Icon Links with Expand Effect */
         .nav-icon-link {
             position: relative;

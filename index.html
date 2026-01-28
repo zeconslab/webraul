@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Raúl Web Dev</title>
+    <title>Creación de Páginas Web para Negocios en México | Raúl Web Dev</title>
     <!-- SEO: meta description, robots, canonical, Open Graph, Twitter Card and JSON-LD -->
     <meta name="description"
         content="Diseño y desarrollo web para pymes. Transformo tu visión en una web que impulsa tu negocio: webs a medida, diseño responsive, integración con Google y optimización SEO." />
@@ -27,34 +27,34 @@
     <meta name="twitter:image"
         content="https://lh3.googleusercontent.com/aida-public/AB6AXuDGolLWy0tYbz1ePHgY2UK_8sfzsNbp0PhkR2V6qxv1NIySvZKWJV_HRK4aR1o-5ApTso1IM28RT5iMLHRn4C973GfdJVg3WCwM9btGE-i-zQI6ynPX6SOAhbRBrpinnfERKnVNYuq_OxVjlCylvBET1jyt4kYrxdy9z7KJ6a8-a7Zu9LHVtGTdHTjd9gubMudoR-7RDRduo9WW4wuyWSXYjkdFRRPah-16sLM0Q92pWR-A6OadcteS9Ei2-vIiWuCcgu7vb6SBRcb8" />
     <meta name="google-site-verification" content="3ObJGYZ6Fay_5nJB_JX3hz4l8h2NUjjO2weR3rzi1mY" />
-        <!-- JSON-LD structured data: Organization + Website (update URLs to your real domain) -->
+    <!-- JSON-LD structured data: Organization + Website (update URLs to your real domain) -->
     <script type="application/ld+json">
         {
             "@context": "https://schema.org",
-            "@graph": [
-                {
-                    "@type": "Organization",
-                    "name": "Raúl Web Dev",
-                    "url": "https://pimentel.cloud/",
-                    "logo": "https://lh3.googleusercontent.com/aida-public/AB6AXuDGolLWy0tYbz1ePHgY2UK_8sfzsNbp0PhkR2V6qxv1NIySvZKWJV_HRK4aR1o-5ApTso1IM28RT5iMLHRn4C973GfdJVg3WCwM9btGE-i-zQI6ynPX6SOAhbRBrpinnfERKnVNYuq_OxVjlCylvBET1jyt4kYrxdy9z7KJ6a8-a7Zu9LHVtGTdHTjd9gubMudoR-7RDRduo9WW4wuyWSXYjkdFRRPah-16sLM0Q92pWR-A6OadcteS9Ei2-vIiWuCcgu7vb6SBRcb8",
-                    "sameAs": [
-                        "https://www.linkedin.com/",
-                        "https://github.com/"
-                    ]
-                },
-                {
-                    "@type": "WebSite",
-                    "url": "https://pimentel.cloud/",
-                    "name": "Raúl Web Dev",
-                    "potentialAction": {
-                        "@type": "SearchAction",
-                        "target": "https://pimentel.cloud/?s={search_term_string}",
-                        "query-input": "required name=search_term_string"
-                    }
-                }
+            "@type": "ProfessionalService",
+            "@id": "https://pimentel.cloud/#service",
+            "name": "Raúl Web Dev",
+            "url": "https://pimentel.cloud/",
+            "logo": "https://pimentel.cloud/logo.png",
+            "image": "https://pimentel.cloud/og-image.jpg",
+            "description": "Diseño y desarrollo web para negocios y pymes en México. Soluciones web a medida, SEO, diseño responsive e integración con Google.",
+            "areaServed": {
+                "@type": "Country",
+                "name": "México"
+            },
+            "serviceType": [
+                "Diseño web",
+                "Desarrollo web",
+                "SEO para negocios",
+                "Páginas web para pymes"
+            ],
+            "sameAs": [
+                "https://www.linkedin.com/in/raul-pimentel-4b7a87158/",
+                "https://github.com/zeconslab"
             ]
         }
         </script>
+
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap"
         rel="stylesheet" />
@@ -151,59 +151,62 @@
         <div id="mobileMenu"
             class="md:hidden absolute top-full left-0 right-0 bg-transparent shadow-none overflow-hidden max-h-0 transition-all duration-300 ease-out mobile-dropdown">
             <div class="max-w-[1200px] mx-auto px-8">
-                <div class="glass-card rounded-xl bg-white dark:bg-background-dark dark:border-white/10 shadow-xl overflow-hidden px-4 md:px-6">
+                <div
+                    class="glass-card rounded-xl bg-white dark:bg-background-dark dark:border-white/10 shadow-xl overflow-hidden px-4 md:px-6">
                     <div class="py-6 space-y-4">
-                <!-- Links de navegación -->
-                <nav class="flex flex-col gap-2">
-                    <a class="mobile-nav-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
-                        href="#servicios">
-                        <span class="material-symbols-outlined text-primary text-xl">handyman</span>
-                        <span class="text-base font-semibold">Servicios</span>
-                    </a>
-                    <a class="mobile-nav-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
-                        href="#proceso">
-                        <span class="material-symbols-outlined text-primary text-xl">timeline</span>
-                        <span class="text-base font-semibold">Proceso</span>
-                    </a>
-                    <a class="mobile-nav-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
-                        href="#proyectos">
-                        <span class="material-symbols-outlined text-primary text-xl">grid_view</span>
-                        <span class="text-base font-semibold">Proyectos</span>
-                    </a>
-                    <a class="mobile-nav-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
-                        href="#testimonios">
-                        <span class="material-symbols-outlined text-primary text-xl">rate_review</span>
-                        <span class="text-base font-semibold">Testimonios</span>
-                    </a>
-                    <a class="mobile-nav-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
-                        href="#faq">
-                        <span class="material-symbols-outlined text-primary text-xl">help</span>
-                        <span class="text-base font-semibold">FAQ</span>
-                    </a>
-                </nav>
+                        <!-- Links de navegación -->
+                        <nav class="flex flex-col gap-2">
+                            <a class="mobile-nav-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
+                                href="#servicios">
+                                <span class="material-symbols-outlined text-primary text-xl">handyman</span>
+                                <span class="text-base font-semibold">Servicios</span>
+                            </a>
+                            <a class="mobile-nav-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
+                                href="#proceso">
+                                <span class="material-symbols-outlined text-primary text-xl">timeline</span>
+                                <span class="text-base font-semibold">Proceso</span>
+                            </a>
+                            <a class="mobile-nav-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
+                                href="#proyectos">
+                                <span class="material-symbols-outlined text-primary text-xl">grid_view</span>
+                                <span class="text-base font-semibold">Proyectos</span>
+                            </a>
+                            <a class="mobile-nav-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
+                                href="#testimonios">
+                                <span class="material-symbols-outlined text-primary text-xl">rate_review</span>
+                                <span class="text-base font-semibold">Testimonios</span>
+                            </a>
+                            <a class="mobile-nav-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
+                                href="#faq">
+                                <span class="material-symbols-outlined text-primary text-xl">help</span>
+                                <span class="text-base font-semibold">FAQ</span>
+                            </a>
+                        </nav>
 
-                <!-- Divisor -->
-                <div class="h-px bg-gray-200 dark:bg-white/10 my-4"></div>
+                        <!-- Divisor -->
+                        <div class="h-px bg-gray-200 dark:bg-white/10 my-4"></div>
 
-                <!-- Toggle de tema -->
-                <button id="mobileThemeToggle"
-                    class="w-full flex items-center justify-between px-4 py-3 rounded-lg bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 transition-all">
-                    <div class="flex items-center gap-3">
-                        <span class="material-symbols-outlined text-primary text-xl">palette</span>
-                        <span class="text-base font-semibold">Cambiar tema</span>
+                        <!-- Toggle de tema -->
+                        <button id="mobileThemeToggle"
+                            class="w-full flex items-center justify-between px-4 py-3 rounded-lg bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 transition-all">
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-primary text-xl">palette</span>
+                                <span class="text-base font-semibold">Cambiar tema</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span
+                                    class="material-symbols-outlined text-xl mobile-theme-icon-light">light_mode</span>
+                                <span
+                                    class="material-symbols-outlined text-xl mobile-theme-icon-dark hidden">dark_mode</span>
+                            </div>
+                        </button>
+
+                        <!-- Botón CTA -->
+                        <button
+                            class="w-full bg-primary text-white text-base font-bold px-6 py-4 rounded-lg neon-btn-glow hover:scale-[1.02] transition-all mt-4">
+                            Empieza tu proyecto
+                        </button>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <span class="material-symbols-outlined text-xl mobile-theme-icon-light">light_mode</span>
-                        <span class="material-symbols-outlined text-xl mobile-theme-icon-dark hidden">dark_mode</span>
-                    </div>
-                </button>
-
-                <!-- Botón CTA -->
-                <button
-                    class="w-full bg-primary text-white text-base font-bold px-6 py-4 rounded-lg neon-btn-glow hover:scale-[1.02] transition-all mt-4">
-                    Empieza tu proyecto
-                </button>
-            </div>
                 </div>
             </div>
         </div>
