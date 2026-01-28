@@ -19,8 +19,8 @@
                 function updateMobileMenuPosition() {
                     if (!headerEl) return;
                     const rect = headerEl.getBoundingClientRect();
-                    // small gap (8px) to keep it detached
-                    const gap = 8;
+                    // small gap (4px) to keep it detached
+                    const gap = 4; // smaller gap for a tighter, more elegant look
                     mobileMenu.style.top = rect.bottom + gap + 'px';
                     mobileMenu.style.left = '0';
                     mobileMenu.style.right = '0';
@@ -36,6 +36,7 @@
                     mobileMenu.style.top = '';
                     mobileMenu.style.left = '';
                     mobileMenu.style.right = '';
+                    mobileMenu.style.transition = 'top 180ms ease';
                     // remove scroll listener
                     window.removeEventListener('scroll', updateMobileMenuPosition);
                     window.removeEventListener('resize', updateMobileMenuPosition);
@@ -52,6 +53,7 @@
                     window.addEventListener('scroll', updateMobileMenuPosition, { passive: true });
                     window.addEventListener('resize', updateMobileMenuPosition);
                 }
+                    mobileMenu.style.transition = '';
             }
             
             // Eventos
