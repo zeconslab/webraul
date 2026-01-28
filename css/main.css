@@ -654,37 +654,31 @@
         }
 
         .neon-btn-glow {
-            box-shadow: 0 4px 20px rgba(19, 91, 236, 0.35),
-                        0 0 40px rgba(19, 91, 236, 0.15),
-                        0 2px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: none;
             position: relative;
             overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.24s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .neon-btn-glow::before {
             content: '';
             position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
+            inset: 0; /* cover the full area of the button */
+            border-radius: inherit; /* match button radius */
+            background: rgba(255, 255, 255, 0.14);
+            transform: scaleX(0);
+            transform-origin: left center;
+            transition: transform 420ms cubic-bezier(0.2, 0.9, 0.2, 1);
+            pointer-events: none;
+            z-index: 0;
         }
 
         .neon-btn-glow:hover::before {
-            width: 300px;
-            height: 300px;
+            transform: scaleX(1);
         }
 
         .neon-btn-glow:hover {
-            box-shadow: 0 6px 30px rgba(19, 91, 236, 0.5),
-                        0 0 60px rgba(19, 91, 236, 0.3),
-                        0 0 80px rgba(0, 242, 254, 0.2),
-                        0 3px 12px rgba(0, 0, 0, 0.15);
+            box-shadow: none;
             transform: translateY(-2px);
         }
 
