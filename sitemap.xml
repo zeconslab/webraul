@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Actualiza 'https://example.com/' por tu dominio real antes de subir -->
+<!-- Sitemap generado: dominio actualizado a https://pimentel.cloud/ -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://example.com/</loc>
+    <loc>https://pimentel.cloud/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://example.com/#servicios</loc>
+    <loc>https://pimentel.cloud/#servicios</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://example.com/#proyectos</loc>
+    <loc>https://pimentel.cloud/#proyectos</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
