@@ -14,17 +14,43 @@
             // Toggle menú móvil
             function toggleMobileMenu() {
                 const isActive = mobileMenu.classList.contains('active');
-                
+                const headerEl = document.querySelector('header');
+
+                function updateMobileMenuPosition() {
+                    if (!headerEl) return;
+                    const rect = headerEl.getBoundingClientRect();
+                    // small gap (8px) to keep it detached
+                    const gap = 8;
+                    mobileMenu.style.top = rect.bottom + gap + 'px';
+                    mobileMenu.style.left = '0';
+                    mobileMenu.style.right = '0';
+                }
+
                 if (isActive) {
                     // Cerrar menú
                     mobileMenu.classList.remove('active');
                     hamburgerIcon?.classList.remove('hidden');
                     closeIcon?.classList.add('hidden');
+                    // remove fixed positioning
+                    mobileMenu.style.position = '';
+                    mobileMenu.style.top = '';
+                    mobileMenu.style.left = '';
+                    mobileMenu.style.right = '';
+                    // remove scroll listener
+                    window.removeEventListener('scroll', updateMobileMenuPosition);
+                    window.removeEventListener('resize', updateMobileMenuPosition);
                 } else {
                     // Abrir menú
                     mobileMenu.classList.add('active');
                     hamburgerIcon?.classList.add('hidden');
                     closeIcon?.classList.remove('hidden');
+                    // fix the menu under the header and keep gap while scrolling
+                    mobileMenu.style.position = 'fixed';
+                    mobileMenu.style.width = '100%';
+                    updateMobileMenuPosition();
+                    // update position on scroll/resize to maintain gap
+                    window.addEventListener('scroll', updateMobileMenuPosition, { passive: true });
+                    window.addEventListener('resize', updateMobileMenuPosition);
                 }
             }
             
