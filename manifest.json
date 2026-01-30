@@ -1,0 +1,21 @@
+{
+  "name": "Raúl Web Dev",
+  "short_name": "RaúlWeb",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#101622",
+  "theme_color": "#101622",
+  "icons": [
+    {
+      "src": "/assets/favicon.ico",
+      "sizes": "192x192",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/assets/favicon.ico",
+      "sizes": "512x512",
+      "type": "image/x-icon"
+    }
+  ]
+}

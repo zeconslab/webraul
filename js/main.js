@@ -197,6 +197,9 @@
                 }
             });
 
+            // Also respond to explicit theme-change events (fired by toggleTheme)
+            document.addEventListener('theme-change', updateMeta);
+
             // Observe header class/style changes (e.g., mobile menu open/close)
             const headerEl = document.querySelector('header');
             if (headerEl) {
@@ -1262,16 +1265,56 @@
         })();
 
 
-        function updateThemeColor() {
-            const metaTheme = document.querySelector('meta[name="theme-color"]');
-            if (!metaTheme) return;
-            const isDark = document.documentElement.classList.contains('dark');
+        // NOTE: theme-color is now handled by the header-aware updater above.
+        // The older simple updater was removed to avoid overwriting the header-calculated value.
 
-            metaTheme.setAttribute('content', isDark ? '#101622' : '#135bec');
-        }
+        // ======================
+        // TITLE CAROUSEL (tab marquee)
+        // ======================
+        (function() {
+            // Config
+            const enabled = true; // set false to disable
+            const speedMs = 220; // lower = faster
+            const padding = ' \u00A0\u00A0 '; // small gap between loops
 
-        // Al cargar
-        updateThemeColor();
+            if (!enabled) return;
 
-        // Cuando cambias el tema manualmente
-        document.addEventListener('theme-change', updateThemeColor);
+            const originalTitle = document.title || 'Raúl Web Dev';
+            const text = (originalTitle + padding).trim() + padding;
+            let idx = 0;
+            let timer = null;
+
+            function tick() {
+                // rotate left by one character
+                const out = text.slice(idx) + text.slice(0, idx);
+                document.title = out;
+                idx = (idx + 1) % text.length;
+            }
+
+            function start() {
+                if (timer) return;
+                timer = setInterval(tick, speedMs);
+            }
+
+            function stop() {
+                if (!timer) return;
+                clearInterval(timer);
+                timer = null;
+                document.title = originalTitle;
+            }
+
+            // Pause when tab hidden to save resources, resume when visible
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) stop(); else start();
+            });
+
+            // Start after load (so the initial title is set first)
+            if (document.readyState === 'complete' || document.readyState === 'interactive') {
+                start();
+            } else {
+                window.addEventListener('DOMContentLoaded', start);
+            }
+
+            // Ensure we restore original on unload
+            window.addEventListener('beforeunload', stop);
+        })();
