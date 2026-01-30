@@ -88,6 +88,126 @@
             });
         })();
 
+        // ============================================
+        // DYNAMIC MOBILE STATUS BAR COLOR (theme-color)
+        // Updates meta[name="theme-color"] to match visible header background
+        // ============================================
+        (function() {
+            const DEFAULT_COLOR = '#135bec';
+
+            function ensureMeta(name) {
+                let meta = document.querySelector(`meta[name="${name}"]`);
+                if (!meta) {
+                    meta = document.createElement('meta');
+                    meta.name = name;
+                    document.head.appendChild(meta);
+                }
+                return meta;
+            }
+
+            function rgbToHex(input) {
+                if (!input) return DEFAULT_COLOR;
+                if (input.startsWith('#')) return input;
+                const m = input.match(/rgba?\((\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
+                if (m) {
+                    return '#' + [1,2,3].map(i => parseInt(m[i]).toString(16).padStart(2,'0')).join('');
+                }
+                const hexMatch = input.match(/#([0-9a-fA-F]{3,6})/);
+                if (hexMatch) return '#' + hexMatch[1];
+                return DEFAULT_COLOR;
+            }
+
+            function computedBgColor(el) {
+                if (!el) return null;
+                const cs = getComputedStyle(el);
+                const bg = cs.backgroundColor;
+                const bgImage = cs.backgroundImage;
+
+                if (bg && bg !== 'transparent' && bg !== 'rgba(0, 0, 0, 0)') return rgbToHex(bg);
+
+                if (bgImage && bgImage !== 'none') {
+                    // try to extract first color stop (hex or rgb)
+                    const m = bgImage.match(/(#[0-9a-fA-F]{3,6}|rgba?\([^\)]+\))/);
+                    if (m) return rgbToHex(m[1]);
+                }
+
+                return null;
+            }
+
+            function findHeaderColor() {
+                const header = document.querySelector('header');
+                if (!header) return DEFAULT_COLOR;
+
+                // 1) Walk header and its descendants for the first non-transparent background
+                const all = [header, ...header.querySelectorAll('*')];
+                for (const el of all) {
+                    const c = computedBgColor(el);
+                    if (c) return c;
+                }
+
+                // 2) Walk up to body/root to find a background (helps when header is translucent)
+                let el = header.parentElement;
+                while (el) {
+                    const c = computedBgColor(el);
+                    if (c) return c;
+                    el = el.parentElement;
+                }
+
+                // 3) Try body and documentElement explicitly
+                const bodyColor = computedBgColor(document.body);
+                if (bodyColor) return bodyColor;
+                const rootColor = computedBgColor(document.documentElement);
+                if (rootColor) return rootColor;
+
+                // 4) Try some common CSS custom properties that might contain the theme background
+                const rootStyle = getComputedStyle(document.documentElement);
+                const possibleVars = ['--background-dark', '--background-light', '--bg', '--color-bg', '--color-background'];
+                for (const v of possibleVars) {
+                    const val = rootStyle.getPropertyValue(v).trim();
+                    if (val) return rgbToHex(val);
+                }
+
+                return DEFAULT_COLOR;
+            }
+
+            const themeMeta = ensureMeta('theme-color');
+            const tileMeta = ensureMeta('msapplication-TileColor');
+
+            let pending = false;
+            function updateMeta() {
+                if (pending) return;
+                pending = true;
+                requestAnimationFrame(() => {
+                    pending = false;
+                    const color = findHeaderColor() || DEFAULT_COLOR;
+                    themeMeta.setAttribute('content', color);
+                    tileMeta.setAttribute('content', color);
+                });
+            }
+
+            // Update on load, scroll, resize and theme toggle clicks
+            window.addEventListener('load', updateMeta);
+            window.addEventListener('resize', updateMeta, { passive: true });
+            window.addEventListener('scroll', updateMeta, { passive: true });
+
+            // Listen for theme toggle clicks (desktop and mobile)
+            document.addEventListener('click', (e) => {
+                if (e.target.closest('#themeToggle') || e.target.closest('#mobileThemeToggle')) {
+                    setTimeout(updateMeta, 80);
+                }
+            });
+
+            // Observe header class/style changes (e.g., mobile menu open/close)
+            const headerEl = document.querySelector('header');
+            if (headerEl) {
+                const mo = new MutationObserver(updateMeta);
+                mo.observe(headerEl, { attributes: true, attributeFilter: ['class', 'style'] });
+            }
+
+            // Initial call
+            updateMeta();
+        })();
+
         // ======================
         // LOADING SCREEN
         // ======================
