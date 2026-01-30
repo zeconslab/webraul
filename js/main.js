@@ -927,6 +927,8 @@
                 
                 localStorage.setItem('theme', isDark ? 'dark' : 'light');
                 updateThemeIcons(isDark);
+                // Notify other listeners (e.g., theme-color updater)
+                try { document.dispatchEvent(new Event('theme-change')); } catch (e) {}
             }
 
             themeToggle?.addEventListener('click', toggleTheme);
@@ -1258,3 +1260,18 @@
                 }, 2000);
             });
         })();
+
+
+        function updateThemeColor() {
+            const metaTheme = document.querySelector('meta[name="theme-color"]');
+            if (!metaTheme) return;
+            const isDark = document.documentElement.classList.contains('dark');
+
+            metaTheme.setAttribute('content', isDark ? '#101622' : '#135bec');
+        }
+
+        // Al cargar
+        updateThemeColor();
+
+        // Cuando cambias el tema manualmente
+        document.addEventListener('theme-change', updateThemeColor);

@@ -56,9 +56,46 @@
         </script>
 
     <!-- Mobile status bar color (Android Chrome) and iOS bar style -->
-    <meta name="theme-color" content="#135bec" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+
+
     <meta name="msapplication-TileColor" content="#135bec" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <!-- Theme color for browser UI and PWA manifest -->
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f6f6f8" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#101622" />
+    <meta name="theme-color" content="#101622" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/assets/img/icon-192.png" />
+
+    <!-- Inline early script: set initial theme-color to avoid toolbar flash -->
+    <script>
+        (function () {
+            function getInitialColor() {
+                var root = document.documentElement;
+                var cs = window.getComputedStyle ? getComputedStyle(root) : null;
+                var light = cs ? cs.getPropertyValue('--background-light') : null;
+                var dark = cs ? cs.getPropertyValue('--background-dark') : null;
+                light = (light || '#f6f6f8').trim();
+                dark = (dark || '#101622').trim();
+                var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                return prefersDark ? dark : light;
+            }
+            var meta = document.querySelector('meta[name="theme-color"]');
+            if (!meta) {
+                meta = document.createElement('meta');
+                meta.name = 'theme-color';
+                document.head.appendChild(meta);
+            }
+            try {
+                meta.content = getInitialColor();
+            } catch (e) {
+                /* ignore */
+            }
+        })();
+    </script>
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap"
