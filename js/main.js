@@ -39,6 +39,8 @@
                     mobileMenu.classList.remove('active');
                     hamburgerIcon?.classList.remove('hidden');
                     closeIcon?.classList.add('hidden');
+                    // Restaurar header redondeado si está en la cima
+                    headerEl?.classList.remove('header-menu-open');
                     // remove fixed positioning
                     mobileMenu.style.position = '';
                     mobileMenu.style.top = '';
@@ -51,7 +53,8 @@
                     window.removeEventListener('scroll', updateMobileMenuPosition);
                     window.removeEventListener('resize', updateMobileMenuPosition);
                 } else {
-                    // Abrir menú
+                    // Abrir menú — forzar header plano si está en la cima
+                    headerEl?.classList.add('header-menu-open');
                     mobileMenu.classList.add('active');
                     hamburgerIcon?.classList.add('hidden');
                     closeIcon?.classList.remove('hidden');
@@ -72,8 +75,9 @@
             // Eventos
             mobileMenuToggle.addEventListener('click', toggleMobileMenu);
             
-            // Cerrar al hacer click en un link
-            mobileNavLinks?.forEach(link => {
+            // Cerrar al hacer click en un link (nav links + CTA del footer)
+            const allMobileLinks = mobileMenu?.querySelectorAll('.mobile-nav-link, a[href^="#"]');
+            allMobileLinks?.forEach(link => {
                 link.addEventListener('click', () => {
                     setTimeout(toggleMobileMenu, 200);
                 });

@@ -450,6 +450,31 @@ html:not(.dark) .header-inner-content {
     animation-name: header-scroll-content-light;
 }
 
+/* Mobile menu open → force header to scrolled/flat state */
+header.header-menu-open .header-scroll-container {
+    padding: 0 !important;
+}
+header.header-menu-open .header-inner-content {
+    max-width: 100% !important;
+    border-radius: 0 !important;
+    padding-top: .75rem !important;
+    padding-bottom: .75rem !important;
+    background-color: rgba(7,11,20,.98) !important;
+    backdrop-filter: blur(24px) !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-top: none !important;
+    border-bottom: 1px solid rgba(74,158,255,.1) !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,.4) !important;
+    transition: border-radius .2s ease, max-width .2s ease, padding .2s ease !important;
+}
+html:not(.dark) header.header-menu-open .header-inner-content {
+    background-color: rgba(255,255,255,.95) !important;
+    backdrop-filter: blur(24px) saturate(160%) !important;
+    border-bottom: 1px solid rgba(37,99,235,.15) !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,.08) !important;
+}
+
 /* ============================================
    NAVIGATION
    ============================================ */
