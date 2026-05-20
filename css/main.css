@@ -141,6 +141,13 @@ html:not(.dark) .mesh-gradient {
 }
 
 /* ============================================
+   UTILITY OVERRIDES
+   ============================================ */
+/* Material Symbols font CSS sets display:inline-block, overriding .hidden on icon spans.
+   Target only icon spans so responsive helpers like hidden md:flex still work. */
+.material-symbols-outlined.hidden { display: none !important; }
+
+/* ============================================
    BASE RESET
    ============================================ */
 @layer base {
@@ -524,6 +531,10 @@ html:not(.dark) header.header-menu-open .header-inner-content {
    MOBILE MENU — full-width opaque panel
    ============================================ */
 .mobile-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
     max-height: 0;
     overflow: hidden;
     opacity: 0;

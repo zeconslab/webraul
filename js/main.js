@@ -25,51 +25,22 @@
                 const isActive = mobileMenu.classList.contains('active');
                 const headerEl = document.querySelector('header');
 
-                function updateMobileMenuPosition() {
-                    if (!headerEl) return;
-                    const rect = headerEl.getBoundingClientRect();
-                    const gap = 0;
-                    mobileMenu.style.top = rect.bottom + gap + 'px';
-                    mobileMenu.style.left = '0';
-                    mobileMenu.style.right = '0';
-                }
-
                 if (isActive) {
                     // Cerrar menú
                     mobileMenu.classList.remove('active');
                     hamburgerIcon?.classList.remove('hidden');
                     closeIcon?.classList.add('hidden');
-                    // Restaurar header redondeado si está en la cima
                     headerEl?.classList.remove('header-menu-open');
-                    // remove fixed positioning
-                    mobileMenu.style.position = '';
-                    mobileMenu.style.top = '';
-                    mobileMenu.style.left = '';
-                    mobileMenu.style.right = '';
-                    mobileMenu.style.transition = '';
-                    // remove outside click listener
                     document.removeEventListener('click', handleOutsideClick);
-                    // remove scroll listener
-                    window.removeEventListener('scroll', updateMobileMenuPosition);
-                    window.removeEventListener('resize', updateMobileMenuPosition);
                 } else {
-                    // Abrir menú — forzar header plano si está en la cima
+                    // Abrir menú — el menú es position:absolute top:100% dentro del header fixed,
+                    // así siempre queda pegado al borde inferior del header sin cálculos JS.
                     headerEl?.classList.add('header-menu-open');
                     mobileMenu.classList.add('active');
                     hamburgerIcon?.classList.add('hidden');
                     closeIcon?.classList.remove('hidden');
-                    // fix the menu under the header and keep gap while scrolling
-                    mobileMenu.style.position = 'fixed';
-                    mobileMenu.style.width = '100%';
-                    mobileMenu.style.transition = 'top 180ms ease';
-                    updateMobileMenuPosition();
-                    // update position on scroll/resize to maintain gap
-                    window.addEventListener('scroll', updateMobileMenuPosition, { passive: true });
-                    window.addEventListener('resize', updateMobileMenuPosition);
-                    // add outside click listener after current event loop to avoid immediate close
                     setTimeout(() => document.addEventListener('click', handleOutsideClick));
                 }
-                
             }
             
             // Eventos
@@ -461,10 +432,9 @@
             
             // Hacer scroll hacia arriba al hacer clic
             scrollToTopBtn.addEventListener('click', function() {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                // Limpiar el hash de la URL sin recargar la página
+                history.pushState('', document.title, window.location.pathname + window.location.search);
             });
             
             // Escuchar el evento de scroll

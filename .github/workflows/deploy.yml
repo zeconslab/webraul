@@ -1,0 +1,133 @@
+name: Build & Deploy to Production
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  # ── Job 1: Validar ───────────────────────────────────────
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verificar archivos críticos
+        run: |
+          for file in index.html css/main.css js/main.js manifest.json robots.txt sitemap.xml; do
+            [ -f "$file" ] && echo "✓ $file" || { echo "❌ Falta: $file"; exit 1; }
+          done
+
+      - name: Verificar SEO tags
+        run: |
+          grep -q '<title>' index.html        && echo "✓ title"       || { echo "❌ Falta title"; exit 1; }
+          grep -q 'meta.*description' index.html && echo "✓ description" || { echo "❌ Falta description"; exit 1; }
+          grep -q 'og:title' index.html       && echo "✓ og:title"    || { echo "❌ Falta og:title"; exit 1; }
+          grep -q 'canonical' index.html      && echo "✓ canonical"   || { echo "❌ Falta canonical"; exit 1; }
+
+      - name: Verificar headings en orden
+        run: |
+          python3 -c "
+          import re, sys
+          html = open('index.html').read()
+          tags = re.findall(r'<h([1-6])', html)
+          levels = [int(t) for t in tags]
+          for i in range(1, len(levels)):
+              if levels[i] > levels[i-1] + 1:
+                  print(f'❌ Heading jump: h{levels[i-1]} → h{levels[i]}')
+                  sys.exit(1)
+          print(f'✓ Heading order OK ({len(levels)} headings)')
+          "
+
+  # ── Job 2: Build + Deploy ────────────────────────────────
+  deploy:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+    needs: validate
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Build Tailwind CSS
+        run: |
+          ./node_modules/.bin/tailwindcss \
+            -c tailwind.config.js \
+            -i src/input.css \
+            -o css/tailwind.css \
+            --minify
+          echo "✓ tailwind.css: $(wc -c < css/tailwind.css) bytes"
+
+      - name: Minificar CSS
+        run: |
+          node -e "
+            const fs = require('fs');
+            let css = fs.readFileSync('css/main.css', 'utf8');
+            css = css.replace(/\/\*[\s\S]*?\*\//g,'').replace(/\s*([{}:;,>~+])\s*/g,'\$1').replace(/\s+/g,' ').replace(/;\}/g,'}').trim();
+            fs.writeFileSync('css/main.css', css);
+          "
+          echo "✓ main.css minificado: $(wc -c < css/main.css) bytes"
+
+      - name: Minificar JS
+        run: |
+          ./node_modules/.bin/terser js/main.js --compress --mangle -o js/main.js
+          echo "✓ main.js minificado: $(wc -c < js/main.js) bytes"
+
+      - name: Configurar SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+
+      - name: Deploy via rsync
+        run: |
+          rsync -az \
+            --exclude='*.ps1' --exclude='*.sh' --exclude='.git' \
+            --exclude='.gitignore' --exclude='*.md' --exclude='node_modules' \
+            --exclude='.DS_Store' --exclude='.claude' --exclude='src/' --exclude='tailwind.config.js' \
+            --exclude='package*.json' --exclude='nginx-cache.conf' --exclude='.github' \
+            ./ raul@31.220.60.54:/home/raul/apps/root/
+
+      - name: Aplicar permisos
+        run: |
+          ssh raul@31.220.60.54 "
+            chmod -R 755 /home/raul/apps/root &&
+            find /home/raul/apps/root -type f -exec chmod 644 {} \;
+          "
+
+      - name: Configurar cache headers Nginx
+        run: |
+          scp nginx-cache.conf raul@31.220.60.54:/tmp/nginx-cache.conf
+          ssh raul@31.220.60.54 "
+            sudo cp /tmp/nginx-cache.conf /etc/nginx/conf.d/pimentel-cache.conf &&
+            sudo nginx -t
+          " && echo "✓ Cache headers aplicados" || echo "⚠ Cache headers no aplicados"
+
+      - name: Recargar Nginx
+        run: ssh raul@31.220.60.54 "sudo systemctl reload nginx"
+
+      - name: Health check
+        run: |
+          sleep 3
+          HTTP=$(curl -o /dev/null -s -w "%{http_code}" --max-time 15 https://pimentel.cloud)
+          echo "HTTP: $HTTP"
+          [ "$HTTP" = "200" ] || { echo "❌ Sitio no responde"; exit 1; }
+          echo "✓ Sitio en línea"
+
+      - name: Resumen
+        if: success()
+        run: |
+          echo "🚀 Deploy exitoso — $(date '+%Y-%m-%d %H:%M UTC')"
+          echo "🌐 https://pimentel.cloud"

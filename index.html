@@ -162,12 +162,13 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="css/tailwind.css" as="style">
     <link rel="preload" href="css/main.css" as="style">
     <link rel="preload"
         href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700;800;900&display=swap"
         as="style">
 
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="stylesheet" href="css/tailwind.css">
 
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet" media="print" onload="this.media='all'" />
@@ -178,48 +179,6 @@
     <noscript><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"></noscript>
 
     <link rel="stylesheet" href="css/main.css">
-
-    <script id="tailwind-config">
-    tailwind.config = {
-        darkMode: "class",
-        theme: {
-            extend: {
-                colors: {
-                    /* RGB-variable format allows opacity modifiers like bg-primary/10 */
-                    "primary":       "rgb(var(--primary-rgb) / <alpha-value>)",
-                    "accent":        "rgb(var(--accent-rgb) / <alpha-value>)",
-                    "purple-acc":    "#A78BFA",
-                    /* Simple variable references — no opacity modifiers used on these */
-                    "bg-base":       "var(--bg-base)",
-                    "bg-surface":    "var(--bg-surface)",
-                    "bg-card":       "var(--bg-card)",
-                    "bg-elevated":   "var(--bg-elevated)",
-                    "text-base":     "var(--text-base)",
-                    "text-secondary":"var(--text-secondary)",
-                    "text-muted":    "var(--text-muted)",
-                    "border-subtle": "var(--border)",
-                    "border-bright": "var(--border-bright)",
-                    "terminal-green":"var(--terminal-green)",
-                    /* backward compat */
-                    "background-light": "#f6f6f8",
-                    "background-dark":  "#070B14",
-                    "accent-cyan":   "rgb(var(--accent-rgb) / <alpha-value>)",
-                },
-                fontFamily: {
-                    "display": ["Space Grotesk", "sans-serif"],
-                    "mono":    ["JetBrains Mono", "monospace"],
-                    "body":    ["Inter", "sans-serif"],
-                },
-                borderRadius: {
-                    "DEFAULT": "0.5rem",
-                    "lg": "1rem",
-                    "xl": "1.5rem",
-                    "full": "9999px"
-                },
-            },
-        },
-    }
-    </script>
 </head>
 
 <body class="font-display bg-bg-base text-text-base transition-colors duration-300">
@@ -554,7 +513,7 @@
                         <span class="material-symbols-outlined text-[18px]">chat</span>
                     </div>
                     <div>
-                        <h4 class="font-bold text-white">Comunicación directa</h4>
+                        <h3 class="font-bold text-white">Comunicación directa</h3>
                         <p class="text-text-secondary text-sm mt-0.5">Hablarás conmigo en todo momento, no con un account manager.</p>
                     </div>
                 </div>
@@ -563,7 +522,7 @@
                         <span class="material-symbols-outlined text-[18px]">trending_up</span>
                     </div>
                     <div>
-                        <h4 class="font-bold text-white">Foco en resultados reales</h4>
+                        <h3 class="font-bold text-white">Foco en resultados reales</h3>
                         <p class="text-text-secondary text-sm mt-0.5">Diseño enfocado en conversión, no solo en estética.</p>
                     </div>
                 </div>
@@ -572,7 +531,7 @@
                         <span class="material-symbols-outlined text-[18px]">support_agent</span>
                     </div>
                     <div>
-                        <h4 class="font-bold text-white">Soporte técnico continuo</h4>
+                        <h3 class="font-bold text-white">Soporte técnico continuo</h3>
                         <p class="text-text-secondary text-sm mt-0.5">Mantenimiento post-lanzamiento para que nunca estés solo.</p>
                     </div>
                 </div>
