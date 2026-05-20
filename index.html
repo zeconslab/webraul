@@ -291,47 +291,61 @@
     </div>
 
     <!-- Mobile menu -->
-    <div id="mobileMenu"
-        class="md:hidden absolute top-full left-0 right-0 bg-transparent overflow-hidden max-h-0 mobile-dropdown">
-        <div class="max-w-[1200px] mx-auto px-8">
-            <div class="glass-card rounded-xl shadow-xl overflow-hidden px-4">
-                <div class="py-5 space-y-3">
-                    <nav class="flex flex-col gap-1">
-                        <a class="mobile-nav-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/5 transition-all" href="#sobre-mi">
-                            <span class="material-symbols-outlined text-primary text-xl">person</span>
-                            <span class="text-sm font-semibold">Sobre Mí</span>
-                        </a>
-                        <a class="mobile-nav-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/5 transition-all" href="#servicios">
-                            <span class="material-symbols-outlined text-primary text-xl">handyman</span>
-                            <span class="text-sm font-semibold">Servicios</span>
-                        </a>
-                        <a class="mobile-nav-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/5 transition-all" href="#proceso">
-                            <span class="material-symbols-outlined text-primary text-xl">timeline</span>
-                            <span class="text-sm font-semibold">Proceso</span>
-                        </a>
-                        <a class="mobile-nav-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/5 transition-all" href="#proyectos">
-                            <span class="material-symbols-outlined text-primary text-xl">grid_view</span>
-                            <span class="text-sm font-semibold">Proyectos</span>
-                        </a>
-                        <a class="mobile-nav-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/5 transition-all" href="#faq">
-                            <span class="material-symbols-outlined text-primary text-xl">help</span>
-                            <span class="text-sm font-semibold">FAQ</span>
-                        </a>
-                    </nav>
-                    <div class="h-px bg-white/8"></div>
-                    <button id="mobileThemeToggle"
-                        class="w-full flex items-center justify-between px-4 py-3 rounded-lg bg-white/5 hover:bg-white/10 transition-all">
-                        <div class="flex items-center gap-3">
-                            <span class="material-symbols-outlined text-primary text-xl">palette</span>
-                            <span class="text-sm font-semibold">Cambiar tema</span>
-                        </div>
-                        <div>
-                            <span class="material-symbols-outlined text-xl mobile-theme-icon-light">light_mode</span>
-                            <span class="material-symbols-outlined text-xl mobile-theme-icon-dark hidden">dark_mode</span>
-                        </div>
-                    </button>
+    <div id="mobileMenu" class="md:hidden mobile-dropdown">
+        <div class="mobile-menu-panel">
+            <!-- Nav links -->
+            <nav class="flex flex-col py-2">
+                <a class="mobile-nav-link" href="#sobre-mi">
+                    <div class="mobile-nav-icon-wrap">
+                        <span class="material-symbols-outlined text-[20px]">person</span>
+                    </div>
+                    <span class="text-sm font-semibold text-text-base">Sobre Mí</span>
+                    <span class="material-symbols-outlined text-[18px] text-text-secondary ml-auto">chevron_right</span>
+                </a>
+                <a class="mobile-nav-link" href="#servicios">
+                    <div class="mobile-nav-icon-wrap">
+                        <span class="material-symbols-outlined text-[20px]">handyman</span>
+                    </div>
+                    <span class="text-sm font-semibold text-text-base">Servicios</span>
+                    <span class="material-symbols-outlined text-[18px] text-text-secondary ml-auto">chevron_right</span>
+                </a>
+                <a class="mobile-nav-link" href="#proceso">
+                    <div class="mobile-nav-icon-wrap">
+                        <span class="material-symbols-outlined text-[20px]">timeline</span>
+                    </div>
+                    <span class="text-sm font-semibold text-text-base">Proceso</span>
+                    <span class="material-symbols-outlined text-[18px] text-text-secondary ml-auto">chevron_right</span>
+                </a>
+                <a class="mobile-nav-link" href="#proyectos">
+                    <div class="mobile-nav-icon-wrap">
+                        <span class="material-symbols-outlined text-[20px]">grid_view</span>
+                    </div>
+                    <span class="text-sm font-semibold text-text-base">Proyectos</span>
+                    <span class="material-symbols-outlined text-[18px] text-text-secondary ml-auto">chevron_right</span>
+                </a>
+                <a class="mobile-nav-link" href="#faq">
+                    <div class="mobile-nav-icon-wrap">
+                        <span class="material-symbols-outlined text-[20px]">help</span>
+                    </div>
+                    <span class="text-sm font-semibold text-text-base">FAQ</span>
+                    <span class="material-symbols-outlined text-[18px] text-text-secondary ml-auto">chevron_right</span>
+                </a>
+            </nav>
+            <!-- Footer: theme + CTA -->
+            <div class="mobile-menu-footer">
+                <button id="mobileThemeToggle" class="mobile-nav-link w-full">
+                    <div class="mobile-nav-icon-wrap">
+                        <span class="material-symbols-outlined text-[20px]">palette</span>
+                    </div>
+                    <span class="text-sm font-semibold text-text-base">Cambiar tema</span>
+                    <div class="ml-auto flex items-center">
+                        <span class="material-symbols-outlined text-[18px] text-text-secondary mobile-theme-icon-light">light_mode</span>
+                        <span class="material-symbols-outlined text-[18px] text-text-secondary mobile-theme-icon-dark hidden">dark_mode</span>
+                    </div>
+                </button>
+                <div class="px-4 pb-5 pt-3">
                     <a href="#contacto"
-                        class="w-full animated-gradient-btn text-white text-sm font-bold px-6 py-4 rounded-xl neon-btn-glow flex items-center justify-center gap-2">
+                        class="animated-gradient-btn neon-btn-glow w-full flex items-center justify-center gap-2 text-white font-bold text-sm py-3.5 rounded-xl">
                         Empieza tu proyecto
                         <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
                     </a>

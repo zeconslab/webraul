@@ -490,44 +490,113 @@ html:not(.dark) .header-inner-content {
     background: var(--primary);
 }
 
-/* Mobile active */
-.mobile-nav-link.nav-active {
-    background: rgba(74,158,255,.1);
-    color: var(--primary);
-}
-
-html:not(.dark) .nav-link.nav-active { background: rgba(37,99,235,.08); }
-html:not(.dark) .mobile-nav-link.nav-active { background: rgba(37,99,235,.08); }
-
 .nav-link-icon {
     font-size: 1.125rem;
     flex-shrink: 0;
 }
 
-/* Mobile Menu */
+/* ============================================
+   MOBILE MENU — full-width opaque panel
+   ============================================ */
 .mobile-dropdown {
     max-height: 0;
+    overflow: hidden;
     opacity: 0;
-    transition: max-height .3s ease, opacity .3s ease;
+    transition: max-height .35s cubic-bezier(.4,0,.2,1), opacity .2s ease;
+    z-index: 49;
 }
 
 .mobile-dropdown.active {
-    max-height: 600px;
+    max-height: 540px;
     opacity: 1;
 }
 
-.mobile-nav-link {
-    transform: translateY(-8px);
-    opacity: 0;
-    transition: all .3s ease-out;
+/* Panel background */
+.mobile-menu-panel {
+    background: #0D1526;
+    border-bottom: 1px solid rgba(255,255,255,.07);
+    box-shadow: 0 16px 48px rgba(0,0,0,.65), 0 2px 8px rgba(0,0,0,.4);
 }
 
+html:not(.dark) .mobile-menu-panel {
+    background: #FFFFFF;
+    border-top: 2px solid rgba(37,99,235,.25);
+    border-bottom: 1px solid rgba(0,0,0,.06);
+    box-shadow: 0 12px 40px rgba(0,0,0,.12);
+}
+
+/* Nav link rows */
+.mobile-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 0.75rem 1.25rem;
+    border-left: 3px solid transparent;
+    transform: translateY(-6px);
+    opacity: 0;
+    transition: transform .25s ease-out, opacity .25s ease-out, background .15s, border-color .15s;
+}
+
+.mobile-nav-link:active { background: rgba(74,158,255,.07); }
+html:not(.dark) .mobile-nav-link:active { background: rgba(37,99,235,.05); }
+
+/* Icon badge */
+.mobile-nav-icon-wrap {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: rgba(74,158,255,.1);
+    border: 1px solid rgba(74,158,255,.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    flex-shrink: 0;
+}
+
+html:not(.dark) .mobile-nav-icon-wrap {
+    background: rgba(37,99,235,.08);
+    border-color: rgba(37,99,235,.18);
+}
+
+/* Footer divider */
+.mobile-menu-footer {
+    border-top: 1px solid rgba(255,255,255,.07);
+}
+
+html:not(.dark) .mobile-menu-footer {
+    border-top-color: rgba(0,0,0,.08);
+}
+
+/* Active nav state */
+.mobile-nav-link.nav-active {
+    background: rgba(74,158,255,.08);
+    border-left-color: var(--primary);
+}
+
+.mobile-nav-link.nav-active .text-text-base { color: var(--primary) !important; }
+.mobile-nav-link.nav-active .mobile-nav-icon-wrap { background: rgba(74,158,255,.18); }
+
+html:not(.dark) .mobile-nav-link.nav-active {
+    background: rgba(37,99,235,.06);
+    border-left-color: #2563EB;
+}
+
+html:not(.dark) .mobile-nav-link.nav-active .text-text-base { color: #2563EB !important; }
+html:not(.dark) .mobile-nav-link.nav-active .mobile-nav-icon-wrap {
+    background: rgba(37,99,235,.15);
+}
+
+/* Desktop active state (unchanged) */
+html:not(.dark) .nav-link.nav-active { background: rgba(37,99,235,.08); }
+
+/* Staggered entrance */
 .mobile-dropdown.active .mobile-nav-link { transform: translateY(0); opacity: 1; }
-.mobile-dropdown.active .mobile-nav-link:nth-child(1) { transition-delay: .05s; }
-.mobile-dropdown.active .mobile-nav-link:nth-child(2) { transition-delay: .10s; }
-.mobile-dropdown.active .mobile-nav-link:nth-child(3) { transition-delay: .15s; }
-.mobile-dropdown.active .mobile-nav-link:nth-child(4) { transition-delay: .20s; }
-.mobile-dropdown.active .mobile-nav-link:nth-child(5) { transition-delay: .25s; }
+.mobile-dropdown.active nav .mobile-nav-link:nth-child(1) { transition-delay: .04s; }
+.mobile-dropdown.active nav .mobile-nav-link:nth-child(2) { transition-delay: .08s; }
+.mobile-dropdown.active nav .mobile-nav-link:nth-child(3) { transition-delay: .12s; }
+.mobile-dropdown.active nav .mobile-nav-link:nth-child(4) { transition-delay: .16s; }
+.mobile-dropdown.active nav .mobile-nav-link:nth-child(5) { transition-delay: .20s; }
 
 /* ============================================
    PROGRESS BAR

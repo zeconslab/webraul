@@ -28,8 +28,7 @@
                 function updateMobileMenuPosition() {
                     if (!headerEl) return;
                     const rect = headerEl.getBoundingClientRect();
-                    // small gap (4px) to keep it detached
-                    const gap = 4; // smaller gap for a tighter, more elegant look
+                    const gap = 0;
                     mobileMenu.style.top = rect.bottom + gap + 'px';
                     mobileMenu.style.left = '0';
                     mobileMenu.style.right = '0';
