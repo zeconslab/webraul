@@ -955,7 +955,7 @@
                 title: 'Everglow Spa',
                 badge: 'Cliente satisfecho',
                 tech: 'Laravel, MySQL, HTML, CSS',
-                description: 'Sistema integral para spa de masajes relajantes con gestión completa de citas, control de pacientes y seguimiento personalizado de tratamientos. Incluye panel administrativo para gestión de servicios, horarios y reportes.',
+                description: 'Sistema integral para spa de masajes relajantes con gestión completa de citas, control de pacientes y seguimiento personalizado de tratamientos. Incluye panel administrativo para gestión de servicios, horarios y clientes.',
                 features: ['Sistema de citas online', 'Gestión de pacientes', 'Historial de tratamientos', 'Panel administrativo', 'Reportes y estadísticas', 'Notificaciones automáticas'],
                 website: 'https://everglow.com.mx/',
                 images: [

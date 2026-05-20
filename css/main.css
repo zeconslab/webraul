@@ -962,6 +962,15 @@ input.border-red-500, textarea.border-red-500 {
 /* Content panel */
 .modal-content-panel {
     background: var(--bg-card);
+    min-height: 0;   /* critical: allows flex-1 child to scroll */
+    flex: 1 1 0%;
+}
+
+/* On desktop, let the card size to content (not fixed dvh height) */
+@media (min-width: 640px) {
+    .modal-card {
+        height: auto !important;
+    }
 }
 
 /* Close button */
