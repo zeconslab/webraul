@@ -685,54 +685,18 @@
             });
         })();
 
-        // FAQ Accordion behavior: close others when opening one
+        // FAQ Accordion — solo uno abierto a la vez, todos cerrados al inicio
         (function() {
-            const faqDetails = document.querySelectorAll('#faq details');
-            let isAnimating = false;
-            
-            faqDetails.forEach(detail => {
-                detail.addEventListener('click', function(e) {
-                    // Prevenir el comportamiento por defecto si está animando
-                    if (isAnimating) {
-                        e.preventDefault();
-                        return;
-                    }
-                    
-                    // Si se está cerrando, permitir sin más acciones
-                    if (this.open) {
-                        return;
-                    }
-                    
-                    // Si se está abriendo
+            const items = document.querySelectorAll('#faq details');
+            // Asegurar que todos empiecen cerrados
+            items.forEach(d => d.removeAttribute('open'));
+
+            items.forEach(item => {
+                item.addEventListener('click', function(e) {
                     e.preventDefault();
-                    isAnimating = true;
-                    
-                    const clickedDetail = this;
-                    const wasAnyOpen = Array.from(faqDetails).some(d => d.open);
-                    
-                    // Cerrar todas las demás primero
-                    faqDetails.forEach(otherDetail => {
-                        if (otherDetail !== clickedDetail && otherDetail.open) {
-                            otherDetail.open = false;
-                        }
-                    });
-                    
-                    // Esperar solo 200ms para que las animaciones se solapen
-                    setTimeout(() => {
-                        clickedDetail.open = true;
-                        isAnimating = false;
-                        
-                        // Solo hacer scroll si no había ninguna abierta antes
-                        if (!wasAnyOpen) {
-                            setTimeout(() => {
-                                clickedDetail.scrollIntoView({
-                                    behavior: 'smooth',
-                                    block: 'nearest',
-                                    inline: 'nearest'
-                                });
-                            }, 200);
-                        }
-                    }, wasAnyOpen ? 200 : 0);
+                    const isOpen = this.open;
+                    items.forEach(d => d.open = false);
+                    if (!isOpen) this.open = true;
                 });
             });
         })();

@@ -60,6 +60,38 @@ html:not(.dark) p.text-white { color: var(--text-base) !important; }
 .portfolio-glass-overlay .text-white,
 .modal-img-panel .text-white { color: #fff !important; }
 
+/* ============================================
+   HERO TERMINAL — always dark in both themes
+   ============================================ */
+html:not(.dark) .terminal-window {
+    border-color: rgba(255,255,255,.08);
+}
+html:not(.dark) .terminal-window .bg-bg-elevated {
+    background: #1C2840 !important;
+    border-color: rgba(255,255,255,.07) !important;
+}
+/* Body bg + default text color for plain text nodes (colons, commas, etc.) */
+html:not(.dark) .terminal-window .bg-bg-surface {
+    background: #0E1525 !important;
+    color: rgba(226,232,240,.85) !important;
+}
+/* text-white inside terminal must beat html:not(.dark) p.text-white specificity */
+html:not(.dark) .terminal-window .text-white {
+    color: #fff !important;
+}
+html:not(.dark) .terminal-window .text-text-muted {
+    color: #4B5878 !important;
+}
+html:not(.dark) .terminal-window .text-border-bright {
+    color: #5A728A !important;
+}
+html:not(.dark) .terminal-window .text-text-base {
+    color: rgba(226,232,240,.85) !important;
+}
+html:not(.dark) .terminal-window .text-text-secondary {
+    color: #8899B4 !important;
+}
+
 html:not(.dark) .glass-card {
     background: rgba(255, 255, 255, 0.92);
     backdrop-filter: blur(20px) saturate(150%);
@@ -685,36 +717,74 @@ html:not(.dark) .mobile-nav-link.nav-active { background: rgba(37,99,235,.08); }
    ============================================ */
 details {
     border: 1px solid var(--border);
-    border-radius: .75rem;
-    transition: border-color .3s ease, box-shadow .3s ease;
+    border-radius: .875rem;
     background: var(--bg-card);
+    transition: border-color .3s ease,
+                box-shadow .3s ease,
+                background .3s ease,
+                transform .25s cubic-bezier(.34,1.56,.64,1);
+    will-change: transform;
 }
 
-details summary { transition: color .3s ease; }
+/* Summary row */
+details summary {
+    color: var(--text-base);
+    transition: color .25s ease;
+    user-select: none;
+}
 details summary::-webkit-details-marker { display: none; }
-details[open] summary { color: var(--primary); }
+details[open] > summary { color: var(--primary); }
 
-details[open] summary .material-symbols-outlined { transform: rotate(180deg); }
+/* Chevron icon */
 details summary .material-symbols-outlined {
-    transition: transform .35s cubic-bezier(.4,0,.2,1);
+    transition: transform .35s cubic-bezier(.4,0,.2,1),
+                color .25s ease;
+}
+details[open] > summary .material-symbols-outlined {
+    transform: rotate(180deg);
 }
 
+/* Animated body — opacity + translate + max-height */
 details > div {
     max-height: 0;
+    opacity: 0;
     overflow: hidden;
-    transition: max-height .45s cubic-bezier(.65,0,.35,1),
-                padding .45s cubic-bezier(.65,0,.35,1);
+    transform: translateY(-6px);
+    transition: max-height .42s cubic-bezier(.4,0,.2,1),
+                opacity .32s ease,
+                transform .32s cubic-bezier(.4,0,.2,1),
+                padding .42s cubic-bezier(.4,0,.2,1);
 }
-details[open] > div { max-height: 400px; }
-details:not([open]) > div { padding-top: 0 !important; padding-bottom: 0 !important; }
+details[open] > div {
+    max-height: 500px;
+    opacity: 1;
+    transform: translateY(0);
+}
+details:not([open]) > div {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
 
+/* Hover state */
 details:hover {
-    border-color: rgba(74,158,255,.25) !important;
-    box-shadow: 0 0 0 1px rgba(74,158,255,.1);
+    border-color: rgba(74,158,255,.28);
+    box-shadow: 0 4px 20px rgba(0,0,0,.08), 0 0 0 1px rgba(74,158,255,.08);
+    transform: translateY(-1px);
 }
+
+/* Open state */
 details[open] {
-    border-color: rgba(74,158,255,.35) !important;
-    box-shadow: 0 0 20px rgba(74,158,255,.1);
+    border-color: rgba(74,158,255,.4);
+    box-shadow: 0 8px 32px rgba(74,158,255,.08), 0 0 0 1px rgba(74,158,255,.12);
+    transform: translateY(-2px);
+}
+
+/* Light mode shadow */
+html:not(.dark) details:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,.07), 0 0 0 1px rgba(37,99,235,.1);
+}
+html:not(.dark) details[open] {
+    box-shadow: 0 8px 24px rgba(37,99,235,.10), 0 0 0 1px rgba(37,99,235,.15);
 }
 
 /* ============================================
@@ -927,8 +997,8 @@ section .blur-3xl:nth-child(3) { animation-delay: 4s; animation-duration: 16s; }
    ABOUT SECTION - CODE CARD
    ============================================ */
 .code-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
+    background: #141E35;
+    border: 1px solid rgba(255,255,255,.08);
     border-radius: 1rem;
     font-family: 'JetBrains Mono', monospace;
     font-size: .8125rem;
@@ -942,11 +1012,25 @@ section .blur-3xl:nth-child(3) { animation-delay: 4s; animation-duration: 16s; }
     align-items: center;
     gap: .75rem;
     padding: .875rem 1.25rem;
-    background: var(--bg-elevated);
-    border-bottom: 1px solid var(--border);
+    background: #1C2840;
+    border-bottom: 1px solid rgba(255,255,255,.07);
 }
 
 .code-card-body { padding: 1.5rem; }
+
+/* CODE CARD — light-mode overrides (card stays dark, fix inherited text colors) */
+html:not(.dark) .code-card-body {
+    color: rgba(226,232,240,.85) !important;
+}
+html:not(.dark) .code-card .text-text-secondary {
+    color: #8899B4 !important;
+}
+html:not(.dark) .code-card .text-text-muted {
+    color: #4B5878 !important;
+}
+html:not(.dark) .code-card .text-white {
+    color: #fff !important;
+}
 
 /* ============================================
    TECH STACK PILLS
