@@ -986,6 +986,7 @@
         const projectData = {
             everglow: {
                 title: 'Everglow Spa',
+                badge: 'Cliente satisfecho',
                 tech: 'Laravel, MySQL, HTML, CSS',
                 description: 'Sistema integral para spa de masajes relajantes con gestión completa de citas, control de pacientes y seguimiento personalizado de tratamientos. Incluye panel administrativo para gestión de servicios, horarios y reportes.',
                 features: ['Sistema de citas online', 'Gestión de pacientes', 'Historial de tratamientos', 'Panel administrativo', 'Reportes y estadísticas', 'Notificaciones automáticas'],
@@ -1018,59 +1019,62 @@
             // Actualizar imágenes
             updateModalImages();
             
+            // Badge
+            const badge = document.getElementById('modalBadge');
+            if (badge) badge.textContent = project.badge || 'Proyecto completado';
+
             // Generar contenido dinámico
+            const techIcons = { laravel:'deployed_code', mysql:'database', html:'code', css:'css', javascript:'javascript', react:'hub', wordpress:'web', php:'terminal', tailwind:'style', figma:'brush' };
             content.innerHTML = `
                 <div>
-                    <span class="text-primary font-bold text-xs uppercase tracking-widest bg-primary/10 px-3 py-1 rounded-full">
-                        ${project.tech.split(',')[0].trim()}
-                    </span>
-                    <h2 class="text-3xl lg:text-4xl font-black mt-4 leading-tight">${project.title}</h2>
+                    <h2 class="text-2xl sm:text-3xl font-black leading-tight text-text-base">${project.title}</h2>
                 </div>
-                <div class="space-y-4">
-                    <h4 class="text-sm font-black uppercase text-gray-500 tracking-wider">Descripción del Proyecto</h4>
-                    <div class="grid gap-4">
-                        <div class="flex items-start gap-3">
-                            <span class="material-symbols-outlined text-primary text-xl">check_circle</span>
-                            <p class="text-sm text-gray-600 dark:text-gray-400">${project.description}</p>
-                        </div>
-                    </div>
+
+                <div class="space-y-2">
+                    <p class="text-[11px] font-bold uppercase tracking-widest text-text-muted">Descripción</p>
+                    <p class="text-sm leading-relaxed text-text-secondary">${project.description}</p>
                 </div>
-                <div class="space-y-4">
-                    <h4 class="text-sm font-black uppercase text-gray-500 tracking-wider">Características Principales</h4>
-                    <div class="grid gap-2">
-                        ${project.features.map(feature => `
-                            <div class="flex items-start gap-3">
-                                <span class="material-symbols-outlined text-primary text-xl">check_circle</span>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">${feature}</p>
-                            </div>
+
+                <div class="space-y-3">
+                    <p class="text-[11px] font-bold uppercase tracking-widest text-text-muted">Características</p>
+                    <ul class="space-y-2">
+                        ${project.features.map(f => `
+                            <li class="flex items-start gap-2.5">
+                                <span class="material-symbols-outlined shrink-0 mt-0.5" style="font-size:16px;color:var(--primary)">check_circle</span>
+                                <span class="text-sm text-text-secondary leading-snug">${f}</span>
+                            </li>
                         `).join('')}
-                    </div>
+                    </ul>
                 </div>
-                <div class="space-y-4">
-                    <h4 class="text-sm font-black uppercase text-gray-500 tracking-wider">Stack Tecnológico</h4>
-                    <div class="flex gap-4">
-                        ${project.tech.split(',').map((tech, i) => {
-                            const icons = ['deployed_code', 'database', 'css', 'javascript'];
-                            return `
-                            <div class="size-11 bg-gray-100 dark:bg-white/5 rounded-xl flex items-center justify-center group hover:bg-primary/10 transition-colors" title="${tech.trim()}">
-                                <span class="material-symbols-outlined text-primary">${icons[i] || 'code'}</span>
-                            </div>
-                        `}).join('')}
+
+                <div class="space-y-3">
+                    <p class="text-[11px] font-bold uppercase tracking-widest text-text-muted">Stack tecnológico</p>
+                    <div class="flex flex-wrap gap-2">
+                        ${project.tech.split(',').map(t => {
+                            const key = t.trim().toLowerCase();
+                            const icon = techIcons[key] || 'code';
+                            return `<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold"
+                                style="background:rgba(74,158,255,.10);color:var(--primary);border:1px solid rgba(74,158,255,.18)">
+                                <span class="material-symbols-outlined" style="font-size:14px">${icon}</span>
+                                ${t.trim()}
+                            </span>`;
+                        }).join('')}
                     </div>
                 </div>
             `;
-            
-            // Generar botones de acción
+
+            // Botones de acción
             modalActions.innerHTML = `
                 ${project.website ? `
-                    <a href="${project.website}" target="_blank" rel="noopener noreferrer" 
-                       class="flex-1 bg-primary text-white py-4 rounded-xl font-bold text-sm lg:text-base neon-btn-glow hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
-                        Visitar Sitio Web
-                        <span class="material-symbols-outlined text-sm">open_in_new</span>
+                    <a href="${project.website}" target="_blank" rel="noopener noreferrer"
+                       class="flex-1 animated-gradient-btn text-white py-3.5 rounded-xl font-bold text-sm neon-btn-glow flex items-center justify-center gap-2 hover:scale-[1.02] transition-transform">
+                        Ver proyecto
+                        <span class="material-symbols-outlined text-[16px]">open_in_new</span>
                     </a>
                 ` : ''}
-                <button class="px-6 py-4 rounded-xl font-bold text-sm lg:text-base border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 transition-all" 
-                        onclick="closeProjectModal()">
+                <button onclick="closeProjectModal()"
+                    class="px-5 py-3.5 rounded-xl font-bold text-sm transition-all text-text-secondary hover:text-text-base"
+                    style="background:rgba(128,128,128,.1);border:1px solid var(--border)">
                     Cerrar
                 </button>
             `;
@@ -1319,6 +1323,52 @@
 
             // Ensure we restore original on unload
             window.addEventListener('beforeunload', stop);
+
+        // ============================================
+        // ACTIVE NAV HIGHLIGHT
+        // Uses IntersectionObserver to mark which section is in view.
+        // ============================================
+        (function() {
+            const navIds   = ['sobre-mi', 'servicios', 'proceso', 'proyectos', 'faq'];
+            const clearIds = ['hero', 'contacto']; // no active item here
+            const desktopLinks = document.querySelectorAll('.nav-link[href^="#"]');
+            const mobileLinks  = document.querySelectorAll('.mobile-nav-link[href^="#"]');
+
+            function setActive(id) {
+                [...desktopLinks, ...mobileLinks].forEach(link => {
+                    link.classList.toggle('nav-active', link.getAttribute('href') === '#' + id);
+                });
+            }
+
+            function clearActive() {
+                [...desktopLinks, ...mobileLinks].forEach(link => link.classList.remove('nav-active'));
+            }
+
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    if (clearIds.includes(entry.target.id)) clearActive();
+                    else setActive(entry.target.id);
+                });
+            }, {
+                rootMargin: '-30% 0px -60% 0px',
+                threshold: 0
+            });
+
+            [...navIds, ...clearIds].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) observer.observe(el);
+            });
+
+            // Set active immediately on click without waiting for scroll
+            document.addEventListener('click', function(e) {
+                const link = e.target.closest('[href^="#"]');
+                if (!link) return;
+                const hash = link.getAttribute('href').slice(1);
+                if (navIds.includes(hash)) setActive(hash);
+                else if (clearIds.includes(hash)) clearActive();
+            });
+        })();
 
         // ============================================
         // SMOOTH SCROLL — scrolls to the first heading inside
