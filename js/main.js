@@ -901,10 +901,9 @@
             const mobileLightIcon = mobileThemeToggle?.querySelector('.mobile-theme-icon-light');
             const mobileDarkIcon = mobileThemeToggle?.querySelector('.mobile-theme-icon-dark');
 
-            // Verificar preferencia guardada o del sistema
+            // Dark mode por defecto (portfolio de programador)
             const savedTheme = localStorage.getItem('theme');
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            
+
             function updateThemeIcons(isDark) {
                 if (isDark) {
                     lightIcon?.classList.add('hidden');
@@ -918,8 +917,11 @@
                     mobileDarkIcon?.classList.add('hidden');
                 }
             }
-            
-            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+
+            if (savedTheme === 'light') {
+                html.classList.remove('dark');
+                updateThemeIcons(false);
+            } else {
                 html.classList.add('dark');
                 updateThemeIcons(true);
             }
@@ -1317,4 +1319,33 @@
 
             // Ensure we restore original on unload
             window.addEventListener('beforeunload', stop);
+
+        // ============================================
+        // SMOOTH SCROLL — scrolls to the first heading inside
+        // the target section, compensating for the fixed header.
+        // ============================================
+        (function() {
+            function scrollToSection(hash) {
+                const section = document.getElementById(hash);
+                if (!section) return;
+                const header = document.getElementById('mainHeader');
+                const headerH = header ? header.getBoundingClientRect().height : 80;
+                // Aim at the first section-label or h2 so we land on the heading,
+                // not on the blank py-28 padding above it.
+                const anchor = section.querySelector('.section-label, h2') || section;
+                const targetY = anchor.getBoundingClientRect().top + window.scrollY - headerH - 20;
+                window.scrollTo({ top: targetY, behavior: 'smooth' });
+            }
+
+            document.addEventListener('click', function(e) {
+                const link = e.target.closest('a[href^="#"]');
+                if (!link) return;
+                const hash = link.getAttribute('href').slice(1);
+                if (!hash) return;
+                if (!document.getElementById(hash)) return;
+                e.preventDefault();
+                scrollToSection(hash);
+                history.pushState(null, '', '#' + hash);
+            });
+        })();
         })();
