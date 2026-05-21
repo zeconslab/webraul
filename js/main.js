@@ -109,38 +109,13 @@
             }
 
             function findHeaderColor() {
+                // Solo comprueba header + body — evita iterar todos los descendientes
+                // que causaba getComputedStyle() en O(N) elementos por evento de scroll.
                 const header = document.querySelector('header');
-                if (!header) return DEFAULT_COLOR;
-
-                // 1) Walk header and its descendants for the first non-transparent background
-                const all = [header, ...header.querySelectorAll('*')];
-                for (const el of all) {
+                for (const el of [header, document.body, document.documentElement]) {
                     const c = computedBgColor(el);
                     if (c) return c;
                 }
-
-                // 2) Walk up to body/root to find a background (helps when header is translucent)
-                let el = header.parentElement;
-                while (el) {
-                    const c = computedBgColor(el);
-                    if (c) return c;
-                    el = el.parentElement;
-                }
-
-                // 3) Try body and documentElement explicitly
-                const bodyColor = computedBgColor(document.body);
-                if (bodyColor) return bodyColor;
-                const rootColor = computedBgColor(document.documentElement);
-                if (rootColor) return rootColor;
-
-                // 4) Try some common CSS custom properties that might contain the theme background
-                const rootStyle = getComputedStyle(document.documentElement);
-                const possibleVars = ['--background-dark', '--background-light', '--bg', '--color-bg', '--color-background'];
-                for (const v of possibleVars) {
-                    const val = rootStyle.getPropertyValue(v).trim();
-                    if (val) return rgbToHex(val);
-                }
-
                 return DEFAULT_COLOR;
             }
 
@@ -159,10 +134,10 @@
                 });
             }
 
-            // Update on load, scroll, resize and theme toggle clicks
+            // Update on load y resize. No se suscribe a scroll — el MutationObserver
+            // del header ya detecta cambios de clase, y scroll causaba reflows forzados.
             window.addEventListener('load', updateMeta);
             window.addEventListener('resize', updateMeta, { passive: true });
-            window.addEventListener('scroll', updateMeta, { passive: true });
 
             // Listen for theme toggle clicks (desktop and mobile)
             document.addEventListener('click', (e) => {
@@ -285,13 +260,17 @@
             let particles = [];
             let animationId;
             
-            // Configurar tamaño del canvas
-            function resizeCanvas() {
-                canvas.width = canvas.offsetWidth;
-                canvas.height = canvas.offsetHeight;
+            // Configurar tamaño del canvas — ResizeObserver evita el reflow forzado
+            function resizeCanvas(width, height) {
+                canvas.width = width;
+                canvas.height = height;
             }
-            resizeCanvas();
-            window.addEventListener('resize', resizeCanvas);
+            const _ro = new ResizeObserver(([entry]) => {
+                const { inlineSize: w, blockSize: h } = entry.contentBoxSize[0];
+                resizeCanvas(w, h);
+                createParticles();
+            });
+            _ro.observe(canvas);
             
             // Clase Partícula
             class Particle {
@@ -330,8 +309,7 @@
                     particles.push(new Particle());
                 }
             }
-            createParticles();
-            window.addEventListener('resize', createParticles);
+            // createParticles() es llamado por el ResizeObserver en el primer render y en cada resize
             
             // Conectar partículas cercanas
             function connectParticles() {
@@ -444,21 +422,27 @@
             toggleScrollButton();
         })();
 
-        // Progress bar: update width based on scroll progress
+        // Progress bar: la animación CSS (animation-timeline:scroll) lo maneja en navegadores modernos.
+        // El JS sólo actúa como fallback para navegadores sin soporte.
         (function () {
             const bar = document.querySelector('.progress-bar-fill');
             if (!bar) return;
             bar.style.transformOrigin = '0% 50%';
+            if (CSS.supports('animation-timeline: scroll()')) return;
+
+            // Caché de scrollHeight para evitar reflows en el handler de scroll
+            let cachedMax = document.documentElement.scrollHeight - window.innerHeight;
+            new ResizeObserver(() => {
+                cachedMax = document.documentElement.scrollHeight - window.innerHeight;
+            }).observe(document.documentElement);
+
             function updateProgress() {
-                const doc = document.documentElement;
-                const scrollTop = window.scrollY || doc.scrollTop || document.body.scrollTop;
-                const max = doc.scrollHeight - window.innerHeight;
-                const progress = max > 0 ? Math.min(Math.max(scrollTop / max, 0), 1) : 0;
+                const progress = cachedMax > 0 ? Math.min(Math.max(window.scrollY / cachedMax, 0), 1) : 0;
                 bar.style.transform = `scaleX(${progress})`;
             }
             updateProgress();
             window.addEventListener('scroll', updateProgress, { passive: true });
-            window.addEventListener('resize', updateProgress);
+            window.addEventListener('resize', updateProgress, { passive: true });
         })();
 
         // Modal overlay close handler
@@ -478,17 +462,19 @@
             const track = document.querySelector('.carousel-track');
             const totalCards = cards.length;
             let autoPlayInterval;
-            
+            // Cachear isMobile para evitar leer window.innerWidth en cada updateCarousel
+            let isMobile = window.innerWidth < 1024;
+            window.addEventListener('resize', () => { isMobile = window.innerWidth < 1024; }, { passive: true });
+
             function updateCarousel(newIndex) {
                 // Update current index
                 currentIndex = newIndex;
                 if (currentIndex < 0) currentIndex = totalCards - 1;
                 if (currentIndex >= totalCards) currentIndex = 0;
-                
+
                 // Simple calculation: shift track based on index
                 // The middle card (index 1) should have no offset
                 // Index 0 should shift right, index 2 should shift left
-                const isMobile = window.innerWidth < 1024;
                 let offset = 0;
                 
                 if (!isMobile) {
