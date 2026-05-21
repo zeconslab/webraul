@@ -83,7 +83,20 @@ else
     ok "main.min.js copiado (terser no instalado, instala con: npm i -D terser)"
 fi
 
-# ── 4. Transferir archivos ─────────────────────────────────
+# ── 4. Cache-busting: inyectar versión en index.html ──────
+step "Generando index.html con cache-busting..."
+BUILD_VER=$(git -C "${LOCAL_PATH}" rev-parse --short HEAD 2>/dev/null || date +%Y%m%d%H%M)
+VERSIONED_HTML="${LOCAL_PATH}/_index.html"
+sed \
+    -e "s|href=\"css/tailwind\.css\"|href=\"css/tailwind.css?v=${BUILD_VER}\"|g" \
+    -e "s|href=\"css/main\.css\"|href=\"css/main.css?v=${BUILD_VER}\"|g" \
+    -e "s|href=\"css/tailwind\.css\" as=\"style\"|href=\"css/tailwind.css?v=${BUILD_VER}\" as=\"style\"|g" \
+    -e "s|href=\"css/main\.css\" as=\"style\"|href=\"css/main.css?v=${BUILD_VER}\" as=\"style\"|g" \
+    -e "s|src=\"js/main\.js\"|src=\"js/main.js?v=${BUILD_VER}\"|g" \
+    "${LOCAL_PATH}/index.html" > "${VERSIONED_HTML}"
+ok "Versión: ${BUILD_VER}"
+
+# ── 5. Transferir archivos ─────────────────────────────────
 step "Transfiriendo archivos..."
 rsync -az --progress \
     --exclude='*.ps1' \
@@ -100,16 +113,19 @@ rsync -az --progress \
     --exclude='css/main.css' \
     --exclude='js/main.js' \
     --exclude='nginx-cache.conf' \
+    --exclude='index.html' \
     --exclude='.github' \
     "${LOCAL_PATH}/" \
     "${SERVER}:${REMOTE_PATH}/"
 [ $? -eq 0 ] && ok "Archivos transferidos" || fail "Error en la transferencia."
 
-# Renombrar minificados a nombres finales en el servidor
+# Subir index.html versionado y renombrar minificados
 ssh "${SERVER}" "
+    mv ${REMOTE_PATH}/_index.html ${REMOTE_PATH}/index.html;
     [ -f ${REMOTE_PATH}/css/main.min.css ] && mv ${REMOTE_PATH}/css/main.min.css ${REMOTE_PATH}/css/main.css;
     [ -f ${REMOTE_PATH}/js/main.min.js ]  && mv ${REMOTE_PATH}/js/main.min.js  ${REMOTE_PATH}/js/main.js;
 "
+rm -f "${VERSIONED_HTML}"
 
 # ── 5. Permisos ────────────────────────────────────────────
 step "Aplicando permisos..."
@@ -118,7 +134,63 @@ ssh "${SERVER}" "
     find ${REMOTE_PATH} -type f -exec chmod 644 {} \;
 " && ok "Permisos aplicados (755 dirs / 644 archivos)" || fail "Error al aplicar permisos."
 
-# ── 6. Recargar Nginx ──────────────────────────────────────
+# ── 6a. Caché estático Nginx (idempotente) ─────────────────
+# Estrategia: snippet file separado — siempre sobreescrito con los valores actuales.
+# El include se añade al server block una sola vez. Sin guard de skip.
+step "Configurando caché estático en Nginx..."
+ssh "${SERVER}" bash << 'SSH_CACHE_CONF'
+CONF="/etc/nginx/sites-enabled/pimentel.cloud"
+SNIPPET="/etc/nginx/snippets/pimentel-static-cache.conf"
+
+# 1. Crear/sobreescribir snippet (siempre actualizado en cada deploy)
+sudo mkdir -p "$(dirname "$SNIPPET")"
+sudo tee "$SNIPPET" > /dev/null << 'NGINX_CACHE'
+# pimentel-static-cache — regenerado por deploy.sh
+location ~* \.(css|js)$ {
+    expires 1y;
+    add_header Cache-Control "public, max-age=31536000, immutable";
+    add_header Vary Accept-Encoding;
+}
+location ~* \.(png|jpg|jpeg|gif|webp|svg|ico|woff2?|ttf|eot)$ {
+    expires 1y;
+    add_header Cache-Control "public, max-age=31536000, immutable";
+}
+NGINX_CACHE
+
+# 2. Limpiar bloque inline viejo si existe (puede tener TTL corto y tomar precedencia)
+if grep -q "cache-static-assets" "$CONF" 2>/dev/null; then
+    BKUP="$CONF.bak.$(date +%s)"
+    sudo cp "$CONF" "$BKUP"
+    sudo awk '
+    /# cache-static-assets/ { skip=1; next }
+    skip && /^[[:space:]]+(location|expires|add_header|[{}])/ { next }
+    skip && /^[[:space:]]*$/ { next }
+    skip { skip=0 }
+    { print }
+    ' "$CONF" | sudo tee /tmp/pimentel-nginx.tmp > /dev/null
+    sudo cp /tmp/pimentel-nginx.tmp "$CONF"
+fi
+
+# 3. Insertar include en el server block (solo si no está aún)
+if ! grep -q "pimentel-static-cache" "$CONF" 2>/dev/null; then
+    [ -n "${BKUP:-}" ] || { BKUP="$CONF.bak.$(date +%s)"; sudo cp "$CONF" "$BKUP"; }
+    sudo awk '
+    /^}/ { last = NR }
+    { line[NR] = $0 }
+    END {
+        for (i = 1; i <= NR; i++) {
+            if (i == last) print "    include snippets/pimentel-static-cache.conf;"
+            print line[i]
+        }
+    }' "$CONF" | sudo tee /tmp/pimentel-nginx.tmp > /dev/null
+    sudo cp /tmp/pimentel-nginx.tmp "$CONF"
+fi
+
+sudo nginx -t || { [ -n "${BKUP:-}" ] && sudo cp "$BKUP" "$CONF" && echo "BACKUP RESTORED"; exit 1; }
+SSH_CACHE_CONF
+[ $? -eq 0 ] && ok "Nginx cache configurado (1y + immutable)" || fail "Error al configurar caché Nginx."
+
+# ── 6b. Recargar Nginx ─────────────────────────────────────
 step "Recargando Nginx..."
 ssh "${SERVER}" "sudo systemctl reload nginx" \
     && ok "Nginx recargado" \

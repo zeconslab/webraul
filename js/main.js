@@ -217,20 +217,16 @@
                 cursorDot.classList.add('active');
             });
             
-            // Animación suave del cursor
+            // Animación suave del cursor — translate() es GPU-composited y no invalida layout
             function animateCursor() {
-                // Cursor principal con retraso
                 cursorX += (mouseX - cursorX) * 0.1;
                 cursorY += (mouseY - cursorY) * 0.1;
-                cursor.style.left = cursorX - 20 + 'px';
-                cursor.style.top = cursorY - 20 + 'px';
-                
-                // Punto central sin retraso
+                cursor.style.transform = `translate(${cursorX - 20}px, ${cursorY - 20}px)`;
+
                 dotX += (mouseX - dotX) * 0.3;
                 dotY += (mouseY - dotY) * 0.3;
-                cursorDot.style.left = dotX - 4 + 'px';
-                cursorDot.style.top = dotY - 4 + 'px';
-                
+                cursorDot.style.transform = `translate(${dotX - 4}px, ${dotY - 4}px)`;
+
                 requestAnimationFrame(animateCursor);
             }
             animateCursor();
@@ -381,16 +377,12 @@
                 observer.observe(el);
             });
             
-            // Verificar elementos que ya están en viewport al cargar
+            // Verificar elementos ya en viewport al cargar — batch: todas las lecturas primero,
+            // luego todas las escrituras para evitar layout thrashing (leer/escribir intercalado).
             setTimeout(() => {
-                revealElements.forEach(el => {
-                    const rect = el.getBoundingClientRect();
-                    const windowHeight = window.innerHeight || document.documentElement.clientHeight;
-                    
-                    if (rect.top < windowHeight - 100) {
-                        el.classList.add('visible');
-                    }
-                });
+                const wh = window.innerHeight;
+                const toReveal = [...revealElements].filter(el => el.getBoundingClientRect().top < wh - 100);
+                toReveal.forEach(el => el.classList.add('visible'));
             }, 100);
         })();
 
@@ -398,28 +390,21 @@
         (function() {
             const scrollToTopBtn = document.getElementById('scrollToTopBtn');
             if (!scrollToTopBtn) return;
-            
-            // Mostrar/ocultar botón basado en la posición del scroll
-            function toggleScrollButton() {
-                if (window.pageYOffset > 300) {
-                    scrollToTopBtn.classList.add('show');
-                } else {
-                    scrollToTopBtn.classList.remove('show');
-                }
-            }
-            
-            // Hacer scroll hacia arriba al hacer clic
+
             scrollToTopBtn.addEventListener('click', function() {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-                // Limpiar el hash de la URL sin recargar la página
                 history.pushState('', document.title, window.location.pathname + window.location.search);
             });
-            
-            // Escuchar el evento de scroll
-            window.addEventListener('scroll', toggleScrollButton, { passive: true });
-            
-            // Verificar posición inicial
-            toggleScrollButton();
+
+            // IntersectionObserver en el hero evita leer window.pageYOffset en cada evento scroll
+            // (pageYOffset fuerza layout flush cuando el CSS animation-timeline mantiene el layout sucio)
+            const heroEl = document.getElementById('hero');
+            if (heroEl) {
+                new IntersectionObserver(
+                    ([entry]) => scrollToTopBtn.classList.toggle('show', !entry.isIntersecting),
+                    { threshold: 0 }
+                ).observe(heroEl);
+            }
         })();
 
         // Progress bar: la animación CSS (animation-timeline:scroll) lo maneja en navegadores modernos.
@@ -462,9 +447,10 @@
             const track = document.querySelector('.carousel-track');
             const totalCards = cards.length;
             let autoPlayInterval;
-            // Cachear isMobile para evitar leer window.innerWidth en cada updateCarousel
-            let isMobile = window.innerWidth < 1024;
-            window.addEventListener('resize', () => { isMobile = window.innerWidth < 1024; }, { passive: true });
+            // matchMedia no fuerza layout; window.innerWidth sí (causa reflow en init)
+            const _mql = window.matchMedia('(max-width: 1023px)');
+            let isMobile = _mql.matches;
+            _mql.addEventListener('change', e => { isMobile = e.matches; });
 
             function updateCarousel(newIndex) {
                 // Update current index
@@ -669,16 +655,37 @@
             const parallaxElements = document.querySelectorAll('.parallax-bg');
             if (parallaxElements.length === 0) return;
 
+            // innerHeight cacheado para no leerlo en cada frame de scroll (forzaría reflow si layout está sucio)
+            let cachedWH = window.innerHeight;
+            // Caché de posiciones — getBoundingClientRect() solo en load/resize, no en scroll
+            let parallaxData = [];
+            function cacheParallaxRects() {
+                cachedWH = window.innerHeight;
+                parallaxData = Array.from(parallaxElements).map(el => {
+                    const r = el.getBoundingClientRect();
+                    return { el, top: r.top + window.scrollY, height: r.height };
+                });
+            }
+            window.addEventListener('load', cacheParallaxRects);
+            window.addEventListener('resize', cacheParallaxRects, { passive: true });
+
+            let parallaxPending = false;
             function updateParallax() {
-                parallaxElements.forEach(element => {
-                    const rect = element.getBoundingClientRect();
-                    const scrollPercent = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
-                    const translateY = (scrollPercent - 0.5) * 50;
-                    element.style.transform = `translateY(${translateY}px)`;
+                if (parallaxPending) return;
+                parallaxPending = true;
+                requestAnimationFrame(() => {
+                    parallaxPending = false;
+                    const scrollY = window.scrollY;
+                    parallaxData.forEach(({ el, top, height }) => {
+                        const relTop = top - scrollY;
+                        const scrollPercent = (cachedWH - relTop) / (cachedWH + height);
+                        el.style.transform = `translateY(${(scrollPercent - 0.5) * 50}px)`;
+                    });
                 });
             }
 
             window.addEventListener('scroll', updateParallax, { passive: true });
+            cacheParallaxRects();
             updateParallax();
         })();
 
@@ -770,23 +777,23 @@
         // Efecto de card 3D con mouse tracking
         (function() {
             const cards = document.querySelectorAll('.card-3d');
-            
+
             cards.forEach(card => {
+                // Cachear rect en mouseenter: el card no se mueve durante el hover
+                let cachedRect = null;
+                card.addEventListener('mouseenter', () => {
+                    cachedRect = card.getBoundingClientRect();
+                });
                 card.addEventListener('mousemove', (e) => {
-                    const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    
-                    const centerX = rect.width / 2;
-                    const centerY = rect.height / 2;
-                    
-                    const rotateX = (y - centerY) / 10;
-                    const rotateY = (centerX - x) / 10;
-                    
+                    if (!cachedRect) return;
+                    const x = e.clientX - cachedRect.left;
+                    const y = e.clientY - cachedRect.top;
+                    const rotateX = (y - cachedRect.height / 2) / 10;
+                    const rotateY = (cachedRect.width / 2 - x) / 10;
                     card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
                 });
-                
                 card.addEventListener('mouseleave', () => {
+                    cachedRect = null;
                     card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
                 });
             });
