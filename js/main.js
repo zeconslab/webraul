@@ -351,40 +351,6 @@
             });
         })();
 
-        // ======================
-        // ENHANCED SCROLL REVEAL
-        // ======================
-        (function() {
-            const revealElements = document.querySelectorAll('.reveal-up, .reveal-down, .reveal-left, .reveal-right, .reveal-scale, .reveal-zoom, .reveal-rotate');
-            
-            if (revealElements.length === 0) return;
-            
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -80px 0px'
-            };
-            
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, observerOptions);
-            
-            revealElements.forEach(el => {
-                observer.observe(el);
-            });
-            
-            // Verificar elementos ya en viewport al cargar — batch: todas las lecturas primero,
-            // luego todas las escrituras para evitar layout thrashing (leer/escribir intercalado).
-            setTimeout(() => {
-                const wh = window.innerHeight;
-                const toReveal = [...revealElements].filter(el => el.getBoundingClientRect().top < wh - 100);
-                toReveal.forEach(el => el.classList.add('visible'));
-            }, 100);
-        })();
 
         // Scroll to Top Button
         (function() {
@@ -587,47 +553,26 @@
             startAutoPlay();
         })();
 
-        // Scroll Reveal Animations (Fallback para navegadores sin animation-timeline)
+        // Scroll Reveal — IntersectionObserver para todos los browsers
         (function() {
-            // Verificar soporte de animation-timeline
-            const supportsAnimationTimeline = CSS.supports('animation-timeline: view()');
-            
-            if (!supportsAnimationTimeline) {
-                const revealElements = document.querySelectorAll('.reveal-up, .reveal-left, .reveal-right, .reveal-scale');
-                
-                const observerOptions = {
-                    threshold: 0.1,
-                    rootMargin: '0px 0px -8% 0px'
-                };
-                
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach((entry) => {
-                        if (entry.isIntersecting) {
-                            // Agregar delay stagger si tiene clase stagger
-                            const delay = entry.target.classList.contains('stagger-1') ? 50 :
-                                         entry.target.classList.contains('stagger-2') ? 150 :
-                                         entry.target.classList.contains('stagger-3') ? 250 :
-                                         entry.target.classList.contains('stagger-4') ? 350 : 0;
-                            
-                            setTimeout(() => {
-                                entry.target.classList.add('is-visible');
-                            }, delay);
-                            
-                            observer.unobserve(entry.target);
-                        }
-                    });
-                }, observerOptions);
-                
-                revealElements.forEach(el => observer.observe(el));
-            }
-            
-            // Agregar animación suave a los elementos hover
-            const cards = document.querySelectorAll('.group');
-            cards.forEach(card => {
-                card.addEventListener('mouseenter', function() {
-                    this.style.transition = 'all 0.4s cubic-bezier(0.23, 1, 0.32, 1)';
+            const sel = '.reveal-up, .reveal-down, .reveal-left, .reveal-right, .reveal-scale, .reveal-zoom, .reveal-rotate';
+            const els = document.querySelectorAll(sel);
+            if (!els.length) return;
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) return;
+                    const el = entry.target;
+                    const delay = el.classList.contains('stagger-1') ? 80  :
+                                  el.classList.contains('stagger-2') ? 180 :
+                                  el.classList.contains('stagger-3') ? 280 :
+                                  el.classList.contains('stagger-4') ? 380 : 0;
+                    setTimeout(() => el.classList.add('is-visible'), delay);
+                    observer.unobserve(el);
                 });
-            });
+            }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+            els.forEach(el => observer.observe(el));
         })();
 
         // FAQ Accordion — solo uno abierto a la vez, todos cerrados al inicio
@@ -831,7 +776,7 @@
             const mobileLightIcon = mobileThemeToggle?.querySelector('.mobile-theme-icon-light');
             const mobileDarkIcon = mobileThemeToggle?.querySelector('.mobile-theme-icon-dark');
 
-            // Dark mode por defecto (portfolio de programador)
+            // Light mode por defecto
             const savedTheme = localStorage.getItem('theme');
 
             function updateThemeIcons(isDark) {
@@ -848,12 +793,12 @@
                 }
             }
 
-            if (savedTheme === 'light') {
-                html.classList.remove('dark');
-                updateThemeIcons(false);
-            } else {
+            if (savedTheme === 'dark') {
                 html.classList.add('dark');
                 updateThemeIcons(true);
+            } else {
+                html.classList.remove('dark');
+                updateThemeIcons(false);
             }
 
             function toggleTheme() {

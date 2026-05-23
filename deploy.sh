@@ -134,59 +134,64 @@ ssh "${SERVER}" "
     find ${REMOTE_PATH} -type f -exec chmod 644 {} \;
 " && ok "Permisos aplicados (755 dirs / 644 archivos)" || fail "Error al aplicar permisos."
 
-# ── 6a. Caché estático Nginx (idempotente) ─────────────────
-# Estrategia: snippet file separado — siempre sobreescrito con los valores actuales.
-# El include se añade al server block una sola vez. Sin guard de skip.
+# ── 6a. Caché estático Nginx ───────────────────────────────
 step "Configurando caché estático en Nginx..."
 ssh "${SERVER}" bash << 'SSH_CACHE_CONF'
 CONF="/etc/nginx/sites-enabled/pimentel.cloud"
-SNIPPET="/etc/nginx/snippets/pimentel-static-cache.conf"
+sudo cp "$CONF" "$CONF.bak"
+sudo tee "$CONF" > /dev/null << 'NGINX_CONF'
+server {
+    server_name pimentel.cloud www.pimentel.cloud;
 
-# 1. Crear/sobreescribir snippet (siempre actualizado en cada deploy)
-sudo mkdir -p "$(dirname "$SNIPPET")"
-sudo tee "$SNIPPET" > /dev/null << 'NGINX_CACHE'
-# pimentel-static-cache — regenerado por deploy.sh
-location ~* \.(css|js)$ {
-    expires 1y;
-    add_header Cache-Control "public, max-age=31536000, immutable";
-    add_header Vary Accept-Encoding;
+    root /home/raul/apps/root;
+    index index.html;
+
+    gzip on;
+    gzip_types text/html text/css application/javascript text/javascript text/plain image/svg+xml application/json;
+    gzip_comp_level 6;
+    gzip_min_length 256;
+    gzip_vary on;
+    gzip_proxied any;
+
+    location ~* \.(css|js)$ {
+        expires 1y;
+        add_header Cache-Control "public, max-age=31536000, immutable";
+        add_header Vary Accept-Encoding;
+    }
+    location ~* \.(png|jpg|jpeg|gif|webp|svg|ico|woff2?|ttf|eot)$ {
+        expires 1y;
+        add_header Cache-Control "public, max-age=31536000, immutable";
+    }
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    access_log /var/log/nginx/pimentel_access.log;
+    error_log /var/log/nginx/pimentel_error.log;
+
+    listen 443 ssl http2 default_server; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/pimentel.cloud/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/pimentel.cloud/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
 }
-location ~* \.(png|jpg|jpeg|gif|webp|svg|ico|woff2?|ttf|eot)$ {
-    expires 1y;
-    add_header Cache-Control "public, max-age=31536000, immutable";
+
+server {
+    if ($host = www.pimentel.cloud) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+    if ($host = pimentel.cloud) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+    listen 80;
+    server_name pimentel.cloud www.pimentel.cloud;
+    return 404; # managed by Certbot
 }
-NGINX_CACHE
-
-# 2. Limpiar bloque inline viejo si existe (puede tener TTL corto y tomar precedencia)
-if grep -q "cache-static-assets" "$CONF" 2>/dev/null; then
-    BKUP="$CONF.bak.$(date +%s)"
-    sudo cp "$CONF" "$BKUP"
-    sudo awk '
-    /# cache-static-assets/ { skip=1; next }
-    skip && /^[[:space:]]+(location|expires|add_header|[{}])/ { next }
-    skip && /^[[:space:]]*$/ { next }
-    skip { skip=0 }
-    { print }
-    ' "$CONF" | sudo tee /tmp/pimentel-nginx.tmp > /dev/null
-    sudo cp /tmp/pimentel-nginx.tmp "$CONF"
-fi
-
-# 3. Insertar include en el server block (solo si no está aún)
-if ! grep -q "pimentel-static-cache" "$CONF" 2>/dev/null; then
-    [ -n "${BKUP:-}" ] || { BKUP="$CONF.bak.$(date +%s)"; sudo cp "$CONF" "$BKUP"; }
-    sudo awk '
-    /^}/ { last = NR }
-    { line[NR] = $0 }
-    END {
-        for (i = 1; i <= NR; i++) {
-            if (i == last) print "    include snippets/pimentel-static-cache.conf;"
-            print line[i]
-        }
-    }' "$CONF" | sudo tee /tmp/pimentel-nginx.tmp > /dev/null
-    sudo cp /tmp/pimentel-nginx.tmp "$CONF"
-fi
-
-sudo nginx -t || { [ -n "${BKUP:-}" ] && sudo cp "$BKUP" "$CONF" && echo "BACKUP RESTORED"; exit 1; }
+NGINX_CONF
+sudo nginx -t || { sudo cp "$CONF.bak" "$CONF"; echo "BACKUP RESTORED"; exit 1; }
 SSH_CACHE_CONF
 [ $? -eq 0 ] && ok "Nginx cache configurado (1y + immutable)" || fail "Error al configurar caché Nginx."
 
@@ -196,11 +201,28 @@ ssh "${SERVER}" "sudo systemctl reload nginx" \
     && ok "Nginx recargado" \
     || fail "Error al recargar Nginx."
 
-# ── 8. Health check ───────────────────────────────────────
+# ── 7. Health check ───────────────────────────────────────
 step "Verificando sitio en producción..."
 sleep 2
 HTTP_CODE=$(curl -o /dev/null -s -w "%{http_code}" --max-time 10 "${SITE_URL}")
 [ "$HTTP_CODE" = "200" ] && ok "Sitio responde correctamente (HTTP ${HTTP_CODE})" || fail "Sitio respondió HTTP ${HTTP_CODE}."
+
+# ── 8. Verificar headers de caché ─────────────────────────
+step "Verificando headers Cache-Control..."
+RESP_HEADERS=$(curl -sIL "${SITE_URL}/css/tailwind.css" --max-time 10)
+CACHE_HEADER=$(echo "$RESP_HEADERS" | grep -i "^cache-control" | tail -1 | tr -d '\r')
+HTTP_STATUS=$(echo "$RESP_HEADERS" | grep "^HTTP" | tail -1 | awk '{print $2}')
+if echo "$CACHE_HEADER" | grep -qi "max-age=31536000"; then
+    ok "Cache-Control OK: ${CACHE_HEADER}"
+elif [ "${HTTP_STATUS}" != "200" ]; then
+    echo -e "${YELLOW}  ⚠  El archivo devolvió HTTP ${HTTP_STATUS} (no 200) — revisa la ruta${NC}"
+else
+    echo -e "${YELLOW}  ⚠  Cache-Control no detectado (HTTP ${HTTP_STATUS})${NC}"
+    echo "$RESP_HEADERS" | grep -v "^$" | head -12 | sed "s/^/     ${YELLOW}/" | sed "s/$/${NC}/"
+    echo -e "${YELLOW}  → Para corregir manualmente en el servidor:${NC}"
+    echo -e "${YELLOW}     1. ssh ${SERVER}${NC}"
+    echo -e "${YELLOW}     2. sudo nginx -T 2>/dev/null | grep -B2 -A10 'pimentel-static'${NC}"
+fi
 
 # ── Resumen ────────────────────────────────────────────────
 echo ""

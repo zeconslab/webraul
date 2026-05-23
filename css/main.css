@@ -657,54 +657,37 @@ html:not(.dark) .nav-link.nav-active { background: rgba(37,99,235,.08); }
 }
 
 /* ============================================
-   SCROLL REVEAL
+   SCROLL REVEAL — IntersectionObserver via JS
    ============================================ */
-.reveal-up {
-    animation: fade-in-up 1s cubic-bezier(.23,1,.32,1) both;
-    animation-timeline: view();
-    animation-range: entry 5% cover 35%;
-}
-
-.reveal-left {
-    animation: slide-in-left 1s cubic-bezier(.23,1,.32,1) both;
-    animation-timeline: view();
-    animation-range: entry 5% cover 35%;
-}
-
-.reveal-right {
-    animation: slide-in-right 1s cubic-bezier(.23,1,.32,1) both;
-    animation-timeline: view();
-    animation-range: entry 5% cover 35%;
-}
-
-.reveal-scale {
-    animation: scale-up-fade .9s cubic-bezier(.23,1,.32,1) both;
-    animation-timeline: view();
-    animation-range: entry 5% cover 35%;
-}
-
-.reveal-zoom {
-    animation: zoom-in-fade .9s cubic-bezier(.23,1,.32,1) both;
-    animation-timeline: view();
-    animation-range: entry 5% cover 35%;
-}
-
-.reveal-down {
-    animation: fade-in-down .9s cubic-bezier(.23,1,.32,1) both;
-    animation-timeline: view();
-    animation-range: entry 5% cover 35%;
-}
-
+.reveal-up,
+.reveal-down,
+.reveal-left,
+.reveal-right,
+.reveal-scale,
+.reveal-zoom,
 .reveal-rotate {
-    animation: rotate-in-fade .9s cubic-bezier(.23,1,.32,1) both;
-    animation-timeline: view();
-    animation-range: entry 5% cover 35%;
+    opacity: 0;
+    transition: opacity .75s cubic-bezier(.23,1,.32,1), transform .75s cubic-bezier(.23,1,.32,1);
 }
 
-.stagger-1 { animation-delay: .05s; }
-.stagger-2 { animation-delay: .15s; }
-.stagger-3 { animation-delay: .25s; }
-.stagger-4 { animation-delay: .35s; }
+.reveal-up     { transform: translateY(36px); }
+.reveal-down   { transform: translateY(-36px); }
+.reveal-left   { transform: translateX(-48px); }
+.reveal-right  { transform: translateX(48px); }
+.reveal-scale  { transform: scale(.88) translateY(16px); }
+.reveal-zoom   { transform: scale(.65); }
+.reveal-rotate { transform: rotate(-10deg) scale(.88); }
+
+.reveal-up.is-visible,
+.reveal-down.is-visible,
+.reveal-left.is-visible,
+.reveal-right.is-visible,
+.reveal-scale.is-visible,
+.reveal-zoom.is-visible,
+.reveal-rotate.is-visible {
+    opacity: 1;
+    transform: none;
+}
 
 @keyframes fade-in-up {
     from { opacity: 0; transform: translateY(30px); }
@@ -715,12 +698,12 @@ html:not(.dark) .nav-link.nav-active { background: rgba(37,99,235,.08); }
     to   { opacity: 1; transform: translateY(0);     }
 }
 @keyframes slide-in-left {
-    from { opacity: 0; transform: translateX(-50px) rotate(-2deg); }
-    to   { opacity: 1; transform: translateX(0)    rotate(0deg);   }
+    from { opacity: 0; transform: translateX(-50px); }
+    to   { opacity: 1; transform: translateX(0);     }
 }
 @keyframes slide-in-right {
-    from { opacity: 0; transform: translateX(50px) rotate(2deg); }
-    to   { opacity: 1; transform: translateX(0)   rotate(0deg);  }
+    from { opacity: 0; transform: translateX(50px); }
+    to   { opacity: 1; transform: translateX(0);    }
 }
 @keyframes scale-up-fade {
     from { opacity: 0; transform: scale(.88) translateY(16px); }
@@ -735,23 +718,25 @@ html:not(.dark) .nav-link.nav-active { background: rgba(37,99,235,.08); }
     to   { opacity: 1; transform: rotate(0)      scale(1);   }
 }
 
-@supports not (animation-timeline: view()) {
-    .reveal-up, .reveal-left, .reveal-right, .reveal-scale { opacity: 0; }
-    .reveal-up.is-visible    { animation: fade-in-up    1s cubic-bezier(.23,1,.32,1) forwards; }
-    .reveal-left.is-visible  { animation: slide-in-left 1s cubic-bezier(.23,1,.32,1) forwards; }
-    .reveal-right.is-visible { animation: slide-in-right 1s cubic-bezier(.23,1,.32,1) forwards; }
-    .reveal-scale.is-visible { animation: scale-up-fade .9s cubic-bezier(.23,1,.32,1) forwards; }
-}
-
 /* ============================================
    HERO ANIMATIONS
    ============================================ */
+/* Transform-only: no opacity → LCP element visible from first paint */
+@keyframes hero-enter-up {
+    from { transform: translateY(28px); }
+    to   { transform: translateY(0); }
+}
+@keyframes hero-enter-scale {
+    from { transform: scale(0.92) translateY(14px); }
+    to   { transform: scale(1) translateY(0); }
+}
+
 .hero-init {
-    animation: fade-in-up 0.5s ease-out both;
+    animation: hero-enter-up 0.6s cubic-bezier(0.23, 1, 0.32, 1) both;
 }
 
 .hero-init-delay {
-    animation: scale-up-fade 0.6s ease-out .15s both;
+    animation: hero-enter-scale 0.65s cubic-bezier(0.23, 1, 0.32, 1) 0.12s both;
 }
 
 /* ============================================
