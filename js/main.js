@@ -64,10 +64,11 @@
 
         // ============================================
         // DYNAMIC MOBILE STATUS BAR COLOR (theme-color)
-        // Updates meta[name="theme-color"] to match visible header background
+        // Lee directamente de las clases del html — evita getComputedStyle()
+        // que fuerza layout cuando los estilos están sucios (130ms forced reflow).
         // ============================================
         (function() {
-            const DEFAULT_COLOR = '#135bec';
+            const COLORS = { dark: '#070B14', light: '#F0F4F8' };
 
             function ensureMeta(name) {
                 let meta = document.querySelector(`meta[name="${name}"]`);
@@ -79,82 +80,19 @@
                 return meta;
             }
 
-            function rgbToHex(input) {
-                if (!input) return DEFAULT_COLOR;
-                if (input.startsWith('#')) return input;
-                const m = input.match(/rgba?\((\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
-                if (m) {
-                    return '#' + [1,2,3].map(i => parseInt(m[i]).toString(16).padStart(2,'0')).join('');
-                }
-                const hexMatch = input.match(/#([0-9a-fA-F]{3,6})/);
-                if (hexMatch) return '#' + hexMatch[1];
-                return DEFAULT_COLOR;
-            }
-
-            function computedBgColor(el) {
-                if (!el) return null;
-                const cs = getComputedStyle(el);
-                const bg = cs.backgroundColor;
-                const bgImage = cs.backgroundImage;
-
-                if (bg && bg !== 'transparent' && bg !== 'rgba(0, 0, 0, 0)') return rgbToHex(bg);
-
-                if (bgImage && bgImage !== 'none') {
-                    // try to extract first color stop (hex or rgb)
-                    const m = bgImage.match(/(#[0-9a-fA-F]{3,6}|rgba?\([^\)]+\))/);
-                    if (m) return rgbToHex(m[1]);
-                }
-
-                return null;
-            }
-
-            function findHeaderColor() {
-                // Solo comprueba header + body — evita iterar todos los descendientes
-                // que causaba getComputedStyle() en O(N) elementos por evento de scroll.
-                const header = document.querySelector('header');
-                for (const el of [header, document.body, document.documentElement]) {
-                    const c = computedBgColor(el);
-                    if (c) return c;
-                }
-                return DEFAULT_COLOR;
-            }
-
             const themeMeta = ensureMeta('theme-color');
             const tileMeta = ensureMeta('msapplication-TileColor');
 
-            let pending = false;
             function updateMeta() {
-                if (pending) return;
-                pending = true;
-                requestAnimationFrame(() => {
-                    pending = false;
-                    const color = findHeaderColor() || DEFAULT_COLOR;
-                    themeMeta.setAttribute('content', color);
-                    tileMeta.setAttribute('content', color);
-                });
+                const color = document.documentElement.classList.contains('dark')
+                    ? COLORS.dark : COLORS.light;
+                themeMeta.setAttribute('content', color);
+                tileMeta.setAttribute('content', color);
             }
 
-            // Update on load y resize. No se suscribe a scroll — el MutationObserver
-            // del header ya detecta cambios de clase, y scroll causaba reflows forzados.
-            window.addEventListener('load', updateMeta);
-            window.addEventListener('resize', updateMeta, { passive: true });
-
-            // Listen for theme toggle clicks (desktop and mobile)
-            document.addEventListener('click', (e) => {
-                if (e.target.closest('#themeToggle') || e.target.closest('#mobileThemeToggle')) {
-                    setTimeout(updateMeta, 80);
-                }
-            });
-
-            // Also respond to explicit theme-change events (fired by toggleTheme)
+            // Solo responder a cambios de tema — sin getComputedStyle, sin MutationObserver,
+            // sin resize/scroll listeners que causan reflows innecesarios.
             document.addEventListener('theme-change', updateMeta);
-
-            // Observe header class/style changes (e.g., mobile menu open/close)
-            const headerEl = document.querySelector('header');
-            if (headerEl) {
-                const mo = new MutationObserver(updateMeta);
-                mo.observe(headerEl, { attributes: true, attributeFilter: ['class', 'style'] });
-            }
 
             // Initial call
             updateMeta();
@@ -707,16 +645,14 @@
             const heroSection = document.getElementById('hero');
             if (!heroSection) return;
 
-            const particleCount = 20;
-            for (let i = 0; i < particleCount; i++) {
+            const fragment = document.createDocumentFragment();
+            for (let i = 0; i < 20; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.top = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 15 + 's';
-                particle.style.opacity = Math.random() * 0.5 + 0.2;
-                heroSection.appendChild(particle);
+                particle.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;animation-delay:${(Math.random()*15).toFixed(1)}s;opacity:${(Math.random()*0.5+0.2).toFixed(2)}`;
+                fragment.appendChild(particle);
             }
+            heroSection.appendChild(fragment);
         })();
 
         // Efecto de card 3D con mouse tracking
@@ -1204,7 +1140,7 @@
         // Uses IntersectionObserver to mark which section is in view.
         // ============================================
         (function() {
-            const navIds   = ['sobre-mi', 'servicios', 'proceso', 'proyectos', 'faq'];
+            const navIds   = ['sobre-mi', 'servicios', 'proceso', 'proyectos', 'apps', 'faq'];
             const clearIds = ['hero', 'contacto']; // no active item here
             const desktopLinks = document.querySelectorAll('.nav-link[href^="#"]');
             const mobileLinks  = document.querySelectorAll('.mobile-nav-link[href^="#"]');

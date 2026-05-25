@@ -6,16 +6,58 @@
 
     <!-- CSS crítico inline: ANTES de los links para que tailwind sobreescriba las variantes responsive -->
     <style>
+    /* Fallback font que imita métricas de Space Grotesk — evita CLS cuando la webfont swapea */
+    @font-face{font-family:'Space Grotesk Fallback';src:local('Arial');size-adjust:97%;ascent-override:91%;descent-override:24%;line-gap-override:0%}
     :root{--bg-base:#F0F4F8;--text-base:#0F172A}
     html.dark{--bg-base:#070B14;--text-base:#E4ECF5}
     html{background:var(--bg-base)}
-    body{margin:0;background:var(--bg-base);color:var(--text-base)}
+    /* font-family aquí para que el primer render use la cadena correcta, sin esperar tailwind.css */
+    body{margin:0;background:var(--bg-base);color:var(--text-base);font-family:'Space Grotesk','Space Grotesk Fallback',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif}
     .flex{display:flex}.flex-col{flex-direction:column}.flex-1{flex:1 1 0%}
     .items-center{align-items:center}.min-h-dvh{min-height:100dvh}
     .grid{display:grid}
     .w-full{width:100%}.mx-auto{margin-left:auto;margin-right:auto}
     .max-w-\[1200px\]{max-width:1200px}
     .hidden{display:none}
+    /* Reserva espacio para íconos Material Symbols antes de que cargue el font,
+       así no causan layout shift al aparecer */
+    .material-symbols-outlined{display:inline-block;width:1em;height:1em;overflow:hidden;vertical-align:middle}
+    /* ── LAYOUT STABILITY CRITICAL CSS ──────────────────────────────────────────
+       Estas reglas previenen CLS causado por el CSS no-bloqueante (tailwind + main.css).
+       Sin ellas, cuando tailwind carga convierte la <header> de block→fixed y el
+       <main> salta ~80px arriba, arrastrando el canvas y todo el hero con él.     */
+
+    /* Header siempre fixed: evita que el <main> brinque cuando tailwind aplica position:fixed */
+    header{position:fixed;top:0;left:0;right:0;z-index:50}
+    /* Utilities de posicionamiento — glow blobs y bg-grid siempre fuera del flujo flex */
+    .absolute{position:absolute}
+    .relative{position:relative}
+    .inset-0{top:0;right:0;bottom:0;left:0}
+    .pointer-events-none{pointer-events:none}
+    /* Spacer h-20 siempre 5rem — sin esto el contenido hero baja 80px cuando tailwind lo aplica */
+    .h-20{height:5rem}
+    .shrink-0{flex-shrink:0}
+    /* Canvas absolutamente posicionado desde el primer render */
+    #particlesCanvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1}
+    /* Partículas siempre absolutas — sin esto se insertan como flex items y rompen el layout del hero */
+    .particle{position:absolute;pointer-events:none}
+    /* Pre-posiciona elementos hero en el estado from de la animación — evita snap-shift cuando main.css carga */
+    .hero-init{transform:translateY(28px)}
+    .hero-init-delay{transform:scale(0.92) translateY(14px)}
+    /* Hero position:relative y overflow:hidden desde el primer render */
+    #hero{position:relative;overflow:hidden}
+    /* Modal oculto desde primer render — sin esto tailwind.css lo convierte en fixed inset-0
+       antes de que main.css cargue opacity:0, bloqueando el FCP */
+    #projectModal{opacity:0;visibility:hidden;pointer-events:none}
+    /* Espaciado del flex-1 wrapper y grid del hero — sin estas reglas tailwind las aplica después
+       del primer render y causa los dos eventos CLS en el contenido principal */
+    .px-6{padding-left:1.5rem;padding-right:1.5rem}
+    .py-10{padding-top:2.5rem;padding-bottom:2.5rem}
+    .gap-10{gap:2.5rem}
+    .grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}
+    .z-10{z-index:10}
+    .pb-8{padding-bottom:2rem}
+    .justify-center{justify-content:center}
     @media (min-width:640px){.sm\:block{display:block}}
     @media (min-width:768px){.md\:flex{display:flex}}
     @media (min-width:1024px){
@@ -234,6 +276,10 @@
                     <span class="material-symbols-outlined nav-link-icon">grid_view</span>
                     <span>Proyectos</span>
                 </a>
+                <a class="nav-link" href="#apps">
+                    <span class="material-symbols-outlined nav-link-icon">smartphone</span>
+                    <span>Apps</span>
+                </a>
                 <a class="nav-link" href="#faq">
                     <span class="material-symbols-outlined nav-link-icon">help</span>
                     <span>FAQ</span>
@@ -298,6 +344,13 @@
                         <span class="material-symbols-outlined text-[20px]">grid_view</span>
                     </div>
                     <span class="text-sm font-semibold text-text-base">Proyectos</span>
+                    <span class="material-symbols-outlined text-[18px] text-text-secondary ml-auto">chevron_right</span>
+                </a>
+                <a class="mobile-nav-link" href="#apps">
+                    <div class="mobile-nav-icon-wrap">
+                        <span class="material-symbols-outlined text-[20px]">smartphone</span>
+                    </div>
+                    <span class="text-sm font-semibold text-text-base">Apps</span>
                     <span class="material-symbols-outlined text-[18px] text-text-secondary ml-auto">chevron_right</span>
                 </a>
                 <a class="mobile-nav-link" href="#faq">
@@ -818,6 +871,79 @@
                 </div>
 
             </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     APPS — Aplicaciones personales / open source
+     ============================================================ -->
+<section class="py-28 px-6 bg-bg-surface relative overflow-hidden" id="apps">
+    <div class="bg-dots absolute inset-0 pointer-events-none opacity-40"></div>
+    <div class="absolute top-20 right-10 w-80 h-80 bg-accent/6 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute bottom-20 left-10 w-72 h-72 bg-purple/5 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="max-w-[1200px] mx-auto relative z-10">
+
+        <!-- Header -->
+        <div class="flex flex-col gap-4 mb-14 text-center reveal-up">
+            <p class="section-label">// apps</p>
+            <h2 class="text-4xl md:text-5xl font-black tracking-tight text-white">Aplicaciones que construí por pasión</h2>
+            <p class="text-text-secondary text-lg max-w-2xl mx-auto">
+                Proyectos open source que resuelven problemas reales — disponibles para la comunidad.
+            </p>
+        </div>
+
+        <!-- Apps grid: 1 col → 2 col md → 3 col lg -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <!-- ── Cromax ── -->
+            <div class="app-card reveal-scale flex flex-col">
+
+                <!-- Phone mockup panel -->
+                <div class="flex justify-center items-end px-8 bg-bg-base/50" style="padding-top:2rem;padding-bottom:0">
+                    <div class="phone-frame-sm">
+                        <div class="phone-notch-sm"><div class="phone-camera-sm"></div></div>
+                        <div class="phone-viewport-sm">
+                            <img alt="Cromax — álbum FIFA Mundial 2026"
+                                 src="/assets/img/cromax.png"
+                                 loading="lazy" decoding="async"
+                                 class="w-full h-full object-cover object-top" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info panel -->
+                <div class="flex flex-col gap-4 p-6 flex-1">
+                    <span class="app-badge" style="background:rgba(0,217,163,.1);color:var(--accent)">
+                        <span class="material-symbols-outlined" style="font-size:11px">smartphone</span>
+                        App Móvil · Open Source
+                    </span>
+                    <div>
+                        <h3 class="text-xl font-black tracking-tight text-white mb-1.5">Cromax</h3>
+                        <p class="text-text-secondary text-sm leading-relaxed" style="-webkit-line-clamp:3;display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden">
+                            Lleva el control de tu álbum físico del FIFA Mundial 2026 — marca tus estampas, registra repetidas e intercambia con amigos usando un código QR.
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5">
+                        <span class="tech-pill bg-primary/20 text-primary border-primary/30">React</span>
+                        <span class="tech-pill" style="background:rgba(0,217,163,.12);color:var(--accent);border-color:rgba(0,217,163,.25)">Expo</span>
+                        <span class="tech-pill" style="background:rgba(167,139,250,.12);color:var(--purple);border-color:rgba(167,139,250,.25)">React Native</span>
+                        <span class="tech-pill" style="background:rgba(203,60,51,.12);color:#CB3C33;border-color:rgba(203,60,51,.25)">NPM</span>
+                    </div>
+                    <a href="https://github.com/zeconslab/estampasPanini"
+                       target="_blank" rel="noopener noreferrer"
+                       class="app-github-btn mt-auto">
+                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+                        </svg>
+                        Ver en GitHub
+                    </a>
+                </div>
+
+            </div>
+            <!-- ── /Cromax ── -->
+
         </div>
     </div>
 </section>

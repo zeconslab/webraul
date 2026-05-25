@@ -657,6 +657,15 @@ html:not(.dark) .nav-link.nav-active { background: rgba(37,99,235,.08); }
 }
 
 /* ============================================
+   HERO — reserva mínima de alto para evitar CLS cuando el font swapea
+   ============================================ */
+#hero h1 { min-height: 3.5lh; }
+@supports not (min-height: 1lh) {
+    /* Fallback para browsers sin soporte de `lh` unit */
+    #hero h1 { min-height: calc(3 * 1.05 * 3.6rem); }
+}
+
+/* ============================================
    SCROLL REVEAL — IntersectionObserver via JS
    ============================================ */
 .reveal-up,
@@ -1185,6 +1194,131 @@ html:not(.dark) .code-card .text-white {
 .stat-card:hover {
     border-color: rgba(74,158,255,.25);
     box-shadow: 0 0 20px rgba(74,158,255,.08);
+}
+
+/* ============================================
+   APP CARDS (personal / open-source projects)
+   ============================================ */
+.app-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 1.5rem;
+    overflow: hidden;
+    transition: border-color .4s cubic-bezier(.23,1,.32,1),
+                transform .4s cubic-bezier(.23,1,.32,1),
+                box-shadow .4s cubic-bezier(.23,1,.32,1);
+}
+
+.app-card:hover {
+    border-color: rgba(0,217,163,.25);
+    transform: translateY(-6px);
+    box-shadow: 0 30px 60px rgba(0,0,0,.5), 0 0 40px rgba(0,217,163,.08);
+}
+
+html:not(.dark) .app-card {
+    background: #FFFFFF;
+    border-color: #E2E8F0;
+    box-shadow: 0 2px 12px rgba(0,0,0,.06);
+}
+
+/* Phone mockup frame — compact card variant */
+.phone-frame-sm {
+    background: #0A0E1A;
+    border-radius: 2rem;
+    border: 2px solid rgba(255,255,255,.1);
+    padding: .6rem .5rem .8rem;
+    box-shadow:
+        0 0 0 1px rgba(0,0,0,.6),
+        0 20px 40px rgba(0,0,0,.55),
+        inset 0 1px 0 rgba(255,255,255,.07);
+    width: 148px;
+    flex-shrink: 0;
+}
+
+.phone-notch-sm {
+    width: 52px;
+    height: 16px;
+    background: #0A0E1A;
+    border-radius: 0 0 9px 9px;
+    margin: 0 auto .4rem;
+    border: 1.5px solid rgba(255,255,255,.07);
+    border-top: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.phone-camera-sm {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #1A2540;
+    border: 1px solid rgba(255,255,255,.08);
+    box-shadow: inset 0 0 3px rgba(0,0,0,.6);
+}
+
+.phone-viewport-sm {
+    border-radius: 1rem;
+    overflow: hidden;
+    aspect-ratio: 9/19;
+    background: linear-gradient(160deg, #0E1525 0%, #141E35 60%, #0A1428 100%);
+}
+
+/* App badge label */
+.app-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: .375rem;
+    font-size: .625rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: .3rem .75rem;
+    border-radius: 9999px;
+    width: fit-content;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* GitHub link button for app cards */
+.app-github-btn {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    white-space: nowrap;
+    align-items: center;
+    gap: .375rem;
+    padding: .55rem 1rem;
+    border-radius: .625rem;
+    font-size: .75rem;
+    font-weight: 700;
+    border: 1px solid var(--border-bright);
+    background: rgba(255,255,255,.04);
+    color: var(--text-base);
+    text-decoration: none;
+    transition: background .25s ease, border-color .25s ease, color .25s ease, transform .25s ease;
+}
+
+.app-github-btn svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
+
+.app-github-btn:hover {
+    background: rgba(0,217,163,.1);
+    border-color: rgba(0,217,163,.35);
+    color: var(--accent);
+    transform: translateY(-2px);
+}
+
+html:not(.dark) .app-github-btn {
+    border-color: #CBD5E1;
+    background: #F8FAFC;
+}
+html:not(.dark) .app-github-btn:hover {
+    background: rgba(5,150,105,.08);
+    border-color: rgba(5,150,105,.4);
+    color: var(--accent);
 }
 
 /* ============================================
