@@ -1,15 +1,41 @@
 <!DOCTYPE html>
-<html lang="es" class="dark">
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex, nofollow" />
     <title>Admin — pimentel.cloud</title>
 
+    <!-- Aplica el tema ANTES del primer render para evitar flash -->
+    <script>
+    (function(){
+        var t = localStorage.getItem('theme');
+        if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+    })();
+    </script>
+
     <style>
     /* ── Reset & tokens ─────────────────────────────────── */
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+    /* Light mode (default) */
     :root{
+        --bg:       #F0F4F8;
+        --surface:  #FFFFFF;
+        --surface2: #F1F5F9;
+        --border:   rgba(15,23,42,.1);
+        --border-focus: rgba(74,158,255,.5);
+        --text:     #0F172A;
+        --muted:    #64748B;
+        --primary:  #2563EB;
+        --accent:   #00C896;
+        --danger:   #DC2626;
+        --glow:     rgba(37,99,235,.08);
+    }
+    /* Dark mode */
+    html.dark{
         --bg:       #070B14;
         --surface:  #0F172A;
         --surface2: #1E293B;
@@ -34,24 +60,26 @@
         padding:1.5rem;
     }
 
-    /* ── Grid bg (decorativo, idéntico al del portfolio) ── */
+    /* ── Grid bg (decorativo) ── */
     body::before{
         content:'';
         position:fixed;inset:0;
         background-image:
-            linear-gradient(rgba(74,158,255,.04) 1px,transparent 1px),
-            linear-gradient(90deg,rgba(74,158,255,.04) 1px,transparent 1px);
+            linear-gradient(var(--grid-line) 1px,transparent 1px),
+            linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);
         background-size:40px 40px;
         pointer-events:none;
         z-index:0;
     }
+    :root{ --grid-line: rgba(15,23,42,.05); }
+    html.dark{ --grid-line: rgba(74,158,255,.04); }
 
     /* ── Glow blob ─────────────────────────────────────── */
     .blob{
         position:fixed;top:-20%;left:50%;
         transform:translateX(-50%);
         width:600px;height:400px;
-        background:radial-gradient(ellipse,rgba(74,158,255,.08) 0%,transparent 70%);
+        background:radial-gradient(ellipse,var(--glow) 0%,transparent 70%);
         pointer-events:none;z-index:0;
     }
 
@@ -149,15 +177,26 @@
         display:flex;align-items:center;justify-content:space-between;
         margin-bottom:1.75rem;
         font-size:.75rem;color:var(--muted);
+        line-height:1;
     }
-    .check-wrap{display:flex;align-items:center;gap:.5rem;cursor:pointer}
+    .check-wrap{
+        display:flex;align-items:center;gap:.5rem;
+        cursor:pointer;line-height:1;
+    }
     .check-wrap input[type="checkbox"]{
-        width:1rem;height:1rem;
+        width:1rem;height:1rem;flex-shrink:0;
         accent-color:var(--primary);
-        padding:0;background:var(--surface2);
-        border-radius:.25rem;cursor:pointer;
+        margin:0;padding:0;
+        vertical-align:middle;
+        cursor:pointer;
     }
-    .forgot{color:var(--primary);text-decoration:none;font-size:.75rem;transition:opacity .15s}
+    .check-wrap span{vertical-align:middle;line-height:1}
+    .forgot{
+        color:var(--primary);text-decoration:none;
+        font-size:.75rem;line-height:1;
+        vertical-align:middle;
+        transition:opacity .15s;
+    }
     .forgot:hover{opacity:.7}
 
     /* ── Submit ────────────────────────────────────────── */
@@ -206,15 +245,6 @@
     .back-link:hover{color:var(--primary)}
     .back-link svg{width:.875rem;height:.875rem}
 
-    /* ── Terminal cursor (decorativo) ──────────────────── */
-    .prompt-line{
-        margin-bottom:1.5rem;
-        font-size:.7rem;color:var(--accent);opacity:.6;
-        letter-spacing:.04em;
-    }
-    .prompt-line span{animation:blink 1.1s step-end infinite}
-    @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-
     /* ── Focus visible ─────────────────────────────────── */
     :focus-visible{outline:2px solid var(--primary);outline-offset:2px}
     </style>
@@ -231,9 +261,6 @@
         <span class="logo-text">raul.dev</span>
         <span class="logo-badge">Admin</span>
     </div>
-
-    <!-- Prompt decorativo -->
-    <p class="prompt-line" aria-hidden="true">$ ssh admin@pimentel.cloud<span>▮</span></p>
 
     <h1 class="title">Acceso administrativo</h1>
     <p class="subtitle">Ingresa tus credenciales para gestionar el portfolio.</p>
@@ -299,7 +326,7 @@
         <div class="helper-row">
             <label class="check-wrap">
                 <input type="checkbox" id="remember" name="remember" />
-                Mantener sesión
+                <span>Mantener sesión</span>
             </label>
             <a href="#" class="forgot">¿Olvidaste tu contraseña?</a>
         </div>
