@@ -4,6 +4,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.HttpOverrides;
 using System.Threading.RateLimiting;
 using webraul.Data;
+using webraul.Services;
 
 namespace webraul;
 
@@ -34,6 +35,8 @@ public class Program
             options.ExpireTimeSpan = TimeSpan.FromHours(8);
         });
         builder.Services.AddControllersWithViews();
+        builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection("Smtp"));
+        builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
         builder.Services.AddRateLimiter(options =>
         {
             options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;

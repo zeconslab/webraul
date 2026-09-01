@@ -9,17 +9,52 @@ namespace webraul.Controllers;
 [Authorize(Roles = "Administrator")]
 public sealed class AdminController(ApplicationDbContext db, IWebHostEnvironment environment) : Controller
 {
-    public async Task<IActionResult> Index() => View(new AdminDashboardViewModel(
-        await db.Services.CountAsync(), await db.Projects.CountAsync(), await db.Faqs.CountAsync(), await db.Apps.CountAsync(),
-        await db.ContactMessages.CountAsync(x => !x.IsRead),
-        await db.ContactMessages.AsNoTracking().OrderByDescending(x => x.CreatedAtUtc).Take(8).ToListAsync()));
+    public async Task<IActionResult> Index()
+    {
+        var since = DateTime.UtcNow.Date.AddDays(-13);
+        var dailyCounts = await db.ContactMessages.AsNoTracking()
+            .Where(x => x.CreatedAtUtc >= since)
+            .GroupBy(x => x.CreatedAtUtc.Date)
+            .Select(g => new { Date = g.Key, Count = g.Count() })
+            .ToListAsync();
+        var activity = Enumerable.Range(0, 14)
+            .Select(offset => since.AddDays(offset))
+            .Select(date => new DailyActivity(date, dailyCounts.FirstOrDefault(x => x.Date == date)?.Count ?? 0))
+            .ToList();
 
-    public async Task<IActionResult> Content() => View(new AdminContentViewModel(
-        await db.SiteSettings.OrderBy(x => x.Id).FirstAsync(),
-        await db.Services.OrderBy(x => x.SortOrder).ToListAsync(),
-        await db.Projects.OrderBy(x => x.SortOrder).ToListAsync(),
-        await db.Faqs.OrderBy(x => x.SortOrder).ToListAsync(),
-        await db.Apps.OrderBy(x => x.SortOrder).ToListAsync()));
+        var contentHealth = new List<ContentHealth>
+        {
+            new("Servicios", await db.Services.CountAsync(x => x.IsPublished), await db.Services.CountAsync(x => !x.IsPublished)),
+            new("Proyectos", await db.Projects.CountAsync(x => x.IsPublished), await db.Projects.CountAsync(x => !x.IsPublished)),
+            new("Aplicaciones", await db.Apps.CountAsync(x => x.IsPublished), await db.Apps.CountAsync(x => !x.IsPublished)),
+            new("Preguntas FAQ", await db.Faqs.CountAsync(x => x.IsPublished), await db.Faqs.CountAsync(x => !x.IsPublished)),
+        };
+
+        var visitDailyCounts = await db.PageVisits.AsNoTracking()
+            .Where(x => x.CreatedAtUtc >= since)
+            .GroupBy(x => x.CreatedAtUtc.Date)
+            .Select(g => new { Date = g.Key, Count = g.Count() })
+            .ToListAsync();
+        var visitsActivity = Enumerable.Range(0, 14)
+            .Select(offset => since.AddDays(offset))
+            .Select(date => new DailyActivity(date, visitDailyCounts.FirstOrDefault(x => x.Date == date)?.Count ?? 0))
+            .ToList();
+
+        var today = DateTime.UtcNow.Date;
+        var visitSummaries = new List<VisitSummary>();
+        foreach (var (label, days) in new (string, int)[] { ("Hoy", 1), ("7 días", 7), ("14 días", 14) })
+        {
+            var from = today.AddDays(-(days - 1));
+            var rangeVisits = await db.PageVisits.AsNoTracking().Where(x => x.CreatedAtUtc >= from).Select(x => x.VisitorHash).ToListAsync();
+            visitSummaries.Add(new VisitSummary(label, rangeVisits.Count, rangeVisits.Distinct().Count()));
+        }
+
+        return View(new AdminDashboardViewModel(
+            await db.Services.CountAsync(), await db.Projects.CountAsync(), await db.Faqs.CountAsync(), await db.Apps.CountAsync(),
+            await db.ContactMessages.CountAsync(x => !x.IsRead),
+            await db.ContactMessages.AsNoTracking().OrderByDescending(x => x.CreatedAtUtc).Take(8).ToListAsync(),
+            activity, contentHealth, visitsActivity, visitSummaries));
+    }
 
     public async Task<IActionResult> Settings(bool modal = false)
     {
@@ -124,6 +159,12 @@ public sealed class AdminController(ApplicationDbContext db, IWebHostEnvironment
     }
 
     public async Task<IActionResult> Messages() => View(await db.ContactMessages.OrderByDescending(x => x.CreatedAtUtc).ToListAsync());
+
+    public async Task<IActionResult> Message(int id)
+    {
+        var model = await db.ContactMessages.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+        return model is null ? NotFound() : PartialView("_MessageDetail", model);
+    }
 
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> ReadMessage(int id)

@@ -1,12 +1,75 @@
 @model AdminDashboardViewModel
 @{ ViewData["Title"] = "Resumen"; }
-<div class="module-head dashboard-welcome"><div><span class="module-kicker">PANEL / RESUMEN</span><h1>Hola, Raúl <span>👋</span></h1><p>Este es el estado actual de tu portafolio.</p></div><div class="head-actions"><span class="site-status"><i></i>Sitio conectado</span><a class="button" href="/" target="_blank"><b class="material-symbols-outlined">open_in_new</b>Ver sitio</a></div></div>
+<div class="module-head dashboard-welcome">@await Html.PartialAsync("_ModuleHead", new ModuleHeadViewModel("resumen", "Hola, Raúl 👋", "Este es el estado actual de tu portafolio."))<div class="head-actions"><span class="site-status"><i></i>Sitio conectado</span><a class="button" href="/" target="_blank"><b class="material-symbols-outlined">open_in_new</b>Ver sitio</a></div></div>
 
 <div class="dashboard-stats">
     <a asp-action="Services" class="metric-card metric-blue"><div class="metric-icon"><b class="material-symbols-outlined">design_services</b></div><div><span>Servicios</span><strong>@Model.Services</strong><small>publicados en la web</small></div><b class="material-symbols-outlined metric-arrow">arrow_forward</b></a>
     <a asp-action="Projects" class="metric-card metric-purple"><div class="metric-icon"><b class="material-symbols-outlined">work</b></div><div><span>Proyectos</span><strong>@Model.Projects</strong><small>casos en portafolio</small></div><b class="material-symbols-outlined metric-arrow">arrow_forward</b></a>
     <a asp-action="Faqs" class="metric-card metric-amber"><div class="metric-icon"><b class="material-symbols-outlined">quiz</b></div><div><span>Preguntas FAQ</span><strong>@Model.Faqs</strong><small>respuestas disponibles</small></div><b class="material-symbols-outlined metric-arrow">arrow_forward</b></a>
     <a asp-action="Messages" class="metric-card metric-green"><div class="metric-icon"><b class="material-symbols-outlined">mark_email_unread</b></div><div><span>Mensajes sin leer</span><strong>@Model.UnreadMessages</strong><small>pendientes de revisar</small></div><b class="material-symbols-outlined metric-arrow">arrow_forward</b></a>
+</div>
+
+<div class="dashboard-grid activity-grid">
+    <section class="dashboard-section activity-section">
+        <div class="dashboard-section-head"><div><span class="section-eyebrow">ACTIVIDAD</span><h2>Mensajes recibidos · últimos 14 días</h2></div></div>
+        @{ var maxCount = Math.Max(1, Model.Activity.Max(x => x.Count)); }
+        <div class="activity-chart">
+            @foreach (var day in Model.Activity)
+            {
+                var heightPct = day.Count == 0 ? 4 : (int)Math.Round(day.Count * 100.0 / maxCount);
+                <div class="activity-bar" title="@day.Date.ToString("dd MMM"): @day.Count mensaje@(day.Count == 1 ? "" : "s")">
+                    <span class="activity-bar-fill" style="height:@(heightPct)%"></span>
+                    <small>@day.Date.ToString("dd")</small>
+                </div>
+            }
+        </div>
+    </section>
+    <aside class="dashboard-section health-section">
+        <div class="dashboard-section-head"><div><span class="section-eyebrow">CONTENIDO</span><h2>Estado de publicación</h2></div></div>
+        <div class="health-list">
+            @foreach (var item in Model.ContentHealth)
+            {
+                var total = item.Published + item.Draft;
+                var publishedPct = total == 0 ? 0 : item.Published * 100 / total;
+                <div class="health-row">
+                    <span>@item.Label</span>
+                    <div class="health-bar"><span class="health-bar-fill" style="width:@(publishedPct)%"></span></div>
+                    <small>@item.Published publicado@(item.Published == 1 ? "" : "s")@(item.Draft > 0 ? $" · {item.Draft} oculto{(item.Draft == 1 ? "" : "s")}" : "")</small>
+                </div>
+            }
+        </div>
+    </aside>
+</div>
+
+<div class="dashboard-grid activity-grid">
+    <section class="dashboard-section activity-section">
+        <div class="dashboard-section-head"><div><span class="section-eyebrow">TRÁFICO</span><h2>Visitas al sitio · últimos 14 días</h2></div></div>
+        @{ var maxVisits = Math.Max(1, Model.VisitsActivity.Max(x => x.Count)); }
+        <div class="activity-chart">
+            @foreach (var day in Model.VisitsActivity)
+            {
+                var heightPct = day.Count == 0 ? 4 : (int)Math.Round(day.Count * 100.0 / maxVisits);
+                <div class="activity-bar" title="@day.Date.ToString("dd MMM"): @day.Count visita@(day.Count == 1 ? "" : "s")">
+                    <span class="activity-bar-fill visits" style="height:@(heightPct)%"></span>
+                    <small>@day.Date.ToString("dd")</small>
+                </div>
+            }
+        </div>
+    </section>
+    <aside class="dashboard-section health-section">
+        <div class="dashboard-section-head"><div><span class="section-eyebrow">VISITANTES</span><h2>Únicos vs. total</h2></div></div>
+        <div class="health-list">
+            @foreach (var item in Model.VisitSummaries)
+            {
+                var uniquePct = item.Total == 0 ? 0 : item.Unique * 100 / item.Total;
+                <div class="health-row">
+                    <span>@item.Label</span>
+                    <div class="health-bar"><span class="health-bar-fill visits" style="width:@(uniquePct)%"></span></div>
+                    <small>@item.Total visita@(item.Total == 1 ? "" : "s") · @item.Unique única@(item.Unique == 1 ? "" : "s")</small>
+                </div>
+            }
+        </div>
+    </aside>
 </div>
 
 <div class="dashboard-grid">

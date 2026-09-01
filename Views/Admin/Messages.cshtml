@@ -1,3 +1,29 @@
 @model IReadOnlyList<ContactMessage>
 @{ ViewData["Title"] = "Mensajes"; }
-<div class="page-head"><div><h1>Mensajes</h1><p class="muted">Solicitudes enviadas desde el formulario público.</p></div></div><div class="grid">@foreach(var item in Model){<article class="card @(item.IsRead ? "" : "message-unread")"><div class="page-head" style="margin-bottom:12px"><div><strong>@item.Name</strong> · <a href="mailto:@item.Email">@item.Email</a></div><span class="muted">@item.CreatedAtUtc.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</span></div><p style="white-space:pre-wrap">@item.Message</p>@if(!item.IsRead){<form asp-action="ReadMessage" method="post"><input type="hidden" name="id" value="@item.Id"><button class="button secondary small">Marcar como leído</button></form>}</article>}</div>
+<div class="module-head">@await Html.PartialAsync("_ModuleHead", new ModuleHeadViewModel("mensajes", "Mensajes", "Solicitudes enviadas desde el formulario de contacto público."))</div>
+<div class="module-panel">
+@if (Model.Count == 0)
+{
+    <div class="empty-state"><b class="material-symbols-outlined">inbox</b><h2>Sin mensajes</h2><p>Los mensajes enviados desde el formulario de contacto aparecerán aquí.</p></div>
+}
+else
+{
+    <div class="message-list">
+    @foreach (var item in Model)
+    {
+        <article class="message-row @(item.IsRead ? "" : "is-unread")">
+            <div class="sender-avatar">@item.Name[..1].ToUpperInvariant()</div>
+            <div class="message-row-main">
+                <div class="message-row-head"><strong>@item.Name</strong><span class="status-pill @(item.IsRead ? "read" : "unread")">@(item.IsRead ? "Leído" : "Nuevo")</span>@if (!string.IsNullOrWhiteSpace(item.ServiceCategory)) {<span class="category-tag">@item.ServiceCategory</span>}</div>
+                <a class="message-email" href="mailto:@item.Email">@item.Email</a>
+                <p class="message-preview">@item.Message</p>
+            </div>
+            <div class="message-row-side">
+                <time>@item.CreatedAtUtc.ToLocalTime().ToString("dd MMM, HH:mm")</time>
+                <button type="button" class="icon-button" data-modal-url="@Url.Action("Message", new { id = item.Id })" title="Ver mensaje completo"><b class="material-symbols-outlined">open_in_full</b></button>
+            </div>
+        </article>
+    }
+    </div>
+}
+</div>

@@ -1,0 +1,28 @@
+@model ContactMessage
+<div class="admin-modal-form">
+    <div class="modal-form-head">
+        <div>
+            <span class="module-kicker">MENSAJE</span>
+            <h2>@Model.Name</h2>
+            <p>@Model.Email · @Model.CreatedAtUtc.ToLocalTime().ToString("dd MMM yyyy, HH:mm")</p>
+        </div>
+        <button type="button" class="modal-close" data-modal-close aria-label="Cerrar"><b class="material-symbols-outlined">close</b></button>
+    </div>
+    <div class="modal-form-body message-detail-body">
+        <div class="message-detail-tags">
+            <span class="status-pill @(Model.IsRead ? "read" : "unread")">@(Model.IsRead ? "Leído" : "Nuevo")</span>
+            @if (!string.IsNullOrWhiteSpace(Model.ServiceCategory))
+            {
+                <span class="category-tag">@Model.ServiceCategory</span>
+            }
+        </div>
+        <p class="message-detail-text">@Model.Message</p>
+    </div>
+    <div class="modal-form-actions">
+        <a class="button secondary" href="mailto:@Model.Email">Responder por email</a>
+        @if (!Model.IsRead)
+        {
+            <form asp-action="ReadMessage" method="post"><input type="hidden" name="id" value="@Model.Id" /><button type="submit" class="button">Marcar leído</button></form>
+        }
+    </div>
+</div>

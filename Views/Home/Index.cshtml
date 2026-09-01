@@ -662,7 +662,7 @@
         </div>
 
         <!-- Cards grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="flex flex-wrap justify-center gap-5">
             <partial name="_Services" model="Model.Services" />
 
             @if (ViewData["RenderLegacyContent"] is true)
@@ -1171,6 +1171,22 @@
                                 placeholder="tu@@email.com" type="email" />
                             <span class="text-xs text-red-400 hidden error-message" data-for="email">Por favor ingresa un email válido</span>
                         </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-text-secondary uppercase tracking-wider font-mono" for="contactServiceCategory">
+                            ¿Sobre qué tema quieres hablar? <span class="text-primary">*</span>
+                        </label>
+                        <select id="contactServiceCategory" name="serviceCategory" required
+                            class="w-full bg-bg-surface border border-border-subtle rounded-xl px-4 py-3 text-text-base focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all outline-none text-sm">
+                            <option value="" disabled selected>Selecciona un servicio</option>
+                            @foreach (var service in Model.Services)
+                            {
+                                <option value="@service.Title">@service.Title</option>
+                            }
+                            <option value="Otro">Otro</option>
+                        </select>
+                        <span class="text-xs text-red-400 hidden error-message" data-for="serviceCategory">Selecciona un tema</span>
                     </div>
 
                     <div class="space-y-1.5">

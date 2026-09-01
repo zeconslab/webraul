@@ -3,7 +3,7 @@
     string Active(params string[] actions) => actions.Contains(currentAction, StringComparer.OrdinalIgnoreCase) ? "active" : string.Empty;
 }
 <aside class="admin-sidebar">
-    <div class="sidebar-head"><a class="admin-brand" href="/admin"><span>&gt;_</span><strong>raul.dev</strong></a><small>PANEL ADMINISTRATIVO</small></div>
+    <div class="sidebar-head"><div class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></div><a class="admin-brand" href="/admin"><span>&gt;_</span><strong>raul.dev</strong></a><small>PANEL ADMINISTRATIVO</small></div>
     <nav class="admin-menu" aria-label="Navegación administrativa">
         <div class="menu-group"><span class="menu-label">GENERAL</span><a class="@Active("Index")" asp-controller="Admin" asp-action="Index" aria-current="@(currentAction == "Index" ? "page" : null)"><b class="material-symbols-outlined">space_dashboard</b><span>Resumen</span></a><a class="@Active("Settings")" asp-controller="Admin" asp-action="Settings"><b class="material-symbols-outlined">tune</b><span>Configuración</span></a></div>
         <div class="menu-group"><span class="menu-label">SITIO PÚBLICO</span><a class="@Active("Services", "Service")" asp-controller="Admin" asp-action="Services"><b class="material-symbols-outlined">design_services</b><span>Servicios</span></a><a class="@Active("Projects", "Project")" asp-controller="Admin" asp-action="Projects"><b class="material-symbols-outlined">work</b><span>Proyectos</span></a><a class="@Active("Apps", "App")" asp-controller="Admin" asp-action="Apps"><b class="material-symbols-outlined">apps</b><span>Aplicaciones</span></a><a class="@Active("Faqs", "Faq")" asp-controller="Admin" asp-action="Faqs"><b class="material-symbols-outlined">quiz</b><span>Preguntas FAQ</span></a></div>

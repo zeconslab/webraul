@@ -1,4 +1,4 @@
 @model IReadOnlyList<FaqItem>
 @{ ViewData["Title"]="Preguntas FAQ"; }
-<div class="module-head"><div><span class="module-kicker">SITIO PÚBLICO / FAQ</span><h1>Preguntas frecuentes</h1><p>Resuelve dudas comunes y controla su orden de aparición.</p></div><button type="button" class="button" data-modal-url="@Url.Action("Faq", new { modal = true })"><b class="material-symbols-outlined">add</b>Nueva pregunta</button></div>
+<div class="module-head">@await Html.PartialAsync("_ModuleHead", new ModuleHeadViewModel("faq", "Preguntas frecuentes", "Resuelve dudas comunes y controla su orden de aparición."))<button type="button" class="button" data-modal-url="@Url.Action("Faq", new { modal = true })"><b class="material-symbols-outlined">add</b>Nueva pregunta</button></div>
 @await Html.PartialAsync("_ModuleTable", ("Faq", Model.Select(x => (x.Id,x.Question,x.Answer,x.IsPublished,x.SortOrder)).ToList()))

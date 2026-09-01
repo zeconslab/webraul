@@ -60,12 +60,20 @@ public sealed class AppItem : OrderedContent
     [Required, MaxLength(40)] public string ProjectType { get; set; } = "personal";
 }
 
+public sealed class PageVisit
+{
+    public long Id { get; set; }
+    public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
+    [Required, MaxLength(64)] public string VisitorHash { get; set; } = string.Empty;
+}
+
 public sealed class ContactMessage
 {
     public int Id { get; set; }
     [Required, MaxLength(120)] public string Name { get; set; } = string.Empty;
     [Required, EmailAddress, MaxLength(160)] public string Email { get; set; } = string.Empty;
     [Required, MaxLength(3000)] public string Message { get; set; } = string.Empty;
+    [MaxLength(120)] public string? ServiceCategory { get; set; }
     public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
     public bool IsRead { get; set; }
 }

@@ -266,7 +266,8 @@ html:not(.dark) .mesh-gradient {
 }
 
 .service-card:hover .service-num {
-    color: rgba(74,158,255,.18);
+    color: rgba(74,158,255,.65);
+    text-shadow: 0 0 28px rgba(74,158,255,.45);
 }
 
 /* ============================================

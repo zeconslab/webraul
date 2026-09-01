@@ -13,4 +13,5 @@ public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> 
     public DbSet<FaqItem> Faqs => Set<FaqItem>();
     public DbSet<AppItem> Apps => Set<AppItem>();
     public DbSet<ContactMessage> ContactMessages => Set<ContactMessage>();
+    public DbSet<PageVisit> PageVisits => Set<PageVisit>();
 }
