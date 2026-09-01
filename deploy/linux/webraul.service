@@ -1,0 +1,18 @@
+[Unit]
+Description=pimentel.cloud ASP.NET Core application
+After=network.target
+
+[Service]
+WorkingDirectory=/home/raul/apps/webraul
+ExecStart=/usr/bin/dotnet /home/raul/apps/webraul/webraul.dll
+Restart=always
+RestartSec=5
+KillSignal=SIGINT
+SyslogIdentifier=webraul
+User=raul
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=ASPNETCORE_URLS=http://127.0.0.1:5080
+EnvironmentFile=/etc/webraul/webraul.env
+
+[Install]
+WantedBy=multi-user.target

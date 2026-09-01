@@ -1,0 +1,24 @@
+@model (string Action, List<(int Id,string Name,string Description,bool Published,int Order)> Items)
+<div class="module-panel">
+    @if (Model.Items.Count == 0)
+    {
+        <div class="empty-state"><b class="material-symbols-outlined">inventory_2</b><h2>Aún no hay contenido</h2><p>Crea el primer elemento de este módulo.</p></div>
+    }
+    else
+    {
+        <div class="content-list">
+        @foreach (var item in Model.Items)
+        {
+            <article class="content-row">
+                <div class="order-badge">@item.Order</div>
+                <div class="content-row-main"><h2>@item.Name</h2><p>@item.Description</p></div>
+                <span class="status-pill @(item.Published ? "published" : "draft")">@(item.Published ? "Publicado" : "Oculto")</span>
+                <div class="row-actions">
+                    <button type="button" class="icon-button" data-modal-url="@Url.Action(Model.Action, new { id = item.Id, modal = true })" title="Editar @item.Name"><b class="material-symbols-outlined">edit</b></button>
+                    <button type="button" class="icon-button danger" data-delete-type="@Model.Action" data-delete-id="@item.Id" data-delete-name="@item.Name" title="Eliminar @item.Name"><b class="material-symbols-outlined">delete</b></button>
+                </div>
+            </article>
+        }
+        </div>
+    }
+</div>

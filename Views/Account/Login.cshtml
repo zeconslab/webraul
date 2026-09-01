@@ -1,0 +1,95 @@
+@model LoginViewModel
+@{ Layout = null; }
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Acceso administrativo — raul.dev</title>
+    <link rel="icon" type="image/svg+xml" href="~/favicon.svg?v=2" />
+    <link rel="shortcut icon" href="~/favicon.svg?v=2" />
+    <script>if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark');</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@500;600;700&amp;display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0,0" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
+    <style>
+      .login-particles{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}.material-symbols-outlined{font-family:'Material Symbols Outlined'!important;font-weight:normal!important;font-style:normal;line-height:1;letter-spacing:normal;text-transform:none;white-space:nowrap;word-wrap:normal;direction:ltr;font-feature-settings:'liga'}.login-card-icon.material-symbols-outlined{font-size:24px!important}.login-input-wrap>span.material-symbols-outlined{font-size:19px!important}.password-toggle.material-symbols-outlined{font-size:20px!important}.login-theme-toggle.material-symbols-outlined{font-size:22px!important}
+      .login-theme-toggle{position:fixed;z-index:20;top:24px;right:24px;width:44px;height:44px;border-radius:14px;border:1px solid rgba(71,94,124,.16);background:rgba(255,255,255,.72);color:#334155;backdrop-filter:blur(14px);box-shadow:0 8px 25px rgba(30,41,59,.1);cursor:pointer;transition:.25s ease}.login-theme-toggle:hover{transform:translateY(-2px);color:#4a9eff;border-color:rgba(74,158,255,.35)}
+      html.dark .login-hero{background:#070b14;color:#e4ecf5}html.dark .login-grid{background-image:linear-gradient(rgba(74,158,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(74,158,255,.055) 1px,transparent 1px)}html.dark .login-glow{opacity:.18}html.dark .login-copy h1,html.dark .login-card h2{color:#eef5ff}html.dark .login-copy>p{color:#91a0b7}html.dark .login-card{background:rgba(15,23,42,.88);border-color:rgba(74,158,255,.14);box-shadow:0 30px 90px rgba(0,0,0,.46)}html.dark .login-intro,html.dark .login-options,html.dark .login-note,html.dark .back-home{color:#8290a6}html.dark .login-field label{color:#b9c5d5}html.dark .login-input-wrap input{background:#0a101d;color:#e4ecf5;border-color:#26344d}html.dark .login-input-wrap input:focus{background:#0c1423;border-color:rgba(74,158,255,.6)}html.dark .login-theme-toggle{background:rgba(15,23,42,.78);border-color:rgba(74,158,255,.2);color:#dce9f8}html.dark .availability{color:#5ee6c3;background:rgba(0,217,163,.08);border-color:rgba(0,217,163,.18)}html.dark .login-logo{color:#69acff}
+    </style>
+</head>
+<body class="login-page login-hero">
+    <button type="button" id="loginThemeToggle" class="login-theme-toggle material-symbols-outlined" aria-label="Cambiar a tema oscuro">dark_mode</button>
+    <div class="login-grid" aria-hidden="true"></div>
+    <div class="login-glow login-glow-one" aria-hidden="true"></div>
+    <div class="login-glow login-glow-two" aria-hidden="true"></div>
+    <canvas id="loginParticles" class="login-particles" aria-hidden="true"></canvas>
+
+    <main class="login-shell">
+        <section class="login-context" aria-label="Área administrativa">
+            <a href="/" class="login-logo"><span>&gt;_</span> raul.dev</a>
+            <div class="login-copy">
+                <span class="availability"><i></i> SISTEMA SEGURO</span>
+                <h1>Tu sitio,<br /><em>bajo control.</em></h1>
+                <p>Administra proyectos, servicios, contenido y mensajes desde un solo lugar.</p>
+            </div>
+            <div class="mini-terminal" aria-hidden="true">
+                <div class="terminal-bar"><i></i><i></i><i></i><span>admin@raul.dev — ~/dashboard</span></div>
+                <div class="terminal-body"><p><b>~</b> auth --status</p><p><span>✓</span> conexión cifrada</p><p><span>✓</span> acceso protegido</p><p><b>~</b> <i class="terminal-cursor"></i></p></div>
+            </div>
+        </section>
+
+        <section class="login-card" aria-labelledby="loginTitle">
+            <div class="login-card-head"><span class="login-card-icon material-symbols-outlined">lock</span><div><p>ADMINISTRACIÓN</p><h2 id="loginTitle">Bienvenido de vuelta</h2></div></div>
+            <p class="login-intro">Ingresa tus credenciales para continuar.</p>
+
+            <form method="post" novalidate id="loginForm">
+                <input asp-for="ReturnUrl" type="hidden" />
+                <div asp-validation-summary="ModelOnly" class="login-alert" role="alert"></div>
+
+                <div class="field login-field">
+                    <label asp-for="Email">Correo electrónico</label>
+                    <div class="login-input-wrap"><span class="material-symbols-outlined" aria-hidden="true">mail</span><input asp-for="Email" autocomplete="username" placeholder="correo@ejemplo.com" aria-describedby="emailError" /></div>
+                    <span asp-validation-for="Email" id="emailError" class="field-error"></span>
+                </div>
+
+                <div class="field login-field">
+                    <label asp-for="Password">Contraseña</label>
+                    <div class="login-input-wrap"><span class="material-symbols-outlined" aria-hidden="true">key</span><input asp-for="Password" autocomplete="current-password" placeholder="••••••••••" aria-describedby="passwordError" /><button type="button" id="togglePassword" class="password-toggle material-symbols-outlined" aria-label="Mostrar contraseña">visibility</button></div>
+                    <span asp-validation-for="Password" id="passwordError" class="field-error"></span>
+                </div>
+
+                <div class="login-options"><label><input asp-for="RememberMe" /> <span>Mantener sesión</span></label><span class="protected-label">● Protegido</span></div>
+                <button class="button login-submit" type="submit" id="loginButton"><span>Iniciar sesión</span><b>→</b></button>
+            </form>
+            <p class="login-note">Después de varios intentos fallidos, el acceso se bloquea temporalmente.</p>
+            <a href="/" class="back-home">← Volver al portafolio</a>
+        </section>
+    </main>
+
+    <script>
+    (() => {
+      const form = document.getElementById('loginForm');
+      const password = document.getElementById('Password');
+      const toggle = document.getElementById('togglePassword');
+      const button = document.getElementById('loginButton');
+      const themeToggle=document.getElementById('loginThemeToggle');
+      const syncTheme=()=>{const dark=document.documentElement.classList.contains('dark');themeToggle.textContent=dark?'light_mode':'dark_mode';themeToggle.setAttribute('aria-label',dark?'Cambiar a tema claro':'Cambiar a tema oscuro')};
+      themeToggle.addEventListener('click',()=>{document.documentElement.classList.toggle('dark');localStorage.setItem('theme',document.documentElement.classList.contains('dark')?'dark':'light');syncTheme()});syncTheme();
+      toggle.addEventListener('click', () => { const show=password.type==='password'; password.type=show?'text':'password'; toggle.textContent=show?'visibility_off':'visibility'; toggle.setAttribute('aria-label',show?'Ocultar contraseña':'Mostrar contraseña'); });
+      form.addEventListener('submit', e => {
+        let valid=true;
+        [['Email','El correo es obligatorio.'],['Password','La contraseña es obligatoria.']].forEach(([id,message]) => { const input=document.getElementById(id), error=document.querySelector(`[data-valmsg-for="${id}"]`); if(!input.value.trim()){e.preventDefault();valid=false;input.classList.add('input-invalid');if(error)error.textContent=message}else{input.classList.remove('input-invalid')} });
+        if(valid){button.disabled=true;button.querySelector('span').textContent='Verificando…'}
+      });
+      const canvas=document.getElementById('loginParticles'),ctx=canvas.getContext('2d');let particles=[],frame;
+      const resize=()=>{const ratio=devicePixelRatio||1;canvas.width=innerWidth*ratio;canvas.height=innerHeight*ratio;canvas.style.width=innerWidth+'px';canvas.style.height=innerHeight+'px';ctx.setTransform(ratio,0,0,ratio,0,0);particles=Array.from({length:Math.max(28,Math.floor(innerWidth*innerHeight/24000))},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,r:Math.random()*2+1}))};
+      const draw=()=>{ctx.clearRect(0,0,innerWidth,innerHeight);particles.forEach((p,i)=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>innerWidth)p.vx*=-1;if(p.y<0||p.y>innerHeight)p.vy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(74,158,255,.38)';ctx.fill();for(let j=i+1;j<particles.length;j++){const q=particles[j],d=Math.hypot(p.x-q.x,p.y-q.y);if(d<125){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.strokeStyle=`rgba(74,158,255,${.14*(1-d/125)})`;ctx.stroke()}}});frame=requestAnimationFrame(draw)};
+      resize();if(!matchMedia('(prefers-reduced-motion: reduce)').matches)draw();addEventListener('resize',resize,{passive:true});document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelAnimationFrame(frame);else if(!matchMedia('(prefers-reduced-motion: reduce)').matches)draw()});
+    })();
+    </script>
+</body>
+</html>

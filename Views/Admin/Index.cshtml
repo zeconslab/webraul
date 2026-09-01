@@ -1,0 +1,19 @@
+@model AdminDashboardViewModel
+@{ ViewData["Title"] = "Resumen"; }
+<div class="module-head dashboard-welcome"><div><span class="module-kicker">PANEL / RESUMEN</span><h1>Hola, Raúl <span>👋</span></h1><p>Este es el estado actual de tu portafolio.</p></div><div class="head-actions"><span class="site-status"><i></i>Sitio conectado</span><a class="button" href="/" target="_blank"><b class="material-symbols-outlined">open_in_new</b>Ver sitio</a></div></div>
+
+<div class="dashboard-stats">
+    <a asp-action="Services" class="metric-card metric-blue"><div class="metric-icon"><b class="material-symbols-outlined">design_services</b></div><div><span>Servicios</span><strong>@Model.Services</strong><small>publicados en la web</small></div><b class="material-symbols-outlined metric-arrow">arrow_forward</b></a>
+    <a asp-action="Projects" class="metric-card metric-purple"><div class="metric-icon"><b class="material-symbols-outlined">work</b></div><div><span>Proyectos</span><strong>@Model.Projects</strong><small>casos en portafolio</small></div><b class="material-symbols-outlined metric-arrow">arrow_forward</b></a>
+    <a asp-action="Faqs" class="metric-card metric-amber"><div class="metric-icon"><b class="material-symbols-outlined">quiz</b></div><div><span>Preguntas FAQ</span><strong>@Model.Faqs</strong><small>respuestas disponibles</small></div><b class="material-symbols-outlined metric-arrow">arrow_forward</b></a>
+    <a asp-action="Messages" class="metric-card metric-green"><div class="metric-icon"><b class="material-symbols-outlined">mark_email_unread</b></div><div><span>Mensajes sin leer</span><strong>@Model.UnreadMessages</strong><small>pendientes de revisar</small></div><b class="material-symbols-outlined metric-arrow">arrow_forward</b></a>
+</div>
+
+<div class="dashboard-grid">
+    <section class="dashboard-section recent-section"><div class="dashboard-section-head"><div><span class="section-eyebrow">ACTIVIDAD</span><h2>Mensajes recientes</h2></div><a asp-action="Messages">Ver bandeja <b class="material-symbols-outlined">arrow_forward</b></a></div>
+        @if(Model.RecentMessages.Count == 0){<div class="dashboard-empty"><div class="empty-illustration"><b class="material-symbols-outlined">inbox</b><i></i></div><h3>Todo está al día</h3><p>Los mensajes enviados desde el formulario aparecerán aquí.</p></div>}
+        else{<div class="recent-list">@foreach(var item in Model.RecentMessages){<article><div class="sender-avatar">@item.Name[..1].ToUpperInvariant()</div><div><strong>@item.Name</strong><span>@item.Email</span></div><p>@item.Message</p><time>@item.CreatedAtUtc.ToLocalTime().ToString("dd MMM, HH:mm")</time></article>}</div>}
+    </section>
+
+    <aside class="dashboard-section quick-section"><div class="dashboard-section-head"><div><span class="section-eyebrow">ACCESOS</span><h2>Acciones rápidas</h2></div></div><div class="quick-actions"><button type="button" data-modal-url="@Url.Action("Project", new { modal = true })"><span><b class="material-symbols-outlined">add_photo_alternate</b></span><div><strong>Nuevo proyecto</strong><small>Publicar un caso de estudio</small></div><b class="material-symbols-outlined">chevron_right</b></button><button type="button" data-modal-url="@Url.Action("Service", new { modal = true })"><span><b class="material-symbols-outlined">add_circle</b></span><div><strong>Nuevo servicio</strong><small>Añadir una solución</small></div><b class="material-symbols-outlined">chevron_right</b></button><a asp-action="Settings"><span><b class="material-symbols-outlined">badge</b></span><div><strong>Editar identidad</strong><small>Nombre, contacto y redes</small></div><b class="material-symbols-outlined">chevron_right</b></a></div></aside>
+</div>

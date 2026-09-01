@@ -1,0 +1,3 @@
+@model ServiceItem
+@{ ViewData["Title"] = Model.Id == 0 ? "Nuevo servicio" : "Editar servicio"; }
+<div class="standalone-form"><partial name="_ServiceForm" model="Model" /></div>

@@ -1,0 +1,11 @@
+@model SiteSettings
+<form asp-action="Settings" method="post" class="admin-modal-form admin-modal-form-wide settings-modal-form" data-modal-form>
+    <input asp-for="Id" type="hidden" />
+    <div class="modal-form-head"><div><span class="module-kicker">CONFIGURACIÓN</span><h2>Editar configuración del sitio</h2><p>Actualiza la identidad, los datos de contacto y tus redes.</p></div><button type="button" class="modal-close" data-modal-close aria-label="Cerrar"><b class="material-symbols-outlined">close</b></button></div>
+    <div class="modal-form-body"><div asp-validation-summary="ModelOnly"></div>
+        <section class="modal-form-section"><h3>Identidad</h3><div class="settings-responsive-grid"><div class="field"><label asp-for="OwnerName">Nombre</label><input asp-for="OwnerName" /><span asp-validation-for="OwnerName"></span></div><div class="field"><label asp-for="Headline">Título profesional</label><input asp-for="Headline" /><span asp-validation-for="Headline"></span></div></div><div class="field"><label asp-for="HeroText">Presentación principal</label><textarea asp-for="HeroText" rows="4"></textarea><span asp-validation-for="HeroText"></span></div></section>
+        <section class="modal-form-section"><h3>Contacto</h3><div class="settings-responsive-grid"><div class="field"><label asp-for="Email">Email</label><input asp-for="Email" type="email" /><span asp-validation-for="Email"></span></div><div class="field"><label asp-for="Phone">Teléfono</label><input asp-for="Phone" type="tel" /></div></div><div class="field"><label asp-for="Location">Ubicación</label><input asp-for="Location" /></div></section>
+        <section class="modal-form-section"><h3>Redes</h3><div class="settings-responsive-grid"><div class="field"><label asp-for="LinkedInUrl">LinkedIn</label><input asp-for="LinkedInUrl" type="url" placeholder="https://" /></div><div class="field"><label asp-for="GitHubUrl">GitHub</label><input asp-for="GitHubUrl" type="url" placeholder="https://" /></div></div></section>
+    </div>
+    <div class="modal-form-actions"><button type="button" class="button secondary" data-modal-close>Cancelar</button><button class="button" type="submit"><b class="material-symbols-outlined">save</b>Guardar configuración</button></div>
+</form>

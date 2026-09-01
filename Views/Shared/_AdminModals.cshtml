@@ -1,0 +1,16 @@
+<div class="admin-modal-layer" id="adminFormModal" aria-hidden="true">
+    <div class="admin-modal-backdrop" data-modal-close></div>
+    <div class="admin-modal-dialog" role="dialog" aria-modal="true" aria-label="Formulario" id="adminModalContent">
+        <div class="modal-loading"><span></span><p>Cargando formulario…</p></div>
+    </div>
+</div>
+
+<div class="admin-modal-layer" id="deleteModal" aria-hidden="true">
+    <div class="admin-modal-backdrop" data-delete-close></div>
+    <div class="delete-dialog" role="alertdialog" aria-modal="true" aria-labelledby="deleteModalTitle">
+        <div class="delete-icon"><b class="material-symbols-outlined">delete</b></div>
+        <h2 id="deleteModalTitle">¿Eliminar elemento?</h2>
+        <p>Vas a eliminar <strong id="deleteItemName"></strong>. Esta acción no se puede deshacer.</p>
+        <form asp-controller="Admin" asp-action="Delete" method="post"><input type="hidden" name="type" id="deleteItemType" /><input type="hidden" name="id" id="deleteItemId" /><div class="delete-actions"><button type="button" class="button secondary" data-delete-close>Cancelar</button><button type="submit" class="button danger-solid"><b class="material-symbols-outlined">delete</b>Eliminar</button></div></form>
+    </div>
+</div>

@@ -1,0 +1,9 @@
+@model SiteSettings
+@{ ViewData["Title"] = "Configuración"; }
+<div class="module-head"><div><span class="module-kicker">GENERAL / IDENTIDAD</span><h1>Configuración del sitio</h1><p>Información principal utilizada en la portada y el contacto.</p></div><button type="button" class="button" data-modal-url="@Url.Action("Settings", new { modal = true })"><b class="material-symbols-outlined">edit</b>Editar configuración</button></div>
+<div class="settings-summary-grid">
+    <section class="settings-summary-card"><div class="settings-summary-icon"><b class="material-symbols-outlined">badge</b></div><div><span>IDENTIDAD</span><h2>@Model.OwnerName</h2><p>@Model.Headline</p></div></section>
+    <section class="settings-summary-card"><div class="settings-summary-icon"><b class="material-symbols-outlined">contact_mail</b></div><div><span>CONTACTO</span><h2>@Model.Email</h2><p>@Model.Phone · @Model.Location</p></div></section>
+    <section class="settings-summary-card"><div class="settings-summary-icon"><b class="material-symbols-outlined">campaign</b></div><div><span>PRESENTACIÓN</span><h2>Texto principal</h2><p>@Model.HeroText</p></div></section>
+    <section class="settings-summary-card"><div class="settings-summary-icon"><b class="material-symbols-outlined">share</b></div><div><span>REDES</span><h2>Perfiles públicos</h2><p>LinkedIn y GitHub configurados para el sitio público.</p></div></section>
+</div>

@@ -1,0 +1,3 @@
+@model Project
+@{ ViewData["Title"] = Model.Id == 0 ? "Nuevo proyecto" : "Editar proyecto"; }
+<div class="standalone-form standalone-form-wide"><partial name="_ProjectForm" model="Model" /></div>

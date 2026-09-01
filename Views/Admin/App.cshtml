@@ -1,0 +1,3 @@
+@model AppItem
+@{ ViewData["Title"] = Model.Id == 0 ? "Nueva aplicación" : "Editar aplicación"; }
+<div class="standalone-form"><partial name="_AppForm" model="Model" /></div>

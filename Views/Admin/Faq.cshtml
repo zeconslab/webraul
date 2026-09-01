@@ -1,0 +1,3 @@
+@model FaqItem
+@{ ViewData["Title"] = Model.Id == 0 ? "Nueva pregunta" : "Editar pregunta"; }
+<div class="standalone-form"><partial name="_FaqForm" model="Model" /></div>

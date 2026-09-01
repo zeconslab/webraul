@@ -794,7 +794,7 @@
         })();
 
         // Modal de Proyectos
-        const projectData = {
+        const projectData = window.portfolioProjectData || {
             everglow: {
                 title: 'Everglow Spa',
                 badge: 'Cliente satisfecho',
@@ -1023,7 +1023,7 @@
                 }
             });
 
-            form.addEventListener('submit', (e) => {
+            form.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 
                 let hasErrors = false;
@@ -1057,27 +1057,35 @@
 
                 if (hasErrors) return;
 
-                // Simular envío
                 submitBtn.classList.add('form-btn-loading');
                 submitBtn.querySelector('.btn-text').classList.add('hidden');
                 submitBtn.querySelector('.btn-spinner').classList.remove('hidden');
                 submitBtn.disabled = true;
 
-                setTimeout(() => {
+                try {
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: new FormData(form),
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    });
+                    const result = await response.json();
+                    if (!response.ok) throw new Error(result.message || 'No fue posible enviar el mensaje.');
+
+                    formSuccess.querySelector('span:last-child')?.remove();
+                    formSuccess.lastChild.textContent = ` ${result.message}`;
+                    formSuccess.classList.remove('hidden');
+                    form.reset();
+                    setTimeout(() => formSuccess.classList.add('hidden'), 5000);
+                } catch (error) {
+                    formSuccess.classList.remove('hidden', 'bg-terminal-green/10', 'border-terminal-green/30', 'text-terminal-green');
+                    formSuccess.classList.add('bg-red-500/10', 'border-red-500/30', 'text-red-400');
+                    formSuccess.lastChild.textContent = ` ${error.message}`;
+                } finally {
                     submitBtn.classList.remove('form-btn-loading');
                     submitBtn.querySelector('.btn-text').classList.remove('hidden');
                     submitBtn.querySelector('.btn-spinner').classList.add('hidden');
                     submitBtn.disabled = false;
-                    
-                    // Mostrar mensaje de éxito
-                    formSuccess.classList.remove('hidden');
-                    form.reset();
-                    
-                    // Ocultar mensaje después de 5 segundos
-                    setTimeout(() => {
-                        formSuccess.classList.add('hidden');
-                    }, 5000);
-                }, 2000);
+                }
             });
         })();
 
@@ -1182,19 +1190,17 @@
         })();
 
         // ============================================
-        // SMOOTH SCROLL — scrolls to the first heading inside
-        // the target section, compensating for the fixed header.
+        // SMOOTH SCROLL — positions the visible title below the real fixed
+        // header height, including its desktop/mobile responsive dimensions.
         // ============================================
         (function() {
             function scrollToSection(hash) {
                 const section = document.getElementById(hash);
                 if (!section) return;
                 const header = document.getElementById('mainHeader');
-                const headerH = header ? header.getBoundingClientRect().height : 80;
-                // Aim at the first section-label or h2 so we land on the heading,
-                // not on the blank py-28 padding above it.
-                const anchor = section.querySelector('.section-label, h2') || section;
-                const targetY = anchor.getBoundingClientRect().top + window.scrollY - headerH - 20;
+                const headerH = header ? header.getBoundingClientRect().height : 96;
+                const heading = section.querySelector('.section-label, h2') || section;
+                const targetY = heading.getBoundingClientRect().top + window.scrollY - headerH - 36;
                 window.scrollTo({ top: targetY, behavior: 'smooth' });
             }
 

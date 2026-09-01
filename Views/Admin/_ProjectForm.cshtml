@@ -1,0 +1,27 @@
+@model Project
+<form asp-action="Project" method="post" enctype="multipart/form-data" class="admin-modal-form admin-modal-form-wide" data-modal-form>
+    <input asp-for="Id" type="hidden" /><input asp-for="DesktopImageUrl" type="hidden" /><input asp-for="MobileImageUrl" type="hidden" />
+    <div class="modal-form-head"><div><span class="module-kicker">PORTAFOLIO</span><h2>@(Model.Id == 0 ? "Nuevo proyecto" : "Editar proyecto")</h2><p>Información, tecnologías, imágenes y enlace del caso de estudio.</p></div><button type="button" class="modal-close" data-modal-close aria-label="Cerrar"><b class="material-symbols-outlined">close</b></button></div>
+    <div class="modal-form-body">
+        <div asp-validation-summary="ModelOnly"></div>
+        <section class="modal-form-section"><h3>Información principal</h3>
+            <div class="field"><label asp-for="Title">Título</label><input asp-for="Title" /><span asp-validation-for="Title"></span></div>
+            <div class="form-grid">
+                <div class="field"><label asp-for="Slug">Identificador</label><input asp-for="Slug" /><span asp-validation-for="Slug"></span></div>
+                <div class="field"><label asp-for="Category">Categoría</label><div class="icon-select-wrap"><span class="material-symbols-outlined" data-icon-preview>category</span><select asp-for="Category" data-category-select><option value="web" data-icon="language">Web · Sitio o plataforma</option><option value="ecommerce" data-icon="shopping_cart">Comercio · E-commerce</option><option value="wellness" data-icon="spa">Bienestar · Spa o belleza</option><option value="corporate" data-icon="business_center">Corporativo · Empresa</option><option value="saas" data-icon="cloud">SaaS · Servicio en la nube</option><option value="mobile" data-icon="smartphone">Móvil · Aplicación</option><option value="education" data-icon="school">Educación · Aprendizaje</option><option value="health" data-icon="health_and_safety">Salud · Medicina</option><option value="finance" data-icon="payments">Finanzas · Pagos</option><option value="creative" data-icon="palette">Creativo · Diseño</option><option value="real-estate" data-icon="apartment">Inmobiliario · Propiedades</option><option value="restaurant" data-icon="restaurant">Gastronomía · Restaurante</option><option value="nonprofit" data-icon="volunteer_activism">Social · Organización</option><option value="other" data-icon="category">Otro · General</option></select></div></div>
+            </div>
+            <div class="field"><label asp-for="Description">Descripción</label><textarea asp-for="Description"></textarea><span asp-validation-for="Description"></span></div>
+        </section>
+        <section class="modal-form-section"><h3>Detalles públicos</h3>
+            <div class="field"><label asp-for="Technologies">Tecnologías</label><div class="tag-editor" data-tag-editor><div class="tag-list"></div><input type="text" data-tag-input placeholder="Escribe y presiona coma o Enter" autocomplete="off" /><input asp-for="Technologies" type="hidden" data-tag-value /></div><small>Usa coma o Enter para agregar cada tecnología.</small></div>
+            <div class="field"><label asp-for="Features">Características, una por línea</label><textarea asp-for="Features"></textarea></div>
+            <div class="form-grid"><div class="field"><label asp-for="WebsiteUrl">Sitio web</label><input asp-for="WebsiteUrl" type="url" placeholder="https://" /></div><div class="field"><label asp-for="Badge">Etiqueta</label><input asp-for="Badge" /></div></div>
+        </section>
+        <section class="modal-form-section"><h3>Imágenes</h3><div class="form-grid">
+            <label class="file-drop file-drop-preview" data-file-drop><input name="desktopImage" type="file" accept="image/png,image/jpeg,image/webp" data-file-input /><img data-file-preview src="@Model.DesktopImageUrl" alt="Vista previa de escritorio" class="@(string.IsNullOrWhiteSpace(Model.DesktopImageUrl) ? "" : "has-image")" /><span class="file-drop-copy"><b class="material-symbols-outlined">desktop_windows</b><strong>Imagen de escritorio</strong><small data-file-name>Arrastra o selecciona · PNG, JPG o WEBP</small></span></label>
+            <label class="file-drop file-drop-preview" data-file-drop><input name="mobileImage" type="file" accept="image/png,image/jpeg,image/webp" data-file-input /><img data-file-preview src="@Model.MobileImageUrl" alt="Vista previa móvil" class="@(string.IsNullOrWhiteSpace(Model.MobileImageUrl) ? "" : "has-image")" /><span class="file-drop-copy"><b class="material-symbols-outlined">smartphone</b><strong>Imagen móvil</strong><small data-file-name>Arrastra o selecciona · PNG, JPG o WEBP</small></span></label>
+        </div></section>
+        <div class="form-grid align-end"><div class="field"><label asp-for="SortOrder">Orden</label><input asp-for="SortOrder" type="number" /></div><label class="publish-control"><input asp-for="IsPublished" /><span><strong>Publicado</strong><small>Visible en el portafolio</small></span></label></div>
+    </div>
+    <div class="modal-form-actions"><button type="button" class="button secondary" data-modal-close>Cancelar</button><button class="button" type="submit"><b class="material-symbols-outlined">save</b>Guardar proyecto</button></div>
+</form>

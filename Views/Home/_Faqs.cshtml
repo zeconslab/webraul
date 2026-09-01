@@ -1,0 +1,12 @@
+@model IReadOnlyList<FaqItem>
+@for (var index = 0; index < Model.Count; index++)
+{
+    var faq = Model[index];
+    <details class="reveal-up" style="animation-delay:@(index * 80)ms">
+        <summary class="flex items-center justify-between p-6 cursor-pointer list-none font-bold text-base text-text-base">
+            @faq.Question
+            <span class="material-symbols-outlined text-primary shrink-0 ml-4">expand_more</span>
+        </summary>
+        <div class="px-6 pb-6 text-text-secondary leading-relaxed text-sm">@faq.Answer</div>
+    </details>
+}

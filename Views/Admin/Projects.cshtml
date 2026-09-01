@@ -1,0 +1,4 @@
+@model IReadOnlyList<Project>
+@{ ViewData["Title"]="Proyectos"; }
+<div class="module-head"><div><span class="module-kicker">SITIO PÚBLICO / PORTAFOLIO</span><h1>Proyectos</h1><p>Publica casos de estudio, tecnologías, enlaces e imágenes.</p></div><button type="button" class="button" data-modal-url="@Url.Action("Project", new { modal = true })"><b class="material-symbols-outlined">add</b>Nuevo proyecto</button></div>
+@await Html.PartialAsync("_ModuleTable", ("Project", Model.Select(x => (x.Id,x.Title,x.Description,x.IsPublished,x.SortOrder)).ToList()))

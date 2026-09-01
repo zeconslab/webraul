@@ -1,0 +1,18 @@
+@model IReadOnlyList<ServiceItem>
+@{ var tones = new[] { "primary", "accent", "purple-acc", "[#FEBC2E]" }; }
+@for (var index = 0; index < Model.Count; index++)
+{
+    var service = Model[index];
+    var tone = tones[index % tones.Length];
+    <article class="service-card group p-7 rounded-2xl flex flex-col reveal-up shine-effect will-animate" style="animation-delay:@(index * 90)ms">
+        <span class="service-num">@((index + 1).ToString("00"))</span>
+        <div class="size-12 bg-@tone/10 border border-@tone/20 rounded-xl flex items-center justify-center text-@tone mb-6 group-hover:bg-@tone group-hover:border-transparent group-hover:text-white transition-all duration-300">
+            <span class="material-symbols-outlined text-2xl">@service.Icon</span>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-3">@service.Title</h3>
+        <p class="text-text-secondary text-sm leading-relaxed mb-6 flex-1">@service.Description</p>
+        <a href="#contacto" class="mt-auto inline-flex items-center gap-1.5 text-primary text-sm font-bold group/btn hover:gap-2.5 transition-all">
+            Solicitar información <span class="material-symbols-outlined text-[16px] transition-transform group-hover/btn:translate-x-1">arrow_forward</span>
+        </a>
+    </article>
+}
