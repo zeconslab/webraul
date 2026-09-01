@@ -821,6 +821,11 @@
             </p>
         </div>
 
+        <div class="flex flex-wrap justify-center gap-3 mb-10 reveal-up">
+            <button type="button" class="filter-btn active bg-primary text-white active-filter-glow px-5 py-2.5 rounded-xl text-sm font-semibold transition-all" data-filter="all">Todos</button>
+            <button type="button" class="filter-btn border border-border-subtle text-text-secondary hover:text-primary hover:border-primary/30 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all" data-filter="wellness">Wellness</button>
+        </div>
+
         <!-- Projects grid -->
         <div class="flex justify-center" id="projectsGrid">
             <div data-category="wellness"
@@ -871,6 +876,12 @@
                 </div>
 
             </div>
+        </div>
+
+        <div class="flex justify-center mt-10 reveal-up">
+            <button type="button" id="projectsShowMoreBtn" class="border border-border-subtle text-text-secondary hover:text-primary hover:border-primary/30 px-6 py-3 rounded-xl text-sm font-semibold transition-all inline-flex items-center gap-2">
+                Mostrar más <span class="material-symbols-outlined text-[18px]">expand_more</span>
+            </button>
         </div>
     </div>
 </section>

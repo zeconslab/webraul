@@ -751,46 +751,64 @@
             mobileThemeToggle?.addEventListener('click', toggleTheme);
         })();
 
-        // Filtros de Proyectos
+        // Filtros de Proyectos + paginación "Mostrar más"
         (function() {
             const filterBtns = document.querySelectorAll('.filter-btn');
             const projects = document.querySelectorAll('.project-item');
-            
+            const showMoreBtn = document.getElementById('projectsShowMoreBtn');
+            const visibleLimit = 4;
+
             if (filterBtns.length === 0 || projects.length === 0) return;
+
+            function applyVisibility(filter) {
+                const expanded = showMoreBtn?.dataset.expanded === 'true';
+                let matchIndex = 0;
+                projects.forEach(project => {
+                    const category = project.getAttribute('data-category');
+                    const matches = filter === 'all' || category === filter;
+                    const withinLimit = filter !== 'all' || expanded || matchIndex < visibleLimit;
+                    if (matches) matchIndex++;
+                    const visible = matches && withinLimit;
+
+                    if (visible) {
+                        project.style.display = 'block';
+                        setTimeout(() => {
+                            project.style.opacity = '1';
+                            project.style.transform = 'scale(1)';
+                        }, 10);
+                    } else {
+                        project.style.opacity = '0';
+                        project.style.transform = 'scale(0.8)';
+                        setTimeout(() => {
+                            project.style.display = 'none';
+                        }, 300);
+                    }
+                });
+                if (showMoreBtn) showMoreBtn.style.display = (filter === 'all' && !expanded && matchIndex > visibleLimit) ? 'inline-flex' : 'none';
+            }
 
             filterBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
                     const filter = btn.getAttribute('data-filter');
-                    
-                    // Actualizar botones activos
+
                     filterBtns.forEach(b => {
                         b.classList.remove('active', 'bg-primary', 'text-white', 'active-filter-glow');
-                        b.classList.add('border', 'border-gray-300', 'dark:border-gray-700', 'text-gray-600', 'dark:text-gray-400');
+                        b.classList.add('border', 'border-border-subtle', 'text-text-secondary');
                     });
-                    
                     btn.classList.add('active', 'bg-primary', 'text-white', 'active-filter-glow');
-                    btn.classList.remove('border', 'border-gray-300', 'dark:border-gray-700', 'text-gray-600', 'dark:text-gray-400');
-                    
-                    // Filtrar proyectos
-                    projects.forEach(project => {
-                        const category = project.getAttribute('data-category');
-                        
-                        if (filter === 'all' || category === filter) {
-                            project.style.display = 'block';
-                            setTimeout(() => {
-                                project.style.opacity = '1';
-                                project.style.transform = 'scale(1)';
-                            }, 10);
-                        } else {
-                            project.style.opacity = '0';
-                            project.style.transform = 'scale(0.8)';
-                            setTimeout(() => {
-                                project.style.display = 'none';
-                            }, 300);
-                        }
-                    });
+                    btn.classList.remove('border', 'border-border-subtle', 'text-text-secondary');
+
+                    if (showMoreBtn) showMoreBtn.dataset.expanded = 'false';
+                    applyVisibility(filter);
                 });
             });
+
+            showMoreBtn?.addEventListener('click', () => {
+                showMoreBtn.dataset.expanded = 'true';
+                applyVisibility('all');
+            });
+
+            applyVisibility('all');
         })();
 
         // Modal de Proyectos
