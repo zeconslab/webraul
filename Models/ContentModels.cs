@@ -13,6 +13,13 @@ public sealed class SiteSettings
     [MaxLength(160)] public string Location { get; set; } = string.Empty;
     [MaxLength(300)] public string LinkedInUrl { get; set; } = string.Empty;
     [MaxLength(300)] public string GitHubUrl { get; set; } = string.Empty;
+
+    [Required, MaxLength(70)] public string SeoTitle { get; set; } = string.Empty;
+    [Required, MaxLength(200)] public string SeoDescription { get; set; } = string.Empty;
+    [MaxLength(300)] public string SeoKeywords { get; set; } = string.Empty;
+    [MaxLength(500)] public string? SeoImageUrl { get; set; }
+    [MaxLength(100)] public string? GoogleSiteVerification { get; set; }
+    public bool IsIndexable { get; set; } = true;
 }
 
 public abstract class OrderedContent

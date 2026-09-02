@@ -1,3 +1,47 @@
+function showToast(type, message, duration = 5000) {
+    const icons = { success: 'check_circle', warning: 'warning', error: 'error', info: 'info' };
+    let container = document.getElementById('toastContainer');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toastContainer';
+        container.className = 'toast-container';
+        container.setAttribute('aria-live', 'polite');
+        document.body.appendChild(container);
+    }
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type in icons ? type : 'info'}`;
+    toast.innerHTML = '<b class="material-symbols-outlined toast-icon"></b><span class="toast-message"></span><button type="button" class="toast-close" aria-label="Cerrar"><b class="material-symbols-outlined">close</b></button>';
+    toast.querySelector('.toast-icon').textContent = icons[type] || icons.info;
+    toast.querySelector('.toast-message').textContent = message;
+    container.appendChild(toast);
+    requestAnimationFrame(() => requestAnimationFrame(() => toast.classList.add('is-visible')));
+    const dismiss = () => {
+        toast.classList.remove('is-visible');
+        toast.addEventListener('transitionend', () => toast.remove(), { once: true });
+        setTimeout(() => toast.remove(), 500);
+    };
+    toast.querySelector('.toast-close').addEventListener('click', dismiss);
+    setTimeout(dismiss, duration);
+}
+window.showToast = showToast;
+
+(() => {
+    const toggle = document.getElementById('adminThemeToggle');
+    if (!toggle) return;
+    const icon = toggle.querySelector('b');
+    const sync = () => {
+        const isLight = document.documentElement.classList.contains('light');
+        icon.textContent = isLight ? 'dark_mode' : 'light_mode';
+        toggle.setAttribute('aria-label', isLight ? 'Cambiar a tema oscuro' : 'Cambiar a tema claro');
+    };
+    toggle.addEventListener('click', () => {
+        document.documentElement.classList.toggle('light');
+        localStorage.setItem('theme', document.documentElement.classList.contains('light') ? 'light' : 'dark');
+        sync();
+    });
+    sync();
+})();
+
 (() => {
     const formLayer = document.getElementById('adminFormModal');
     const formContent = document.getElementById('adminModalContent');
@@ -129,7 +173,7 @@
         } catch {
             submit.disabled = false;
             submit.classList.remove('is-loading');
-            alert('No fue posible guardar. Comprueba tu conexión e inténtalo de nuevo.');
+            showToast('error', 'No fue posible guardar. Comprueba tu conexión e inténtalo de nuevo.');
         }
     });
 

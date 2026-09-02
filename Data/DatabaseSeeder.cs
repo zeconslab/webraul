@@ -17,7 +17,12 @@ public static class DatabaseSeeder
             db.SiteSettings.Add(new SiteSettings {
                 HeroText = "Transformo ideas en experiencias digitales rápidas, accesibles y enfocadas en resultados.",
                 Email = "thezontrox@gmail.com", Phone = "+52 221 193 6628", Location = "Puebla, México",
-                LinkedInUrl = "https://www.linkedin.com/in/raul-pimentel-4b7a87158/", GitHubUrl = "https://github.com/zeconslab"
+                LinkedInUrl = "https://www.linkedin.com/in/raul-pimentel-4b7a87158/", GitHubUrl = "https://github.com/zeconslab",
+                SeoTitle = "Raúl Pimentel | Desarrollador Web Full Stack en Puebla, México",
+                SeoDescription = "Desarrollador web Full Stack freelance en Puebla, México. Laravel, Vue.js, SEO técnico y diseño responsive para PyMEs y startups. +5 años de experiencia. ¡Hablemos!",
+                SeoKeywords = "desarrollador web Puebla, diseño web México, Full Stack developer, Laravel, Vue.js, SEO técnico, páginas web para PyMEs, desarrollo web freelance, Raúl Pimentel",
+                SeoImageUrl = "https://pimentel.cloud/assets/img/logo/og-image.jpeg",
+                IsIndexable = true
             });
             db.Services.AddRange(
                 new ServiceItem { Title = "Diseño web a medida", Description = "Interfaces personalizadas, responsivas y enfocadas en conversión.", Icon = "design_services", SortOrder = 1 },

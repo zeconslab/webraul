@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 9.0.x
+          dotnet-version: 10.0.x
       - name: Restore
         run: dotnet restore
       - name: Build
@@ -27,9 +27,14 @@ jobs:
           echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
       - name: Deploy application
         run: |
-          rsync -az --delete --exclude='wwwroot/uploads/' ./publish/ raul@31.220.60.54:/home/raul/apps/webraul/
+          rsync -az --delete --exclude='wwwroot/uploads/' --exclude='.claude/' ./publish/ raul@31.220.60.54:/home/raul/apps/root/
           ssh raul@31.220.60.54 "sudo systemctl restart webraul"
       - name: Health check
         run: |
-          sleep 5
-          test "$(curl -o /dev/null -s -w '%{http_code}' --max-time 20 https://pimentel.cloud)" = "200"
+          status=000
+          for attempt in 1 2 3 4 5 6; do
+            sleep 3
+            status="$(curl -o /dev/null -s -w '%{http_code}' --max-time 20 https://pimentel.cloud)"
+            [[ "$status" == "200" ]] && break
+          done
+          test "$status" = "200"

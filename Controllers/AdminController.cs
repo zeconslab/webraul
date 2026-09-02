@@ -58,23 +58,61 @@ public sealed class AdminController(ApplicationDbContext db, IWebHostEnvironment
 
     public async Task<IActionResult> Settings(bool modal = false)
     {
-        var model = await db.SiteSettings.OrderBy(x => x.Id).FirstAsync();
-        return modal ? PartialView("_SettingsForm", model) : View(model);
+        var item = await db.SiteSettings.OrderBy(x => x.Id).FirstAsync();
+        if (!modal) return View(item);
+        return PartialView("_SettingsForm", new GeneralSettingsInput
+        {
+            OwnerName = item.OwnerName, Headline = item.Headline, HeroText = item.HeroText,
+            Email = item.Email, Phone = item.Phone, Location = item.Location,
+            LinkedInUrl = item.LinkedInUrl, GitHubUrl = item.GitHubUrl
+        });
     }
+
+    public async Task<IActionResult> Seo()
+    {
+        var item = await db.SiteSettings.OrderBy(x => x.Id).FirstAsync();
+        return PartialView("_SeoForm", new SeoSettingsInput
+        {
+            SeoTitle = item.SeoTitle, SeoDescription = item.SeoDescription, SeoKeywords = item.SeoKeywords,
+            SeoImageUrl = item.SeoImageUrl, GoogleSiteVerification = item.GoogleSiteVerification, IsIndexable = item.IsIndexable
+        });
+    }
+
     public async Task<IActionResult> Services() => View(await db.Services.OrderBy(x => x.SortOrder).ToListAsync());
     public async Task<IActionResult> Projects() => View(await db.Projects.OrderBy(x => x.SortOrder).ToListAsync());
     public async Task<IActionResult> Faqs() => View(await db.Faqs.OrderBy(x => x.SortOrder).ToListAsync());
     public async Task<IActionResult> Apps() => View(await db.Apps.OrderBy(x => x.SortOrder).ToListAsync());
 
     [HttpPost, ValidateAntiForgeryToken]
-    public async Task<IActionResult> Settings([Bind(Prefix = "Settings")] SiteSettings input)
+    public async Task<IActionResult> Settings([Bind(Prefix = "Settings")] GeneralSettingsInput input)
     {
         if (!ModelState.IsValid) return IsModalRequest() ? PartialView("_SettingsForm", input) : View(input);
         var item = await db.SiteSettings.OrderBy(x => x.Id).FirstAsync();
-        input.Id = item.Id;
-        db.Entry(item).CurrentValues.SetValues(input);
+        item.OwnerName = input.OwnerName;
+        item.Headline = input.Headline;
+        item.HeroText = input.HeroText;
+        item.Email = input.Email;
+        item.Phone = input.Phone;
+        item.Location = input.Location;
+        item.LinkedInUrl = input.LinkedInUrl;
+        item.GitHubUrl = input.GitHubUrl;
         await db.SaveChangesAsync();
         return ModalSaved(nameof(Settings), "Datos generales actualizados.");
+    }
+
+    [HttpPost, ValidateAntiForgeryToken, RequestSizeLimit(10_000_000)]
+    public async Task<IActionResult> Seo([Bind(Prefix = "Settings")] SeoSettingsInput input, IFormFile? seoImage)
+    {
+        if (!ModelState.IsValid) return PartialView("_SeoForm", input);
+        var item = await db.SiteSettings.OrderBy(x => x.Id).FirstAsync();
+        item.SeoTitle = input.SeoTitle;
+        item.SeoDescription = input.SeoDescription;
+        item.SeoKeywords = input.SeoKeywords;
+        item.SeoImageUrl = await SaveImage(seoImage) ?? input.SeoImageUrl ?? item.SeoImageUrl;
+        item.GoogleSiteVerification = input.GoogleSiteVerification;
+        item.IsIndexable = input.IsIndexable;
+        await db.SaveChangesAsync();
+        return ModalSaved(nameof(Settings), "SEO actualizado.");
     }
 
     public async Task<IActionResult> Service(int? id, bool modal = false)
@@ -151,14 +189,24 @@ public sealed class AdminController(ApplicationDbContext db, IWebHostEnvironment
             case "project": if (await db.Projects.FindAsync(id) is { } project) db.Remove(project); break;
             case "faq": if (await db.Faqs.FindAsync(id) is { } faq) db.Remove(faq); break;
             case "app": if (await db.Apps.FindAsync(id) is { } app) db.Remove(app); break;
+            case "message": if (await db.ContactMessages.FindAsync(id) is { } message) db.Remove(message); break;
             default: return BadRequest();
         }
         await db.SaveChangesAsync();
         TempData["Success"] = "Elemento eliminado.";
-        return RedirectToAction(type.ToLowerInvariant() switch { "service" => nameof(Services), "project" => nameof(Projects), "faq" => nameof(Faqs), "app" => nameof(Apps), _ => nameof(Index) });
+        return RedirectToAction(type.ToLowerInvariant() switch { "service" => nameof(Services), "project" => nameof(Projects), "faq" => nameof(Faqs), "app" => nameof(Apps), "message" => nameof(Messages), _ => nameof(Index) });
     }
 
-    public async Task<IActionResult> Messages() => View(await db.ContactMessages.OrderByDescending(x => x.CreatedAtUtc).ToListAsync());
+    public async Task<IActionResult> Messages(int page = 1)
+    {
+        const int pageSize = 10;
+        var query = db.ContactMessages.AsNoTracking().OrderByDescending(x => x.CreatedAtUtc);
+        var totalCount = await query.CountAsync();
+        var totalPages = Math.Max(1, (int)Math.Ceiling(totalCount / (double)pageSize));
+        page = Math.Clamp(page, 1, totalPages);
+        var items = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+        return View(new PagedMessages(items, page, totalPages, totalCount));
+    }
 
     public async Task<IActionResult> Message(int id)
     {

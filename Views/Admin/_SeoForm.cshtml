@@ -1,0 +1,16 @@
+@model SeoSettingsInput
+<form asp-action="Seo" method="post" enctype="multipart/form-data" class="admin-modal-form admin-modal-form-wide" data-modal-form>
+    <input asp-for="SeoImageUrl" type="hidden" />
+    <div class="modal-form-head"><div><span class="module-kicker">SEO</span><h2>Editar SEO</h2><p>Cómo se presenta tu sitio en buscadores y redes sociales.</p></div><button type="button" class="modal-close" data-modal-close aria-label="Cerrar"><b class="material-symbols-outlined">close</b></button></div>
+    <div class="modal-form-body"><div asp-validation-summary="ModelOnly"></div>
+        <div class="field"><label asp-for="SeoTitle">Título para buscadores</label><input asp-for="SeoTitle" maxlength="70" /><small>Aparece en la pestaña del navegador y como título en Google. Ideal ≤60 caracteres.</small><span asp-validation-for="SeoTitle"></span></div>
+        <div class="field"><label asp-for="SeoDescription">Meta descripción</label><textarea asp-for="SeoDescription" rows="3" maxlength="200"></textarea><small>El resumen que se muestra bajo el título en los resultados de búsqueda. Ideal ≤160 caracteres.</small><span asp-validation-for="SeoDescription"></span></div>
+        <div class="field"><label asp-for="SeoKeywords">Palabras clave</label><input asp-for="SeoKeywords" placeholder="desarrollador web Puebla, diseño web México, ..." /><small>Separadas por coma.</small></div>
+        <div class="form-grid">
+            <label class="file-drop file-drop-preview" data-file-drop><input name="seoImage" type="file" accept="image/png,image/jpeg,image/webp" data-file-input /><img data-file-preview src="@Model.SeoImageUrl" alt="Vista previa de la imagen para redes sociales" class="@(string.IsNullOrWhiteSpace(Model.SeoImageUrl) ? "" : "has-image")" /><span class="file-drop-copy"><b class="material-symbols-outlined">image</b><strong>Imagen para compartir (OG/Twitter)</strong><small data-file-name>1200×630px recomendado · PNG, JPG o WEBP</small></span></label>
+            <div class="field"><label asp-for="GoogleSiteVerification">Verificación de Google Search Console</label><input asp-for="GoogleSiteVerification" placeholder="código de verificación" /><small>El código que te da Google al agregar tu sitio en Search Console.</small></div>
+        </div>
+        <label class="publish-control"><input asp-for="IsIndexable" /><span><strong>Permitir que los buscadores indexen el sitio</strong><small>Desactívalo temporalmente mientras pruebas cambios grandes para que Google no los tome en cuenta.</small></span></label>
+    </div>
+    <div class="modal-form-actions"><button type="button" class="button secondary" data-modal-close>Cancelar</button><button class="button" type="submit"><b class="material-symbols-outlined">save</b>Guardar SEO</button></div>
+</form>

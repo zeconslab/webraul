@@ -1,6 +1,5 @@
-@model SiteSettings
+@model GeneralSettingsInput
 <form asp-action="Settings" method="post" class="admin-modal-form admin-modal-form-wide settings-modal-form" data-modal-form>
-    <input asp-for="Id" type="hidden" />
     <div class="modal-form-head"><div><span class="module-kicker">CONFIGURACIÓN</span><h2>Editar configuración del sitio</h2><p>Actualiza la identidad, los datos de contacto y tus redes.</p></div><button type="button" class="modal-close" data-modal-close aria-label="Cerrar"><b class="material-symbols-outlined">close</b></button></div>
     <div class="modal-form-body"><div asp-validation-summary="ModelOnly"></div>
         <section class="modal-form-section"><h3>Identidad</h3><div class="settings-responsive-grid"><div class="field"><label asp-for="OwnerName">Nombre</label><input asp-for="OwnerName" /><span asp-validation-for="OwnerName"></span></div><div class="field"><label asp-for="Headline">Título profesional</label><input asp-for="Headline" /><span asp-validation-for="Headline"></span></div></div><div class="field"><label asp-for="HeroText">Presentación principal</label><textarea asp-for="HeroText" rows="4"></textarea><span asp-validation-for="HeroText"></span></div></section>

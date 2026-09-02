@@ -1,15 +1,15 @@
-@model IReadOnlyList<ContactMessage>
+@model PagedMessages
 @{ ViewData["Title"] = "Mensajes"; }
 <div class="module-head">@await Html.PartialAsync("_ModuleHead", new ModuleHeadViewModel("mensajes", "Mensajes", "Solicitudes enviadas desde el formulario de contacto público."))</div>
 <div class="module-panel">
-@if (Model.Count == 0)
+@if (Model.Items.Count == 0)
 {
     <div class="empty-state"><b class="material-symbols-outlined">inbox</b><h2>Sin mensajes</h2><p>Los mensajes enviados desde el formulario de contacto aparecerán aquí.</p></div>
 }
 else
 {
     <div class="message-list">
-    @foreach (var item in Model)
+    @foreach (var item in Model.Items)
     {
         <article class="message-row @(item.IsRead ? "" : "is-unread")">
             <div class="sender-avatar">@item.Name[..1].ToUpperInvariant()</div>
@@ -20,10 +20,35 @@ else
             </div>
             <div class="message-row-side">
                 <time>@item.CreatedAtUtc.ToLocalTime().ToString("dd MMM, HH:mm")</time>
-                <button type="button" class="icon-button" data-modal-url="@Url.Action("Message", new { id = item.Id })" title="Ver mensaje completo"><b class="material-symbols-outlined">open_in_full</b></button>
+                <div class="row-actions">
+                    <button type="button" class="icon-button" data-modal-url="@Url.Action("Message", new { id = item.Id })" title="Ver mensaje completo"><b class="material-symbols-outlined">open_in_full</b></button>
+                    <button type="button" class="icon-button danger" data-delete-type="message" data-delete-id="@item.Id" data-delete-name="@item.Name" title="Eliminar mensaje"><b class="material-symbols-outlined">delete</b></button>
+                </div>
             </div>
         </article>
     }
     </div>
+    @if (Model.TotalPages > 1)
+    {
+        <div class="pagination">
+            @if (Model.Page > 1)
+            {
+                <a class="button secondary small" asp-action="Messages" asp-route-page="@(Model.Page - 1)"><b class="material-symbols-outlined">chevron_left</b>Anterior</a>
+            }
+            else
+            {
+                <span class="button secondary small is-disabled"><b class="material-symbols-outlined">chevron_left</b>Anterior</span>
+            }
+            <span class="pagination-info">Página @Model.Page de @Model.TotalPages · @Model.TotalCount mensaje@(Model.TotalCount == 1 ? "" : "s")</span>
+            @if (Model.Page < Model.TotalPages)
+            {
+                <a class="button secondary small" asp-action="Messages" asp-route-page="@(Model.Page + 1)">Siguiente<b class="material-symbols-outlined">chevron_right</b></a>
+            }
+            else
+            {
+                <span class="button secondary small is-disabled">Siguiente<b class="material-symbols-outlined">chevron_right</b></span>
+            }
+        </div>
+    }
 }
 </div>

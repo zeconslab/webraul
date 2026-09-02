@@ -3,8 +3,8 @@ Description=pimentel.cloud ASP.NET Core application
 After=network.target
 
 [Service]
-WorkingDirectory=/home/raul/apps/webraul
-ExecStart=/usr/bin/dotnet /home/raul/apps/webraul/webraul.dll
+WorkingDirectory=/home/raul/apps/root
+ExecStart=/usr/bin/dotnet /home/raul/apps/root/webraul.dll
 Restart=always
 RestartSec=5
 KillSignal=SIGINT
