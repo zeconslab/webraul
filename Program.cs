@@ -31,8 +31,10 @@ public class Program
             options.AccessDeniedPath = "/admin/login";
             options.Cookie.Name = "pimentel.admin";
             options.Cookie.HttpOnly = true;
+            options.Cookie.Path = "/";
             options.Cookie.SameSite = SameSiteMode.Lax;
             options.ExpireTimeSpan = TimeSpan.FromHours(8);
+            options.SlidingExpiration = true;
         });
         builder.Services.AddControllersWithViews();
         builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection("Smtp"));

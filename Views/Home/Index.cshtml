@@ -1235,16 +1235,23 @@
      FOOTER
      ============================================================ -->
 <footer class="py-10 px-6 border-t border-border-subtle bg-bg-surface">
-    <div class="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+    <div class="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
         <div class="flex items-center gap-3">
             <div class="size-7 bg-primary/10 border border-primary/20 rounded-lg flex items-center justify-center text-primary">
                 <span class="font-mono text-[10px] font-bold leading-none">&gt;_</span>
             </div>
             <span class="font-mono text-sm font-semibold text-primary">raul.dev</span>
         </div>
-        <p class="text-text-muted text-sm font-mono">
-            © 2026 Raúl Web Dev · Todos los derechos reservados.
-        </p>
+        <div class="flex flex-col items-center gap-1.5 text-center">
+            <p class="text-text-muted text-sm font-mono">
+                © 2026 Raúl Web Dev · Todos los derechos reservados.
+            </p>
+            <a href="/admin"
+               class="font-mono text-xs text-text-muted hover:text-primary transition-colors flex items-center gap-1.5 opacity-50 hover:opacity-100">
+                <span class="text-[10px]">&gt;_</span>
+                @(User.Identity?.IsAuthenticated == true ? "Volver al panel" : "admin")
+            </a>
+        </div>
         <div class="flex items-center gap-4">
             <a href="https://www.linkedin.com/in/raul-pimentel-4b7a87158/" target="_blank" rel="noopener noreferrer"
                 class="size-9 rounded-lg bg-white/5 dark:border-0 border border-border-subtle flex items-center justify-center text-text-muted hover:text-primary hover:border-primary/25 hover:bg-primary/5 transition-all">
@@ -1259,14 +1266,6 @@
                 <span class="material-symbols-outlined text-[18px]">mail</span>
             </a>
         </div>
-    </div>
-    <!-- Admin access — fila sutil bajo el footer principal -->
-    <div class="max-w-[1200px] mx-auto mt-6 flex justify-center">
-        <a href="/admin/login"
-           class="font-mono text-xs text-text-muted hover:text-primary transition-colors flex items-center gap-1.5 opacity-50 hover:opacity-100">
-            <span class="text-[10px]">&gt;_</span>
-            admin
-        </a>
     </div>
 </footer>
 
