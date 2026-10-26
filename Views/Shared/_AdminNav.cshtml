@@ -16,6 +16,7 @@
         <a class="@On("Projects", "Project")" asp-controller="Admin" asp-action="Projects"><span class="ms">work</span>Proyectos</a>
         <a class="@On("Services", "Service")" asp-controller="Admin" asp-action="Services"><span class="ms">design_services</span><span>Servicios</span>@if (incompleteServices) {<span class="warn-dot" title="Hay servicios incompletos"></span>}</a>
         <a class="@On("Faqs", "Faq")" asp-controller="Admin" asp-action="Faqs"><span class="ms">help</span>Preguntas</a>
+        <a class="@On("Files")" asp-controller="Admin" asp-action="Files"><span class="ms">folder</span>Archivos</a>
         <a class="@On("Settings")" asp-controller="Admin" asp-action="Settings"><span class="ms">tune</span>Configuración</a>
     </nav>
     <div class="side-foot">
@@ -32,7 +33,7 @@
     <a class="@On("Index")" asp-controller="Admin" asp-action="Index"><span class="ms">space_dashboard</span>Inicio</a>
     <a class="@On("Messages")" asp-controller="Admin" asp-action="Messages"><span class="ms">inbox</span><span>Clientes</span>@if (waiting > 0) {<em>@waiting</em>}</a>
     <a class="@On("Projects", "Project")" asp-controller="Admin" asp-action="Projects"><span class="ms">work</span>Proyectos</a>
-    <button type="button" class="@On("Services", "Service", "Faqs", "Faq", "Settings")" data-sheet-open><span class="ms">menu</span><span>Más</span>@if (incompleteServices) {<i class="warn-dot"></i>}</button>
+    <button type="button" class="@On("Services", "Service", "Faqs", "Faq", "Files", "Settings")" data-sheet-open><span class="ms">menu</span><span>Más</span>@if (incompleteServices) {<i class="warn-dot"></i>}</button>
 </nav>
 <div class="sheet-layer" id="moreSheet" aria-hidden="true">
     <div class="sheet-scrim" data-sheet-close></div>
@@ -40,6 +41,7 @@
         <span class="sheet-grip"></span>
         <a asp-controller="Admin" asp-action="Services"><span class="ms">design_services</span><span>Servicios</span>@if (incompleteServices) {<span class="warn-dot"></span>}</a>
         <a asp-controller="Admin" asp-action="Faqs"><span class="ms">help</span>Preguntas</a>
+        <a asp-controller="Admin" asp-action="Files"><span class="ms">folder</span>Archivos</a>
         <a asp-controller="Admin" asp-action="Settings"><span class="ms">tune</span>Configuración</a>
         <a href="/" target="_blank" rel="noopener"><span class="ms">open_in_new</span>Ver sitio</a>
         <form asp-controller="Account" asp-action="Logout" method="post"><button type="submit"><span class="ms">logout</span>Cerrar sesión</button></form>

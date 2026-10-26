@@ -1,0 +1,11 @@
+@model FileNameInput
+@{
+    var renaming = Model.Item.Length > 0;
+    var title = renaming ? (Model.IsFolder ? "Renombrar carpeta" : "Renombrar archivo") : "Nueva carpeta";
+}
+<form asp-action="FileName" method="post" class="admin-modal-form" data-modal-form>
+    <input asp-for="Folder" type="hidden" /><input asp-for="Item" type="hidden" /><input asp-for="IsFolder" type="hidden" />
+    <div class="modal-form-head"><div><span class="module-kicker">ARCHIVOS</span><h2>@title</h2><p>@(renaming ? "El contenido no cambia, solo el nombre." : "Organiza tus archivos por cliente, proyecto o tipo.")</p></div><button type="button" class="modal-close" data-modal-close aria-label="Cerrar"><b class="material-symbols-outlined">close</b></button></div>
+    <div class="modal-form-body"><div class="field"><label asp-for="Name">Nombre</label><input asp-for="Name" maxlength="120" autocomplete="off" spellcheck="false" /><span asp-validation-for="Name"></span>@if (renaming && !Model.IsFolder) {<small>Conserva la extensión (por ejemplo .pdf) para que el archivo se siga abriendo con el programa correcto.</small>}</div></div>
+    <div class="modal-form-actions"><button type="button" class="button secondary" data-modal-close>Cancelar</button><button class="button" type="submit"><b class="material-symbols-outlined">@(renaming ? "save" : "create_new_folder")</b>@(renaming ? "Guardar nombre" : "Crear carpeta")</button></div>
+</form>

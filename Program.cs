@@ -40,6 +40,7 @@ public class Program
         builder.Services.AddControllersWithViews(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
         builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection("Smtp"));
         builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
+        builder.Services.AddSingleton<FileStorage>();
         builder.Services.AddRateLimiter(options =>
         {
             options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;

@@ -48,3 +48,21 @@ public sealed record AdminDashboardViewModel(
 public sealed record InboxViewModel(
     IReadOnlyList<ContactMessage> Items, ContactMessage? Selected, string Stage,
     IReadOnlyDictionary<string, int> StageCounts, int Page, int TotalPages);
+
+public sealed record FileEntry(string Name, string Path, bool IsFolder, long Size, DateTime ModifiedUtc, int ItemCount);
+
+public sealed record FilesViewModel(string Folder, IReadOnlyList<FileEntry> Entries)
+{
+    /// <summary>Migas de pan: cada carpeta con su ruta acumulada.</summary>
+    public IEnumerable<(string Name, string Path)> Breadcrumb =>
+        Folder.Split('/', StringSplitOptions.RemoveEmptyEntries).Select((name, i) => (name, string.Join('/', Folder.Split('/').Take(i + 1))));
+}
+
+/// <summary>Formulario para crear carpeta o renombrar (Item vacío = carpeta nueva).</summary>
+public sealed class FileNameInput
+{
+    [DisplayFormat(ConvertEmptyStringToNull = false)] public string Folder { get; set; } = string.Empty;
+    [DisplayFormat(ConvertEmptyStringToNull = false)] public string Item { get; set; } = string.Empty;
+    [DisplayFormat(ConvertEmptyStringToNull = false)] public string Name { get; set; } = string.Empty;
+    public bool IsFolder { get; set; }
+}

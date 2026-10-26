@@ -29,6 +29,10 @@
     {
         <script>document.addEventListener('DOMContentLoaded', () => showToast('success', @Html.Raw(System.Text.Json.JsonSerializer.Serialize(message))));</script>
     }
+    @if (TempData["Error"] is string error)
+    {
+        <script>document.addEventListener('DOMContentLoaded', () => showToast('error', @Html.Raw(System.Text.Json.JsonSerializer.Serialize(error))));</script>
+    }
     @await RenderSectionAsync("Scripts", false)
 </body>
 </html>

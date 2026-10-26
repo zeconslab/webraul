@@ -3,11 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using webraul.Data;
 using webraul.Models;
+using webraul.Services;
 
 namespace webraul.Controllers;
 
 [Authorize(Roles = "Administrator")]
-public sealed class AdminController(ApplicationDbContext db, IWebHostEnvironment environment) : Controller
+public sealed class AdminController(ApplicationDbContext db, IWebHostEnvironment environment, FileStorage files, ILogger<AdminController> logger) : Controller
 {
     public async Task<IActionResult> Index()
     {
@@ -325,6 +326,81 @@ public sealed class AdminController(ApplicationDbContext db, IWebHostEnvironment
         foreach (var item in items) item.SortOrder = Array.IndexOf(ids, item.Id);
         await db.SaveChangesAsync();
         return Json(new { ok = true });
+    }
+
+    public IActionResult Files(string? carpeta)
+    {
+        var folder = files.Normalize(carpeta);
+        if (folder is null || !files.FolderExists(folder)) return RedirectToAction(nameof(Files));
+        return View(new FilesViewModel(folder, files.List(folder)));
+    }
+
+    // Se sube un archivo por petición (el navegador los manda en fila) para mostrar el progreso y respetar el límite por archivo.
+    [HttpPost, ValidateAntiForgeryToken, RequestSizeLimit(FileStorage.MaxFileSize + 1_048_576), RequestFormLimits(MultipartBodyLengthLimit = FileStorage.MaxFileSize + 1_048_576)]
+    public async Task<IActionResult> FileUpload(string? carpeta, IFormFile? file)
+    {
+        var folder = files.Normalize(carpeta);
+        if (folder is null || !files.FolderExists(folder)) return BadRequest(new { error = "La carpeta ya no existe. Recarga la página." });
+        if (file is null || file.Length == 0) return BadRequest(new { error = "El archivo está vacío." });
+        if (file.Length > FileStorage.MaxFileSize) return BadRequest(new { error = "El archivo supera los 50 MB." });
+        var name = await files.SaveAsync(folder, file);
+        return Json(new { ok = true, name });
+    }
+
+    public IActionResult FileDownload(string? ruta)
+    {
+        var item = files.Normalize(ruta);
+        if (string.IsNullOrEmpty(item) || !System.IO.File.Exists(files.FullPath(item))) return NotFound();
+        return PhysicalFile(files.FullPath(item), "application/octet-stream", Path.GetFileName(item), enableRangeProcessing: true);
+    }
+
+    public IActionResult FileName(string? carpeta, string? ruta)
+    {
+        var folder = files.Normalize(carpeta) ?? string.Empty;
+        var item = files.Normalize(ruta) ?? string.Empty;
+        var input = new FileNameInput { Folder = folder, Item = item, Name = item.Length == 0 ? string.Empty : Path.GetFileName(item), IsFolder = item.Length == 0 || Directory.Exists(files.FullPath(item)) };
+        return PartialView("_FileNameForm", input);
+    }
+
+    [HttpPost, ValidateAntiForgeryToken]
+    public IActionResult FileName(FileNameInput input)
+    {
+        input.Name = input.Name.Trim();
+        var folder = files.Normalize(input.Folder);
+        var item = files.Normalize(input.Item);
+        if (folder is null || item is null || !files.FolderExists(folder)) return BadRequest();
+        var renaming = item.Length > 0;
+        var current = renaming ? Path.GetFileName(item) : null;
+        if (FileStorage.NameError(input.Name) is { } error) ModelState.AddModelError(nameof(input.Name), error);
+        // Cambiar solo mayúsculas/minúsculas del mismo nombre es válido aunque el sistema de archivos diga que "ya existe"
+        else if (input.Name != current && !string.Equals(input.Name, current, StringComparison.OrdinalIgnoreCase) && files.Exists(renaming ? Path.GetDirectoryName(item)!.Replace('\\', '/') : folder, input.Name))
+            ModelState.AddModelError(nameof(input.Name), "Ya hay un archivo o carpeta con ese nombre aquí.");
+        if (!ModelState.IsValid) return PartialView("_FileNameForm", input);
+
+        if (renaming && input.Name != current) files.Rename(item, input.Name);
+        else if (!renaming) files.CreateFolder(folder, input.Name);
+        TempData["Success"] = renaming ? "Nombre actualizado." : "Carpeta creada.";
+        var redirect = Url.Action(nameof(Files), new { carpeta = folder.Length == 0 ? null : folder });
+        return IsModalRequest() ? Json(new { ok = true, redirect }) : Redirect(redirect!);
+    }
+
+    [HttpPost, ValidateAntiForgeryToken]
+    public IActionResult FileDelete([FromForm(Name = "id")] string? ruta)
+    {
+        var item = files.Normalize(ruta);
+        if (string.IsNullOrEmpty(item)) return BadRequest();
+        var parent = item.Contains('/') ? item[..item.LastIndexOf('/')] : null;
+        try
+        {
+            files.Delete(item);
+            TempData["Success"] = "Eliminado.";
+        }
+        catch (IOException exception)
+        {
+            logger.LogWarning(exception, "No se pudo eliminar un archivo del panel.");
+            TempData["Error"] = "No se pudo eliminar. Inténtalo de nuevo.";
+        }
+        return RedirectToAction(nameof(Files), new { carpeta = parent });
     }
 
     private RedirectToActionResult Saved(string action, string message)

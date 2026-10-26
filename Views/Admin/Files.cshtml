@@ -1,0 +1,87 @@
+@using webraul.Services
+@model FilesViewModel
+@{
+    ViewData["Title"] = "Archivos";
+    ViewData["Crumb"] = "archivos";
+    var carpeta = Model.Folder.Length == 0 ? null : Model.Folder;
+    var parent = Model.Folder.Contains('/') ? Model.Folder[..Model.Folder.LastIndexOf('/')] : null;
+
+    static string Icon(string name) => System.IO.Path.GetExtension(name).ToLowerInvariant() switch
+    {
+        ".pdf" => "picture_as_pdf",
+        ".jpg" or ".jpeg" or ".png" or ".webp" or ".gif" or ".svg" or ".heic" => "image",
+        ".mp4" or ".mov" or ".webm" => "movie",
+        ".mp3" or ".wav" or ".m4a" => "music_note",
+        ".zip" or ".rar" or ".7z" or ".gz" or ".tar" => "folder_zip",
+        ".xls" or ".xlsx" or ".csv" => "table_chart",
+        ".doc" or ".docx" or ".txt" or ".md" or ".rtf" => "description",
+        ".ppt" or ".pptx" or ".key" => "slideshow",
+        _ => "draft"
+    };
+    static string Size(long bytes) => bytes switch
+    {
+        < 1024 => $"{bytes} B",
+        < 1024 * 1024 => $"{bytes / 1024.0:0.#} KB",
+        _ => $"{bytes / 1024.0 / 1024.0:0.#} MB"
+    };
+}
+@section Back {
+    @if (Model.Folder.Length > 0)
+    {
+        <a class="icon-btn back-btn" asp-action="Files" asp-route-carpeta="@parent" aria-label="Volver a la carpeta anterior"><span class="ms">arrow_back</span></a>
+    }
+}
+<div class="page-head">
+    <div><h1>Archivos</h1><p>Documentos privados: solo se pueden ver y descargar con tu sesión iniciada.</p></div>
+    <div class="actions">
+        <button type="button" class="btn btn-ghost" data-modal-url="@Url.Action("FileName", new { carpeta })"><span class="ms">create_new_folder</span>Nueva carpeta</button>
+        <label class="btn" for="fileInput"><span class="ms">upload</span>Subir archivos</label>
+    </div>
+</div>
+
+<nav class="file-path mono" aria-label="Ubicación">
+    <a asp-action="Files"><span class="ms">home_storage</span>archivos</a>
+    @foreach (var (name, path) in Model.Breadcrumb)
+    {
+        <span aria-hidden="true">/</span><a asp-action="Files" asp-route-carpeta="@path">@name</a>
+    }
+</nav>
+
+<div class="file-drop" data-file-manager data-upload-url="@Url.Action("FileUpload", new { carpeta })" data-max-size="@FileStorage.MaxFileSize">
+    <input type="file" id="fileInput" multiple hidden />
+    <span class="ms">cloud_upload</span>
+    <p><strong>Arrastra archivos aquí o </strong><label for="fileInput">elige archivos</label> · hasta 50 MB cada uno</p>
+    <ul class="upload-queue" data-upload-queue aria-live="polite"></ul>
+</div>
+
+@if (Model.Entries.Count == 0)
+{
+    <div class="card empty"><span class="ms">folder_open</span><h3>@(Model.Folder.Length == 0 ? "Aún no hay archivos" : "Esta carpeta está vacía")</h3><p>Sube documentos, contratos o entregables y descárgalos cuando los necesites.</p></div>
+}
+<div class="list">
+    @foreach (var entry in Model.Entries)
+    {
+        <article class="card row file-row">
+            @if (entry.IsFolder)
+            {
+                <span class="row-icon folder"><span class="ms">folder</span></span>
+                <a class="file-name" asp-action="Files" asp-route-carpeta="@entry.Path"><h4>@entry.Name</h4><p>@(entry.ItemCount == 1 ? "1 elemento" : $"{entry.ItemCount} elementos")</p></a>
+            }
+            else
+            {
+                <span class="row-icon"><span class="ms">@Icon(entry.Name)</span></span>
+                <a class="file-name" asp-action="FileDownload" asp-route-ruta="@entry.Path" download><h4>@entry.Name</h4><p>@Size(entry.Size) · @entry.ModifiedUtc.ToLocalTime().ToString("d MMM yyyy, HH:mm")</p></a>
+            }
+            <div class="row-side">
+                @if (!entry.IsFolder)
+                {
+                    <a class="icon-btn" asp-action="FileDownload" asp-route-ruta="@entry.Path" download title="Descargar" aria-label="Descargar @entry.Name"><span class="ms">download</span></a>
+                }
+                <button type="button" class="icon-btn" title="Renombrar" aria-label="Renombrar @entry.Name" data-modal-url="@Url.Action("FileName", new { carpeta, ruta = entry.Path })"><span class="ms">edit</span></button>
+                <button type="button" class="icon-btn danger" title="Eliminar" aria-label="Eliminar @entry.Name"
+                        data-delete-action="@Url.Action("FileDelete")" data-delete-id="@entry.Path"
+                        data-delete-name="@(entry.IsFolder && entry.ItemCount > 0 ? $"{entry.Name} y todo lo que contiene ({entry.ItemCount} {(entry.ItemCount == 1 ? "elemento" : "elementos")})" : entry.Name)"><span class="ms">delete</span></button>
+            </div>
+        </article>
+    }
+</div>

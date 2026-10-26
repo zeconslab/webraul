@@ -97,6 +97,88 @@ document.querySelectorAll('[data-sortable]').forEach(container => {
     });
 });
 
+// Archivos: subida en fila (uno por petición) con progreso; al terminar recarga la carpeta
+(() => {
+    const zone = document.querySelector('[data-file-manager]');
+    if (!zone) return;
+    const input = zone.querySelector('input[type="file"]');
+    const queue = zone.querySelector('[data-upload-queue]');
+    const maxSize = Number(zone.dataset.maxSize);
+    let busy = false;
+
+    const row = file => {
+        const li = document.createElement('li');
+        li.innerHTML = '<span class="ms">upload_file</span><span></span><small></small><progress max="100" value="0"></progress>';
+        li.children[1].textContent = file.name;
+        queue.append(li);
+        return li;
+    };
+    const finish = (li, ok, message) => {
+        li.classList.add(ok ? 'done' : 'failed');
+        li.querySelector('.ms').textContent = ok ? 'check_circle' : 'error';
+        li.querySelector('small').textContent = message;
+        li.querySelector('progress').remove();
+    };
+    const send = (file, li) => new Promise(resolve => {
+        const body = new FormData();
+        body.append('file', file);
+        body.append('__RequestVerificationToken', antiForgeryToken());
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', zone.dataset.uploadUrl);
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhr.upload.addEventListener('progress', e => {
+            if (!e.lengthComputable) return;
+            const percent = Math.round(e.loaded / e.total * 100);
+            li.querySelector('progress').value = percent;
+            li.querySelector('small').textContent = `${percent}%`;
+        });
+        xhr.addEventListener('load', () => {
+            let result = {};
+            try { result = JSON.parse(xhr.responseText); } catch { }
+            const ok = xhr.status >= 200 && xhr.status < 300 && result.ok;
+            // 413: el servidor (o el proxy) rechazó el tamaño antes de llegar a la app
+            finish(li, ok, ok ? (result.name !== file.name ? `Guardado como ${result.name}` : 'Listo') : result.error || (xhr.status === 413 ? 'El servidor rechazó el tamaño del archivo.' : 'No se pudo subir.'));
+            resolve(ok);
+        });
+        xhr.addEventListener('error', () => { finish(li, false, 'Sin conexión. Inténtalo de nuevo.'); resolve(false); });
+        xhr.send(body);
+    });
+
+    const upload = async files => {
+        if (busy || !files.length) return;
+        busy = true;
+        queue.innerHTML = '';
+        let uploaded = 0, failed = 0;
+        for (const file of files) {
+            const li = row(file);
+            if (file.size > maxSize) { finish(li, false, 'Supera los 50 MB.'); failed++; continue; }
+            if (file.size === 0) { finish(li, false, 'El archivo está vacío.'); failed++; continue; }
+            (await send(file, li)) ? uploaded++ : failed++;
+        }
+        busy = false;
+        input.value = '';
+        if (!failed) { location.reload(); return; }
+        showToast(uploaded ? 'warning' : 'error', uploaded ? `Se subieron ${uploaded}; ${failed} con error. Recarga para verlos.` : 'No se pudo subir ningún archivo.');
+        if (uploaded) setTimeout(() => location.reload(), 4000);
+    };
+
+    input.addEventListener('change', () => upload([...input.files]));
+    window.addEventListener('beforeunload', e => { if (busy) e.preventDefault(); });
+    // Se puede soltar en cualquier parte de la página
+    let depth = 0;
+    const hasFiles = e => e.dataTransfer?.types.includes('Files');
+    document.addEventListener('dragenter', e => { if (!hasFiles(e)) return; e.preventDefault(); depth++; zone.classList.add('is-dragging'); });
+    document.addEventListener('dragleave', e => { if (!hasFiles(e)) return; if (--depth <= 0) { depth = 0; zone.classList.remove('is-dragging'); } });
+    document.addEventListener('dragover', e => { if (hasFiles(e)) e.preventDefault(); });
+    document.addEventListener('drop', e => {
+        if (!hasFiles(e)) return;
+        e.preventDefault();
+        depth = 0;
+        zone.classList.remove('is-dragging');
+        upload([...e.dataTransfer.files].filter(f => f.size > 0 || f.type));
+    });
+})();
+
 // Bandeja: en celular el detalle ocupa la pantalla
 document.querySelector('[data-inbox-back]')?.addEventListener('click', () => document.querySelector('.inbox')?.classList.remove('reading'));
 
@@ -267,6 +349,9 @@ document.querySelector('[data-inbox-back]')?.addEventListener('click', () => doc
         const deleteButton = event.target.closest('[data-delete-id]');
         if (deleteButton) {
             opener = deleteButton;
+            const deleteForm = deleteLayer.querySelector('form');
+            deleteForm.dataset.defaultAction ??= deleteForm.action;
+            deleteForm.action = deleteButton.dataset.deleteAction || deleteForm.dataset.defaultAction;
             document.getElementById('deleteItemId').value = deleteButton.dataset.deleteId;
             document.getElementById('deleteItemType').value = deleteButton.dataset.deleteType;
             document.getElementById('deleteItemName').textContent = `“${deleteButton.dataset.deleteName}”`;
