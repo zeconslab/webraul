@@ -1,4 +1,44 @@
 @model IReadOnlyList<Project>
-@{ ViewData["Title"]="Proyectos"; }
-<div class="module-head">@await Html.PartialAsync("_ModuleHead", new ModuleHeadViewModel("proyectos", "Proyectos", "Publica casos de estudio, tecnologías, enlaces e imágenes."))<button type="button" class="button" data-modal-url="@Url.Action("Project", new { modal = true })"><b class="material-symbols-outlined">add</b>Nuevo proyecto</button></div>
-@await Html.PartialAsync("_ModuleTable", ("Project", Model.Select(x => (x.Id,x.Title,x.Description,x.IsPublished,x.SortOrder)).ToList()))
+@{
+    ViewData["Title"] = "Proyectos";
+    ViewData["Crumb"] = "proyectos";
+    string[] backgrounds = ["linear-gradient(160deg,#1d3a5c,#0d1626)", "linear-gradient(160deg,#145c3c,#0b2a1e)", "linear-gradient(160deg,#3b2a5c,#150f26)", "radial-gradient(circle at 30% 15%,rgba(234,120,40,.28),transparent 55%),linear-gradient(160deg,#3b2414,#160e09)"];
+}
+<div class="page-head">
+    <div><h1>Proyectos</h1><p>Lo que ven tus clientes en "Distintos negocios, distintas soluciones". El marcado como portada también aparece en el hero.</p></div>
+    <button type="button" class="btn" data-modal-url="@Url.Action("Project", new { modal = true })"><span class="ms">add</span>Nuevo proyecto</button>
+</div>
+@if (Model.Count > 1)
+{
+    <div class="toolbar"><span class="hint"><span class="ms">drag_indicator</span>Arrastra desde la agarradera para cambiar el orden</span></div>
+}
+<div class="pgrid" data-sortable="project">
+    @for (var i = 0; i < Model.Count; i++)
+    {
+        var project = Model[i];
+        var isApp = project.TypeList.Contains("app");
+        var image = isApp ? project.MobileImageUrl ?? project.DesktopImageUrl : project.DesktopImageUrl ?? project.MobileImageUrl;
+        <article class="card pc @(project.IsPublished ? "" : "hidden-item")" data-item="@project.Id">
+            <div class="pthumb" style="background:@backgrounds[i % backgrounds.Length]">
+                @if (!string.IsNullOrWhiteSpace(image)) { <img class="@(isApp ? "app-shot" : "")" src="@image" alt="" loading="lazy" /> } else { <span class="ms">image</span> }
+                <button type="button" class="grip" aria-label="Arrastrar para reordenar"><span class="ms">drag_indicator</span></button>
+                @if (project.IsFeatured) { <span class="cover"><span class="ms">star</span>Portada</span> }
+            </div>
+            <div class="pbody">
+                <div class="chips">
+                    @foreach (var type in Project.TypeOptions.Where(t => project.TypeList.Contains(t.Key))) { <span class="t t-@type.Key"><span class="ms">@type.Icon</span>@type.Label.ToUpperInvariant()</span> }
+                    @if (!string.IsNullOrWhiteSpace(project.Badge)) { <span class="t t-badge">@project.Badge.ToUpperInvariant()</span> }
+                    @if (!project.IsFeatured && string.IsNullOrWhiteSpace(project.WebsiteUrl)) { <span class="chip src"><span class="ms">link_off</span>Sin enlace</span> }
+                </div>
+                <h4>@project.Title</h4>
+                <p>@project.Description</p>
+            </div>
+            <div class="pfoot">
+                <button type="button" class="switch" data-publish="project" aria-pressed="@(project.IsPublished ? "true" : "false")"><i></i><span data-publish-label>@(project.IsPublished ? "Publicado" : "Oculto")</span></button>
+                <button type="button" class="icon-btn" title="Editar" aria-label="Editar @project.Title" data-modal-url="@Url.Action("Project", new { id = project.Id, modal = true })"><span class="ms">edit</span></button>
+                <button type="button" class="icon-btn danger" title="Eliminar" aria-label="Eliminar @project.Title" data-delete-type="project" data-delete-id="@project.Id" data-delete-name="@project.Title"><span class="ms">delete</span></button>
+            </div>
+        </article>
+    }
+    <button type="button" class="add" data-modal-url="@Url.Action("Project", new { modal = true })"><span class="ms">add_circle</span><strong>Agregar proyecto</strong><small>Sitio web, sistema, app o tienda</small></button>
+</div>

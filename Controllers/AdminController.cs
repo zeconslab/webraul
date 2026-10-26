@@ -11,49 +11,92 @@ public sealed class AdminController(ApplicationDbContext db, IWebHostEnvironment
 {
     public async Task<IActionResult> Index()
     {
-        var since = DateTime.UtcNow.Date.AddDays(-13);
-        var dailyCounts = await db.ContactMessages.AsNoTracking()
-            .Where(x => x.CreatedAtUtc >= since)
-            .GroupBy(x => x.CreatedAtUtc.Date)
-            .Select(g => new { Date = g.Key, Count = g.Count() })
-            .ToListAsync();
-        var activity = Enumerable.Range(0, 14)
-            .Select(offset => since.AddDays(offset))
-            .Select(date => new DailyActivity(date, dailyCounts.FirstOrDefault(x => x.Date == date)?.Count ?? 0))
-            .ToList();
-
-        var contentHealth = new List<ContentHealth>
-        {
-            new("Servicios", await db.Services.CountAsync(x => x.IsPublished), await db.Services.CountAsync(x => !x.IsPublished)),
-            new("Proyectos", await db.Projects.CountAsync(x => x.IsPublished), await db.Projects.CountAsync(x => !x.IsPublished)),
-            new("Aplicaciones", await db.Apps.CountAsync(x => x.IsPublished), await db.Apps.CountAsync(x => !x.IsPublished)),
-            new("Preguntas FAQ", await db.Faqs.CountAsync(x => x.IsPublished), await db.Faqs.CountAsync(x => !x.IsPublished)),
-        };
-
-        var visitDailyCounts = await db.PageVisits.AsNoTracking()
-            .Where(x => x.CreatedAtUtc >= since)
-            .GroupBy(x => x.CreatedAtUtc.Date)
-            .Select(g => new { Date = g.Key, Count = g.Count() })
-            .ToListAsync();
-        var visitsActivity = Enumerable.Range(0, 14)
-            .Select(offset => since.AddDays(offset))
-            .Select(date => new DailyActivity(date, visitDailyCounts.FirstOrDefault(x => x.Date == date)?.Count ?? 0))
-            .ToList();
-
         var today = DateTime.UtcNow.Date;
-        var visitSummaries = new List<VisitSummary>();
-        foreach (var (label, days) in new (string, int)[] { ("Hoy", 1), ("7 días", 7), ("14 días", 14) })
+        var weekStart = today.AddDays(-6);
+        var previousWeekStart = weekStart.AddDays(-7);
+        var monthStart = today.AddDays(-29);
+        var chartStart = today.AddDays(-13);
+
+        var waiting = db.ContactMessages.AsNoTracking().Where(x => x.Stage == LeadStages.New);
+        var leadDates = await db.ContactMessages.AsNoTracking().Where(x => x.CreatedAtUtc >= monthStart || x.CreatedAtUtc >= previousWeekStart)
+            .Select(x => new { x.CreatedAtUtc, x.Source, x.Stage }).ToListAsync();
+        var visits = await db.PageVisits.AsNoTracking().Where(x => x.CreatedAtUtc >= monthStart)
+            .Select(x => new { x.CreatedAtUtc, x.VisitorHash }).ToListAsync();
+        var diagnostics = await db.DiagnosticCompletions.AsNoTracking().Where(x => x.CreatedAtUtc >= monthStart)
+            .Select(x => new { x.CreatedAtUtc, x.VisitorHash }).ToListAsync();
+
+        int UniqueVisitors(DateTime from, DateTime to) => visits.Where(x => x.CreatedAtUtc >= from && x.CreatedAtUtc < to).Select(x => x.VisitorHash).Distinct().Count();
+        var tomorrow = today.AddDays(1);
+        var newLeads = new Kpi(leadDates.Count(x => x.CreatedAtUtc >= weekStart), leadDates.Count(x => x.CreatedAtUtc >= previousWeekStart && x.CreatedAtUtc < weekStart));
+        var uniqueVisitors = new Kpi(UniqueVisitors(weekStart, tomorrow), UniqueVisitors(previousWeekStart, weekStart));
+        var monthLeads = leadDates.Where(x => x.CreatedAtUtc >= monthStart).ToList();
+        var monthVisitors = UniqueVisitors(monthStart, tomorrow);
+
+        List<DailyActivity> Daily(IEnumerable<DateTime> dates)
         {
-            var from = today.AddDays(-(days - 1));
-            var rangeVisits = await db.PageVisits.AsNoTracking().Where(x => x.CreatedAtUtc >= from).Select(x => x.VisitorHash).ToListAsync();
-            visitSummaries.Add(new VisitSummary(label, rangeVisits.Count, rangeVisits.Distinct().Count()));
+            var counts = dates.GroupBy(x => x.Date).ToDictionary(g => g.Key, g => g.Count());
+            return Enumerable.Range(0, 14).Select(i => chartStart.AddDays(i)).Select(d => new DailyActivity(d, counts.GetValueOrDefault(d))).ToList();
         }
 
+        var funnel = new List<FunnelStep>
+        {
+            new("Visitantes", monthVisitors),
+            new("Diagnóstico", diagnostics.Select(x => x.VisitorHash).Distinct().Count()),
+            new("Te escribieron", monthLeads.Count),
+            new("Propuesta", monthLeads.Count(x => x.Stage is LeadStages.Proposal or LeadStages.Won)),
+            new("Ganados", monthLeads.Count(x => x.Stage == LeadStages.Won)),
+        };
+
         return View(new AdminDashboardViewModel(
-            await db.Services.CountAsync(), await db.Projects.CountAsync(), await db.Faqs.CountAsync(), await db.Apps.CountAsync(),
-            await db.ContactMessages.CountAsync(x => !x.IsRead),
-            await db.ContactMessages.AsNoTracking().OrderByDescending(x => x.CreatedAtUtc).Take(8).ToListAsync(),
-            activity, contentHealth, visitsActivity, visitSummaries));
+            await waiting.CountAsync(), await waiting.OrderBy(x => x.CreatedAtUtc).Select(x => (DateTime?)x.CreatedAtUtc).FirstOrDefaultAsync(),
+            newLeads, uniqueVisitors,
+            monthVisitors == 0 ? 0 : monthLeads.Count * 100.0 / monthVisitors,
+            diagnostics.Count(x => x.CreatedAtUtc >= weekStart), leadDates.Count(x => x.CreatedAtUtc >= weekStart && x.Source == LeadSources.Diagnostic),
+            await db.ContactMessages.AsNoTracking().OrderByDescending(x => x.CreatedAtUtc).Take(5).ToListAsync(),
+            await BuildHealthChecks(),
+            Daily(visits.Where(x => x.CreatedAtUtc >= chartStart).Select(x => x.CreatedAtUtc)),
+            Daily(leadDates.Where(x => x.CreatedAtUtc >= chartStart).Select(x => x.CreatedAtUtc)),
+            funnel));
+    }
+
+    private async Task<List<HealthCheck>> BuildHealthChecks()
+    {
+        var settings = await db.SiteSettings.AsNoTracking().OrderBy(x => x.Id).FirstAsync();
+        var services = await db.Services.AsNoTracking().Where(x => x.IsPublished).ToListAsync();
+        var projects = await db.Projects.AsNoTracking().Where(x => x.IsPublished).ToListAsync();
+        var faqCount = await db.Faqs.CountAsync(x => x.IsPublished);
+        var checks = new List<HealthCheck>();
+
+        var incomplete = services.Where(x => string.IsNullOrWhiteSpace(x.IdealFor) || string.IsNullOrWhiteSpace(x.Includes) || string.IsNullOrWhiteSpace(x.Timeframe)).ToList();
+        checks.Add(incomplete.Count == 0
+            ? new(true, "Servicios completos", $"{services.Count} servicios con todos sus datos")
+            : new(false, incomplete.Count == 1 ? "1 servicio incompleto" : $"{incomplete.Count} servicios incompletos",
+                $"A {string.Join(", ", incomplete.Take(2).Select(x => x.Title))} le faltan \"Ideal para\", \"Qué obtiene\" o \"Tiempo\".", "Completar", Url.Action(nameof(Services))));
+
+        var featured = projects.FirstOrDefault(x => x.IsFeatured);
+        checks.Add(featured is null
+            ? new(false, "Sin proyecto de portada", "El hero usará el primer proyecto publicado.", "Elegir", Url.Action(nameof(Projects)))
+            : new(true, "Portada definida", featured.GalleryList.Count > 0 ? $"{featured.Title} · {featured.GalleryList.Count} pantallas en el carrusel" : featured.Title));
+
+        foreach (var project in projects.Where(x => string.IsNullOrWhiteSpace(x.DesktopImageUrl) && string.IsNullOrWhiteSpace(x.MobileImageUrl)).Take(2))
+            checks.Add(new(false, $"{project.Title} no tiene imagen", "La tarjeta se ve solo con un ícono.", "Agregar", ModalUrl: Url.Action(nameof(Project), new { id = project.Id, modal = true })));
+        foreach (var project in projects.Where(x => !x.IsFeatured && string.IsNullOrWhiteSpace(x.WebsiteUrl)).Take(2))
+            checks.Add(new(false, $"{project.Title} no tiene enlace", "Sin enlace, su tarjeta no tiene botón.", "Agregar", ModalUrl: Url.Action(nameof(Project), new { id = project.Id, modal = true })));
+
+        checks.Add(faqCount >= 4
+            ? new(true, "Preguntas frecuentes", $"{faqCount} publicadas")
+            : new(false, faqCount == 1 ? "Solo 1 pregunta frecuente" : $"Solo {faqCount} preguntas frecuentes", "Te sugiero 4 o más: precio, tiempos, soporte.", "Agregar", ModalUrl: Url.Action(nameof(Faq), new { modal = true })));
+        checks.Add(settings.Phone.Any(char.IsDigit)
+            ? new(true, "WhatsApp configurado", settings.Phone)
+            : new(false, "Sin WhatsApp", "Los botones de WhatsApp del sitio no aparecen.", "Configurar", ModalUrl: Url.Action(nameof(Settings), new { modal = true })));
+        checks.Add(!string.IsNullOrWhiteSpace(settings.Email)
+            ? new(true, "Correo de avisos", settings.Email)
+            : new(false, "Sin correo de avisos", "No te llegará aviso cuando alguien escriba.", "Configurar", ModalUrl: Url.Action(nameof(Settings), new { modal = true })));
+        checks.Add(settings.IsIndexable
+            ? new(true, "Visible en Google", "El sitio permite ser indexado")
+            : new(false, "Oculto para buscadores", "Google no está mostrando tu sitio.", "Revisar", ModalUrl: Url.Action(nameof(Seo))));
+
+        return checks.OrderBy(x => x.Ok).ToList();
     }
 
     public async Task<IActionResult> Settings(bool modal = false)
@@ -81,7 +124,6 @@ public sealed class AdminController(ApplicationDbContext db, IWebHostEnvironment
     public async Task<IActionResult> Services() => View(await db.Services.OrderBy(x => x.SortOrder).ToListAsync());
     public async Task<IActionResult> Projects() => View(await db.Projects.OrderBy(x => x.SortOrder).ToListAsync());
     public async Task<IActionResult> Faqs() => View(await db.Faqs.OrderBy(x => x.SortOrder).ToListAsync());
-    public async Task<IActionResult> Apps() => View(await db.Apps.OrderBy(x => x.SortOrder).ToListAsync());
 
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Settings([Bind(Prefix = "Settings")] GeneralSettingsInput input)
@@ -137,15 +179,35 @@ public sealed class AdminController(ApplicationDbContext db, IWebHostEnvironment
     }
 
     [HttpPost, ValidateAntiForgeryToken, RequestSizeLimit(10_000_000)]
-    public async Task<IActionResult> Project(Project input, IFormFile? desktopImage, IFormFile? mobileImage)
+    public async Task<IActionResult> Project(Project input, IFormFile? desktopImage, IFormFile? mobileImage,
+        string[]? selectedTypes, string[]? galleryUrls, string[]? galleryLabels, IFormFile[]? newGalleryFiles, string[]? newGalleryLabels)
     {
+        input.Types = string.Join(',', (selectedTypes ?? []).Where(type => Models.Project.TypeOptions.Any(option => option.Key == type)).Distinct());
+        if (input.Types.Length == 0) ModelState.AddModelError(nameof(input.Types), "Elige al menos un tipo de proyecto.");
         if (!ModelState.IsValid) return IsModalRequest() ? PartialView("_ProjectForm", input) : View(input);
+
         var existing = input.Id == 0 ? null : await db.Projects.AsNoTracking().FirstOrDefaultAsync(x => x.Id == input.Id);
         input.DesktopImageUrl = await SaveImage(desktopImage) ?? input.DesktopImageUrl ?? existing?.DesktopImageUrl;
         input.MobileImageUrl = await SaveImage(mobileImage) ?? input.MobileImageUrl ?? existing?.MobileImageUrl;
+
+        // Pantallas que se conservan (las quitadas en el formulario ya no vienen) más las nuevas subidas.
+        var gallery = new List<string>();
+        for (var i = 0; i < (galleryUrls?.Length ?? 0); i++)
+            gallery.Add($"{Clean(galleryLabels?.ElementAtOrDefault(i))}|{galleryUrls![i]}");
+        for (var i = 0; i < (newGalleryFiles?.Length ?? 0); i++)
+            if (await SaveImage(newGalleryFiles![i]) is { } url)
+                gallery.Add($"{Clean(newGalleryLabels?.ElementAtOrDefault(i))}|{url}");
+        input.GalleryImages = string.Join('\n', gallery);
+
+        // Solo un proyecto puede ser la portada.
+        if (input.IsFeatured)
+            await db.Projects.Where(x => x.Id != input.Id && x.IsFeatured).ExecuteUpdateAsync(x => x.SetProperty(p => p.IsFeatured, false));
+
         if (input.Id == 0) db.Projects.Add(input); else db.Projects.Update(input);
         await db.SaveChangesAsync();
         return ModalSaved(nameof(Projects), "Proyecto guardado.");
+
+        static string Clean(string? label) => (label ?? string.Empty).Replace("|", " ").Replace("\n", " ").Trim();
     }
 
     public async Task<IActionResult> Faq(int? id, bool modal = false)
@@ -163,23 +225,6 @@ public sealed class AdminController(ApplicationDbContext db, IWebHostEnvironment
         return ModalSaved(nameof(Faqs), "Pregunta guardada.");
     }
 
-    public async Task<IActionResult> App(int? id, bool modal = false)
-    {
-        var model = id is null ? new AppItem() : await db.Apps.FindAsync(id) ?? new AppItem();
-        return modal ? PartialView("_AppForm", model) : View(model);
-    }
-
-    [HttpPost, ValidateAntiForgeryToken, RequestSizeLimit(10_000_000)]
-    public async Task<IActionResult> App(AppItem input, IFormFile? appImage)
-    {
-        if (!ModelState.IsValid) return IsModalRequest() ? PartialView("_AppForm", input) : View(input);
-        var existing = input.Id == 0 ? null : await db.Apps.AsNoTracking().FirstOrDefaultAsync(x => x.Id == input.Id);
-        input.ImageUrl = await SaveImage(appImage) ?? input.ImageUrl ?? existing?.ImageUrl;
-        if (input.Id == 0) db.Apps.Add(input); else db.Apps.Update(input);
-        await db.SaveChangesAsync();
-        return ModalSaved(nameof(Apps), "Aplicación guardada.");
-    }
-
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(string type, int id)
     {
@@ -188,41 +233,98 @@ public sealed class AdminController(ApplicationDbContext db, IWebHostEnvironment
             case "service": if (await db.Services.FindAsync(id) is { } service) db.Remove(service); break;
             case "project": if (await db.Projects.FindAsync(id) is { } project) db.Remove(project); break;
             case "faq": if (await db.Faqs.FindAsync(id) is { } faq) db.Remove(faq); break;
-            case "app": if (await db.Apps.FindAsync(id) is { } app) db.Remove(app); break;
             case "message": if (await db.ContactMessages.FindAsync(id) is { } message) db.Remove(message); break;
             default: return BadRequest();
         }
         await db.SaveChangesAsync();
         TempData["Success"] = "Elemento eliminado.";
-        return RedirectToAction(type.ToLowerInvariant() switch { "service" => nameof(Services), "project" => nameof(Projects), "faq" => nameof(Faqs), "app" => nameof(Apps), "message" => nameof(Messages), _ => nameof(Index) });
+        return RedirectToAction(type.ToLowerInvariant() switch { "service" => nameof(Services), "project" => nameof(Projects), "faq" => nameof(Faqs), "message" => nameof(Messages), _ => nameof(Index) });
     }
 
-    public async Task<IActionResult> Messages(int page = 1)
+    public async Task<IActionResult> Messages(string stage = "todos", int? id = null, int page = 1)
     {
-        const int pageSize = 10;
-        var query = db.ContactMessages.AsNoTracking().OrderByDescending(x => x.CreatedAtUtc);
-        var totalCount = await query.CountAsync();
-        var totalPages = Math.Max(1, (int)Math.Ceiling(totalCount / (double)pageSize));
+        const int pageSize = 30;
+        var counts = await db.ContactMessages.AsNoTracking().GroupBy(x => x.Stage).Select(g => new { g.Key, Count = g.Count() }).ToDictionaryAsync(x => x.Key, x => x.Count);
+        counts["todos"] = counts.Values.Sum();
+        if (stage != "todos" && LeadStages.All.All(x => x.Key != stage)) stage = "todos";
+
+        var query = db.ContactMessages.AsNoTracking().Where(x => stage == "todos" || x.Stage == stage).OrderByDescending(x => x.CreatedAtUtc);
+        var totalPages = Math.Max(1, (int)Math.Ceiling(await query.CountAsync() / (double)pageSize));
         page = Math.Clamp(page, 1, totalPages);
         var items = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
-        return View(new PagedMessages(items, page, totalPages, totalCount));
-    }
 
-    public async Task<IActionResult> Message(int id)
-    {
-        var model = await db.ContactMessages.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-        return model is null ? NotFound() : PartialView("_MessageDetail", model);
+        ContactMessage? selected = null;
+        if (id is not null && await db.ContactMessages.FindAsync(id) is { } message)
+        {
+            // Abrir un mensaje lo marca como leído
+            if (!message.IsRead) { message.IsRead = true; await db.SaveChangesAsync(); }
+            selected = message;
+            items = items.Select(x => x.Id == message.Id ? message : x).ToList();
+        }
+        return View(new InboxViewModel(items, selected, stage, counts, page, totalPages));
     }
 
     [HttpPost, ValidateAntiForgeryToken]
-    public async Task<IActionResult> ReadMessage(int id)
+    public async Task<IActionResult> Stage(int id, string stage, string? filter)
     {
+        if (LeadStages.All.All(x => x.Key != stage)) return BadRequest();
         if (await db.ContactMessages.FindAsync(id) is { } message)
         {
+            message.Stage = stage;
+            message.StageUpdatedAtUtc = DateTime.UtcNow;
             message.IsRead = true;
             await db.SaveChangesAsync();
+            TempData["Success"] = $"Etapa actualizada: {LeadStages.Label(stage)}.";
         }
-        return RedirectToAction(nameof(Messages));
+        return RedirectToAction(nameof(Messages), new { stage = filter ?? "todos", id });
+    }
+
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> Notes(int id, string? notes, string? filter)
+    {
+        if (notes?.Length > 2000) notes = notes[..2000];
+        if (await db.ContactMessages.FindAsync(id) is { } message)
+        {
+            message.Notes = string.IsNullOrWhiteSpace(notes) ? null : notes.Trim();
+            await db.SaveChangesAsync();
+            TempData["Success"] = "Notas guardadas.";
+        }
+        return RedirectToAction(nameof(Messages), new { stage = filter ?? "todos", id });
+    }
+
+    /// <summary>Publicar u ocultar desde el interruptor de las listas.</summary>
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> Publish(string type, int id, bool published)
+    {
+        OrderedContent? item = type switch
+        {
+            "project" => await db.Projects.FindAsync(id),
+            "service" => await db.Services.FindAsync(id),
+            "faq" => await db.Faqs.FindAsync(id),
+            _ => null,
+        };
+        if (item is null) return NotFound();
+        item.IsPublished = published;
+        await db.SaveChangesAsync();
+        return Json(new { ok = true });
+    }
+
+    /// <summary>Guarda el orden después de arrastrar tarjetas: la posición en la lista es el nuevo orden.</summary>
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> Reorder(string type, int[] ids)
+    {
+        IQueryable<OrderedContent>? set = type switch
+        {
+            "project" => db.Projects,
+            "service" => db.Services,
+            "faq" => db.Faqs,
+            _ => null,
+        };
+        if (set is null) return BadRequest();
+        var items = await set.Where(x => ids.Contains(x.Id)).ToListAsync();
+        foreach (var item in items) item.SortOrder = Array.IndexOf(ids, item.Id);
+        await db.SaveChangesAsync();
+        return Json(new { ok = true });
     }
 
     private RedirectToActionResult Saved(string action, string message)

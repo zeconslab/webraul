@@ -1,4 +1,0 @@
-@model IReadOnlyList<AppItem>
-@{ ViewData["Title"]="Aplicaciones"; }
-<div class="module-head">@await Html.PartialAsync("_ModuleHead", new ModuleHeadViewModel("aplicaciones", "Aplicaciones", "Gestiona productos personales y proyectos open source."))<button type="button" class="button" data-modal-url="@Url.Action("App", new { modal = true })"><b class="material-symbols-outlined">add</b>Nueva aplicación</button></div>
-@await Html.PartialAsync("_ModuleTable", ("App", Model.Select(x => (x.Id,x.Name,x.Description,x.IsPublished,x.SortOrder)).ToList()))

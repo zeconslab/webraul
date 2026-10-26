@@ -1,27 +1,78 @@
 @model Project
-<form asp-action="Project" method="post" enctype="multipart/form-data" class="admin-modal-form admin-modal-form-wide" data-modal-form>
-    <input asp-for="Id" type="hidden" /><input asp-for="DesktopImageUrl" type="hidden" /><input asp-for="MobileImageUrl" type="hidden" />
-    <div class="modal-form-head"><div><span class="module-kicker">PORTAFOLIO</span><h2>@(Model.Id == 0 ? "Nuevo proyecto" : "Editar proyecto")</h2><p>Información, tecnologías, imágenes y enlace del caso de estudio.</p></div><button type="button" class="modal-close" data-modal-close aria-label="Cerrar"><b class="material-symbols-outlined">close</b></button></div>
-    <div class="modal-form-body">
-        <div asp-validation-summary="ModelOnly"></div>
-        <section class="modal-form-section"><h3>Información principal</h3>
-            <div class="field"><label asp-for="Title">Título</label><input asp-for="Title" /><span asp-validation-for="Title"></span></div>
-            <div class="form-grid">
-                <div class="field"><label asp-for="Slug">Identificador</label><input asp-for="Slug" /><span asp-validation-for="Slug"></span></div>
-                <div class="field"><label asp-for="Category">Categoría</label><div class="icon-select-wrap"><span class="material-symbols-outlined" data-icon-preview>category</span><select asp-for="Category" data-category-select><option value="web" data-icon="language">Web · Sitio o plataforma</option><option value="ecommerce" data-icon="shopping_cart">Comercio · E-commerce</option><option value="wellness" data-icon="spa">Bienestar · Spa o belleza</option><option value="corporate" data-icon="business_center">Corporativo · Empresa</option><option value="saas" data-icon="cloud">SaaS · Servicio en la nube</option><option value="mobile" data-icon="smartphone">Móvil · Aplicación</option><option value="education" data-icon="school">Educación · Aprendizaje</option><option value="health" data-icon="health_and_safety">Salud · Medicina</option><option value="finance" data-icon="payments">Finanzas · Pagos</option><option value="creative" data-icon="palette">Creativo · Diseño</option><option value="real-estate" data-icon="apartment">Inmobiliario · Propiedades</option><option value="restaurant" data-icon="restaurant">Gastronomía · Restaurante</option><option value="nonprofit" data-icon="volunteer_activism">Social · Organización</option><option value="other" data-icon="category">Otro · General</option></select></div></div>
+<form asp-action="Project" method="post" enctype="multipart/form-data" class="admin-modal-form with-preview" data-modal-form data-project-preview>
+    <div class="ed">
+        <input asp-for="Id" type="hidden" /><input asp-for="DesktopImageUrl" type="hidden" /><input asp-for="MobileImageUrl" type="hidden" /><input asp-for="SortOrder" type="hidden" />
+        <div class="modal-form-head"><div><span class="module-kicker">PROYECTOS</span><h2>@(Model.Id == 0 ? "Nuevo proyecto" : "Editar proyecto")</h2><p>A la derecha ves cómo queda la tarjeta en tu sitio.</p></div><button type="button" class="modal-close" data-modal-close aria-label="Cerrar"><span class="ms">close</span></button></div>
+        <div class="ed-tabs" data-tabs>
+            <button type="button" data-tab="info"><span class="ms">description</span>Información</button>
+            <button type="button" data-tab="images"><span class="ms">image</span>Imágenes y carrusel</button>
+            <button type="button" data-tab="publish"><span class="ms">tune</span>Publicación</button>
+        </div>
+        <div class="modal-form-body">
+            <div asp-validation-summary="ModelOnly"></div>
+            <div class="tab-pane" data-pane="info">
+                <div class="form-grid">
+                    <div class="field"><label asp-for="Title">Nombre</label><input asp-for="Title" data-slug-source /><span asp-validation-for="Title"></span></div>
+                    <div class="field"><label asp-for="Badge">Estado o etiqueta</label><input asp-for="Badge" placeholder="Ej. Lanzamiento próximo" /><small>Opcional, aparece como insignia.</small></div>
+                </div>
+                <div class="field"><span>Tipo de proyecto</span>
+                    <div class="type-checks">
+                        @foreach (var type in Project.TypeOptions)
+                        {
+                            <label class="type-check"><input type="checkbox" name="selectedTypes" value="@type.Key" checked="@Model.TypeList.Contains(type.Key)" /><span><b class="ms">@type.Icon</b>@type.Label</span></label>
+                        }
+                    </div>
+                    <small>Puedes marcar varios. Se usan para los filtros del sitio.</small><span asp-validation-for="Types"></span>
+                </div>
+                <div class="field"><label asp-for="Description">Descripción</label><textarea asp-for="Description" rows="4"></textarea><small>Las primeras 2 líneas se ven en la tarjeta; completa en el destacado.</small><span asp-validation-for="Description"></span></div>
+                <div class="field"><label asp-for="Features">Características, una por línea</label><textarea asp-for="Features" rows="4"></textarea><small>Se ven como etiquetas en el proyecto destacado.</small></div>
+                <div class="field"><label asp-for="WebsiteUrl">Enlace público</label><input asp-for="WebsiteUrl" type="url" placeholder="https://" /><small>Vacío: el botón dice "Quiero algo así para mi negocio" y lleva al contacto.</small><span asp-validation-for="WebsiteUrl"></span></div>
+                <div class="form-grid">
+                    <div class="field"><label asp-for="Slug">Identificador</label><input asp-for="Slug" data-slug-target /><small>Se genera del nombre.</small><span asp-validation-for="Slug"></span></div>
+                    <div class="field"><label asp-for="Technologies">Tecnologías</label><div class="tag-editor" data-tag-editor><div class="tag-list"></div><input type="text" data-tag-input placeholder="Coma o Enter" autocomplete="off" /><input asp-for="Technologies" type="hidden" data-tag-value /></div><small>Solo para tu referencia.</small></div>
+                </div>
             </div>
-            <div class="field"><label asp-for="Description">Descripción</label><textarea asp-for="Description"></textarea><span asp-validation-for="Description"></span></div>
-        </section>
-        <section class="modal-form-section"><h3>Detalles públicos</h3>
-            <div class="field"><label asp-for="Technologies">Tecnologías</label><div class="tag-editor" data-tag-editor><div class="tag-list"></div><input type="text" data-tag-input placeholder="Escribe y presiona coma o Enter" autocomplete="off" /><input asp-for="Technologies" type="hidden" data-tag-value /></div><small>Usa coma o Enter para agregar cada tecnología.</small></div>
-            <div class="field"><label asp-for="Features">Características, una por línea</label><textarea asp-for="Features"></textarea></div>
-            <div class="form-grid"><div class="field"><label asp-for="WebsiteUrl">Sitio web</label><input asp-for="WebsiteUrl" type="url" placeholder="https://" /></div><div class="field"><label asp-for="Badge">Etiqueta</label><input asp-for="Badge" /></div></div>
-        </section>
-        <section class="modal-form-section"><h3>Imágenes</h3><div class="form-grid">
-            <label class="file-drop file-drop-preview" data-file-drop><input name="desktopImage" type="file" accept="image/png,image/jpeg,image/webp" data-file-input /><img data-file-preview src="@Model.DesktopImageUrl" alt="Vista previa de escritorio" class="@(string.IsNullOrWhiteSpace(Model.DesktopImageUrl) ? "" : "has-image")" /><span class="file-drop-copy"><b class="material-symbols-outlined">desktop_windows</b><strong>Imagen de escritorio</strong><small data-file-name>Arrastra o selecciona · PNG, JPG o WEBP</small></span></label>
-            <label class="file-drop file-drop-preview" data-file-drop><input name="mobileImage" type="file" accept="image/png,image/jpeg,image/webp" data-file-input /><img data-file-preview src="@Model.MobileImageUrl" alt="Vista previa móvil" class="@(string.IsNullOrWhiteSpace(Model.MobileImageUrl) ? "" : "has-image")" /><span class="file-drop-copy"><b class="material-symbols-outlined">smartphone</b><strong>Imagen móvil</strong><small data-file-name>Arrastra o selecciona · PNG, JPG o WEBP</small></span></label>
-        </div></section>
-        <div class="form-grid align-end"><div class="field"><label asp-for="SortOrder">Orden</label><input asp-for="SortOrder" type="number" /></div><label class="publish-control"><input asp-for="IsPublished" /><span><strong>Publicado</strong><small>Visible en el portafolio</small></span></label></div>
+            <div class="tab-pane" data-pane="images" hidden>
+                <div class="form-grid">
+                    <div class="field"><span>Imagen de la tarjeta</span><label class="file-drop" data-file-drop><input name="desktopImage" type="file" accept="image/png,image/jpeg,image/webp" data-file-input /><img data-file-preview src="@Model.DesktopImageUrl" alt="" class="@(string.IsNullOrWhiteSpace(Model.DesktopImageUrl) ? "" : "has-image")" /><span class="file-drop-copy"><span class="ms">desktop_windows</span><strong>Escritorio</strong><small data-file-name>Arrastra o elige · PNG, JPG o WEBP</small></span></label></div>
+                    <div class="field"><span>Imagen en celular</span><label class="file-drop" data-file-drop><input name="mobileImage" type="file" accept="image/png,image/jpeg,image/webp" data-file-input /><img data-file-preview src="@Model.MobileImageUrl" alt="" class="@(string.IsNullOrWhiteSpace(Model.MobileImageUrl) ? "" : "has-image")" /><span class="file-drop-copy"><span class="ms">smartphone</span><strong>Móvil</strong><small data-file-name>Se muestra encima, en un teléfono</small></span></label></div>
+                </div>
+                <small class="field-hint">En apps móviles la tarjeta usa la imagen de celular.</small>
+                <div class="modal-form-section"><h3>Pantallas del carrusel</h3>
+                    <p class="section-hint">Solo se usan si este proyecto es la portada. Cada pantalla lleva una etiqueta corta, como Inicio, Vender o Reportes.</p>
+                    @if (Model.GalleryList.Count > 0)
+                    {
+                        <div class="gallery-list">
+                            @foreach (var screen in Model.GalleryList)
+                            {
+                                <div class="gallery-row" data-gallery-row><img src="@screen.Url" alt="" /><input type="hidden" name="galleryUrls" value="@screen.Url" /><div class="gallery-row-foot"><input name="galleryLabels" value="@screen.Label" placeholder="Etiqueta" maxlength="30" aria-label="Etiqueta de la pantalla" /><button type="button" class="icon-button danger" data-gallery-remove title="Quitar pantalla" aria-label="Quitar pantalla"><span class="ms">delete</span></button></div></div>
+                            }
+                        </div>
+                    }
+                    <div class="gallery-new">
+                        @for (var i = 0; i < 3; i++)
+                        {
+                            <div class="gallery-slot">
+                                <label class="file-drop" data-file-drop><input name="newGalleryFiles" type="file" accept="image/png,image/jpeg,image/webp" data-file-input /><img data-file-preview alt="" /><span class="file-drop-copy"><span class="ms">add_photo_alternate</span><strong>Nueva pantalla</strong><small data-file-name>PNG, JPG o WEBP</small></span></label>
+                                <input name="newGalleryLabels" placeholder="Etiqueta (ej. Inicio)" maxlength="30" aria-label="Etiqueta de la nueva pantalla" />
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" data-pane="publish" hidden>
+                <label class="publish-control"><input asp-for="IsPublished" /><span><strong>Publicado</strong><small>Visible en la sección de proyectos.</small></span></label>
+                <label class="publish-control"><input asp-for="IsFeatured" /><span><strong>Usar como portada</strong><small>Aparece en el hero y como proyecto destacado. Solo puede haber uno; al marcarlo se desmarca el anterior.</small></span></label>
+            </div>
+        </div>
+        <div class="modal-form-actions"><button type="button" class="button secondary" data-modal-close>Cancelar</button><button class="button" type="submit"><span class="ms">save</span>Guardar proyecto</button></div>
     </div>
-    <div class="modal-form-actions"><button type="button" class="button secondary" data-modal-close>Cancelar</button><button class="button" type="submit"><b class="material-symbols-outlined">save</b>Guardar proyecto</button></div>
+    <aside class="preview" aria-label="Vista previa">
+        <span class="eyebrow">Vista previa <span style="color:var(--accent)">● en vivo</span></span>
+        <div class="pv">
+            <div class="pv-media" data-pv-media></div>
+            <div class="pv-body"><div class="chips" data-pv-types></div><h4 data-pv-title></h4><p data-pv-desc></p><div class="pv-chips" data-pv-features></div><span class="pv-link" data-pv-link></span></div>
+        </div>
+        <div class="checklist" data-pv-checks></div>
+    </aside>
 </form>

@@ -1,54 +1,121 @@
-@model PagedMessages
-@{ ViewData["Title"] = "Mensajes"; }
-<div class="module-head">@await Html.PartialAsync("_ModuleHead", new ModuleHeadViewModel("mensajes", "Mensajes", "Solicitudes enviadas desde el formulario de contacto público."))</div>
-<div class="module-panel">
-@if (Model.Items.Count == 0)
-{
-    <div class="empty-state"><b class="material-symbols-outlined">inbox</b><h2>Sin mensajes</h2><p>Los mensajes enviados desde el formulario de contacto aparecerán aquí.</p></div>
-}
-else
-{
-    <div class="message-list">
-    @foreach (var item in Model.Items)
+@model InboxViewModel
+@inject webraul.Data.ApplicationDbContext Db
+@{
+    ViewData["Title"] = "Clientes";
+    ViewData["Crumb"] = "clientes";
+    var culture = System.Globalization.CultureInfo.GetCultureInfo("es-MX");
+    var selected = Model.Selected;
+    var ownerFirstName = Db.SiteSettings.OrderBy(x => x.Id).Select(x => x.OwnerName).First().Split(' ')[0];
+    string Short(DateTime utc)
     {
-        <article class="message-row @(item.IsRead ? "" : "is-unread")">
-            <div class="sender-avatar">@item.Name[..1].ToUpperInvariant()</div>
-            <div class="message-row-main">
-                <div class="message-row-head"><strong>@item.Name</strong><span class="status-pill @(item.IsRead ? "read" : "unread")">@(item.IsRead ? "Leído" : "Nuevo")</span>@if (!string.IsNullOrWhiteSpace(item.ServiceCategory)) {<span class="category-tag">@item.ServiceCategory</span>}</div>
-                <a class="message-email" href="mailto:@item.Email">@item.Email</a>
-                <p class="message-preview">@item.Message</p>
+        var span = DateTime.UtcNow - utc;
+        return span.TotalHours < 1 ? $"{Math.Max(1, (int)span.TotalMinutes)} min" : span.TotalHours < 24 ? $"{(int)span.TotalHours} h" : span.TotalDays < 2 ? "ayer" : span.TotalDays < 7 ? $"{(int)span.TotalDays} d" : utc.ToLocalTime().ToString("d MMM", culture);
+    }
+    string WhatsAppReply(ContactMessage m)
+    {
+        var digits = new string((m.Phone ?? "").Where(char.IsDigit).ToArray());
+        if (digits.Length == 10) digits = "52" + digits; // número mexicano sin lada internacional
+        var topic = string.IsNullOrWhiteSpace(m.ServiceCategory) || m.ServiceCategory == "Otro" ? "tu proyecto" : m.ServiceCategory.ToLowerInvariant();
+        var text = $"Hola {m.Name.Split(' ')[0]}, soy {ownerFirstName} de raul.dev. Recibí tu mensaje sobre {topic}. ¿Te parece si lo platicamos?";
+        return $"https://wa.me/{digits}?text={Uri.EscapeDataString(text)}";
+    }
+    var stageIndex = selected is null ? -1 : LeadStages.All.ToList().FindIndex(x => x.Key == selected.Stage);
+}
+@section Back { @if (selected is not null) { <button type="button" class="icon-btn back-btn" data-inbox-back aria-label="Volver a la lista"><span class="ms">arrow_back</span></button> } }
+<div class="page-head"><div><h1>Clientes</h1><p>Todo lo que llega del formulario y del diagnóstico, con su seguimiento.</p></div></div>
+
+<div class="card inbox @(selected is null ? "" : "reading")">
+    <div class="inbox-list">
+        <nav class="filters" aria-label="Filtrar por etapa">
+            <a class="@(Model.Stage == "todos" ? "on" : "")" asp-action="Messages" asp-route-stage="todos">Todos · @Model.StageCounts.GetValueOrDefault("todos")</a>
+            @foreach (var stage in LeadStages.All)
+            {
+                var count = Model.StageCounts.GetValueOrDefault(stage.Key);
+                if (count == 0 && Model.Stage != stage.Key) continue;
+                <a class="@(Model.Stage == stage.Key ? "on" : "")" asp-action="Messages" asp-route-stage="@stage.Key">@stage.Label · @count</a>
+            }
+        </nav>
+        @if (Model.Items.Count == 0)
+        {
+            <div class="empty"><span class="ms">inbox</span><h3>Sin clientes aquí</h3><p>@(Model.Stage == "todos" ? "Los mensajes del formulario y del diagnóstico aparecerán aquí." : "No hay clientes en esta etapa.")</p></div>
+        }
+        @foreach (var item in Model.Items)
+        {
+            <a class="item @(item.Id == selected?.Id ? "on" : "") @(item.IsRead ? "" : "unread")" asp-action="Messages" asp-route-stage="@Model.Stage" asp-route-id="@item.Id" asp-route-page="@Model.Page">
+                <div class="avatar av@(item.Id % 4)">@item.Name[..1].ToUpperInvariant()</div>
+                <div>
+                    <div class="item-top"><strong>@item.Name</strong><time>@Short(item.CreatedAtUtc)</time></div>
+                    <p>@item.Message.ReplaceLineEndings(" ")</p>
+                    <div class="chips"><span class="chip stage-@item.Stage">@LeadStages.Label(item.Stage)</span>@if (item.Source == LeadSources.Diagnostic) {<span class="chip src"><span class="ms">quiz</span>Diagnóstico</span>} else if (!string.IsNullOrWhiteSpace(item.ServiceCategory)) {<span class="chip">@item.ServiceCategory</span>}</div>
+                </div>
+            </a>
+        }
+        @if (Model.TotalPages > 1)
+        {
+            <div class="pager">
+                @if (Model.Page > 1) { <a asp-action="Messages" asp-route-stage="@Model.Stage" asp-route-page="@(Model.Page - 1)">← Más recientes</a> } else { <span></span> }
+                <span>Página @Model.Page de @Model.TotalPages</span>
+                @if (Model.Page < Model.TotalPages) { <a asp-action="Messages" asp-route-stage="@Model.Stage" asp-route-page="@(Model.Page + 1)">Anteriores →</a> } else { <span></span> }
             </div>
-            <div class="message-row-side">
-                <time>@item.CreatedAtUtc.ToLocalTime().ToString("dd MMM, HH:mm")</time>
-                <div class="row-actions">
-                    <button type="button" class="icon-button" data-modal-url="@Url.Action("Message", new { id = item.Id })" title="Ver mensaje completo"><b class="material-symbols-outlined">open_in_full</b></button>
-                    <button type="button" class="icon-button danger" data-delete-type="message" data-delete-id="@item.Id" data-delete-name="@item.Name" title="Eliminar mensaje"><b class="material-symbols-outlined">delete</b></button>
+        }
+    </div>
+
+    <div class="detail">
+        @if (selected is null)
+        {
+            <div class="empty detail-empty"><span class="ms">forum</span><h3>Elige un cliente</h3><p>Aquí verás su mensaje, sus respuestas del diagnóstico y su seguimiento.</p></div>
+        }
+        else
+        {
+            <div class="detail-head">
+                <div class="avatar av@(selected.Id % 4)">@selected.Name[..1].ToUpperInvariant()</div>
+                <div><h2>@selected.Name</h2><p class="mono">@selected.ContactLine · @selected.CreatedAtUtc.ToLocalTime().ToString("d MMM, HH:mm", culture)</p></div>
+                <div class="acts">
+                    @if (!string.IsNullOrWhiteSpace(selected.Phone)) { <a class="btn btn-wa btn-sm" href="@WhatsAppReply(selected)" target="_blank" rel="noopener"><span class="ms">chat</span>Responder por WhatsApp</a> }
+                    @if (!string.IsNullOrWhiteSpace(selected.Email)) { <a class="btn btn-ghost btn-sm" href="mailto:@selected.Email?subject=@Uri.EscapeDataString("Tu mensaje en raul.dev")"><span class="ms">mail</span>Correo</a> }
+                    <button type="button" class="icon-btn danger" data-delete-type="message" data-delete-id="@selected.Id" data-delete-name="@selected.Name" title="Eliminar" aria-label="Eliminar"><span class="ms">delete</span></button>
                 </div>
             </div>
-        </article>
-    }
+            <form class="pipeline" asp-action="Stage" method="post" aria-label="Etapa del seguimiento">
+                <input type="hidden" name="id" value="@selected.Id" /><input type="hidden" name="filter" value="@Model.Stage" />
+                @for (var i = 0; i < LeadStages.All.Count; i++)
+                {
+                    var stage = LeadStages.All[i];
+                    var state = i == stageIndex ? "on" : (i < stageIndex && selected.Stage != LeadStages.Lost && stage.Key != LeadStages.Lost ? "done" : "");
+                    <button type="submit" name="stage" value="@stage.Key" class="@state @(stage.Key == LeadStages.Lost ? "lost" : "")" aria-pressed="@(i == stageIndex ? "true" : "false")"><span class="ms">@stage.Icon</span>@stage.Label</button>
+                }
+            </form>
+            <div class="detail-body">
+                @if (selected.DiagnosticList.Count > 0)
+                {
+                    <div><span class="eyebrow">Respuestas del diagnóstico</span>
+                        <div class="diag">
+                            @foreach (var answer in selected.DiagnosticList)
+                            {
+                                <div class="@(answer.Label.StartsWith("Le recomendaste") ? "rec" : "")"><small>@answer.Label</small><strong>@answer.Value</strong></div>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(selected.ServiceCategory)) { <div><small>Eligió en el formulario</small><strong>@selected.ServiceCategory</strong></div> }
+                        </div>
+                    </div>
+                }
+                else if (!string.IsNullOrWhiteSpace(selected.ServiceCategory))
+                {
+                    <div><span class="eyebrow">Le interesa</span><div class="chips" style="margin-top:10px"><span class="chip">@selected.ServiceCategory</span></div></div>
+                }
+                <div><span class="eyebrow">Mensaje</span><p class="msg">@selected.Message</p></div>
+                <form class="notes-form" asp-action="Notes" method="post">
+                    <label class="eyebrow" for="leadNotes">Notas privadas</label>
+                    <input type="hidden" name="id" value="@selected.Id" /><input type="hidden" name="filter" value="@Model.Stage" />
+                    <textarea id="leadNotes" name="notes" maxlength="2000" placeholder="Ej. Llamada agendada el jueves 11:00. Presupuesto aproximado…">@selected.Notes</textarea>
+                    <button type="submit" class="btn btn-ghost btn-sm"><span class="ms">save</span>Guardar notas</button>
+                </form>
+                <div><span class="eyebrow">Historial</span>
+                    <div class="history">
+                        <div><span class="ms">@(selected.Source == LeadSources.Diagnostic ? "quiz" : "edit_note")</span>Escribió @(selected.Source == LeadSources.Diagnostic ? "después del diagnóstico" : "desde el formulario") · @selected.CreatedAtUtc.ToLocalTime().ToString("d MMM, HH:mm", culture)</div>
+                        @if (selected.StageUpdatedAtUtc is { } changed) { <div><span class="ms">flag</span>Etapa: @LeadStages.Label(selected.Stage) · @changed.ToLocalTime().ToString("d MMM, HH:mm", culture)</div> }
+                    </div>
+                </div>
+            </div>
+        }
     </div>
-    @if (Model.TotalPages > 1)
-    {
-        <div class="pagination">
-            @if (Model.Page > 1)
-            {
-                <a class="button secondary small" asp-action="Messages" asp-route-page="@(Model.Page - 1)"><b class="material-symbols-outlined">chevron_left</b>Anterior</a>
-            }
-            else
-            {
-                <span class="button secondary small is-disabled"><b class="material-symbols-outlined">chevron_left</b>Anterior</span>
-            }
-            <span class="pagination-info">Página @Model.Page de @Model.TotalPages · @Model.TotalCount mensaje@(Model.TotalCount == 1 ? "" : "s")</span>
-            @if (Model.Page < Model.TotalPages)
-            {
-                <a class="button secondary small" asp-action="Messages" asp-route-page="@(Model.Page + 1)">Siguiente<b class="material-symbols-outlined">chevron_right</b></a>
-            }
-            else
-            {
-                <span class="button secondary small is-disabled">Siguiente<b class="material-symbols-outlined">chevron_right</b></span>
-            }
-        </div>
-    }
-}
 </div>

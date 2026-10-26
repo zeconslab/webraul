@@ -7,3 +7,5 @@ wwwroot/uploads/*
 !wwwroot/uploads/.gitkeep
 publish/
 publish.zip
+
+.superpowers/

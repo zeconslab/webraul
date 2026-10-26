@@ -36,12 +36,20 @@ public class Program
             options.ExpireTimeSpan = TimeSpan.FromHours(8);
             options.SlidingExpiration = true;
         });
-        builder.Services.AddControllersWithViews();
+        // Los textos opcionales se declaran sin [Required]; lo obligatorio siempre lleva [Required] explícito.
+        builder.Services.AddControllersWithViews(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
         builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection("Smtp"));
         builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
         builder.Services.AddRateLimiter(options =>
         {
             options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+            // En el login se vuelve a la pantalla con un aviso en lugar de una página 429 en blanco
+            options.OnRejected = (context, _) =>
+            {
+                if (context.HttpContext.Request.Path.StartsWithSegments("/admin/login"))
+                    context.HttpContext.Response.Redirect("/admin/login?limite=true");
+                return ValueTask.CompletedTask;
+            };
             options.AddPolicy("admin-login", context => RateLimitPartition.GetFixedWindowLimiter(
                 context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
                 _ => new FixedWindowRateLimiterOptions

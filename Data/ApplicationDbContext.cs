@@ -11,7 +11,7 @@ public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> 
     public DbSet<ServiceItem> Services => Set<ServiceItem>();
     public DbSet<Project> Projects => Set<Project>();
     public DbSet<FaqItem> Faqs => Set<FaqItem>();
-    public DbSet<AppItem> Apps => Set<AppItem>();
     public DbSet<ContactMessage> ContactMessages => Set<ContactMessage>();
     public DbSet<PageVisit> PageVisits => Set<PageVisit>();
+    public DbSet<DiagnosticCompletion> DiagnosticCompletions => Set<DiagnosticCompletion>();
 }

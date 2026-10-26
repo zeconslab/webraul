@@ -1,4 +1,28 @@
 @model IReadOnlyList<FaqItem>
-@{ ViewData["Title"]="Preguntas FAQ"; }
-<div class="module-head">@await Html.PartialAsync("_ModuleHead", new ModuleHeadViewModel("faq", "Preguntas frecuentes", "Resuelve dudas comunes y controla su orden de aparición."))<button type="button" class="button" data-modal-url="@Url.Action("Faq", new { modal = true })"><b class="material-symbols-outlined">add</b>Nueva pregunta</button></div>
-@await Html.PartialAsync("_ModuleTable", ("Faq", Model.Select(x => (x.Id,x.Question,x.Answer,x.IsPublished,x.SortOrder)).ToList()))
+@{
+    ViewData["Title"] = "Preguntas";
+    ViewData["Crumb"] = "preguntas";
+}
+<div class="page-head">
+    <div><h1>Preguntas frecuentes</h1><p>Resuelve las dudas que frenan a un cliente antes de escribirte: precio, tiempos, soporte.</p></div>
+    <button type="button" class="btn" data-modal-url="@Url.Action("Faq", new { modal = true })"><span class="ms">add</span>Nueva pregunta</button>
+</div>
+@if (Model.Count == 0)
+{
+    <div class="card empty"><span class="ms">help</span><h3>Aún no hay preguntas</h3><p>Sin preguntas, la sección no aparece en el sitio.</p></div>
+}
+<div class="list" data-sortable="faq" data-layout="list">
+    @foreach (var faq in Model)
+    {
+        <article class="card row @(faq.IsPublished ? "" : "hidden-item")" data-item="@faq.Id">
+            <button type="button" class="grip" aria-label="Arrastrar para reordenar"><span class="ms">drag_indicator</span></button>
+            <span class="row-icon"><span class="ms">help</span></span>
+            <div><h4>@faq.Question</h4><p>@faq.Answer</p></div>
+            <div class="row-side">
+                <button type="button" class="switch" data-publish="faq" data-on="Publicada" data-off="Oculta" aria-pressed="@(faq.IsPublished ? "true" : "false")"><i></i><span data-publish-label>@(faq.IsPublished ? "Publicada" : "Oculta")</span></button>
+                <button type="button" class="icon-btn" title="Editar" aria-label="Editar pregunta" data-modal-url="@Url.Action("Faq", new { id = faq.Id, modal = true })"><span class="ms">edit</span></button>
+                <button type="button" class="icon-btn danger" title="Eliminar" aria-label="Eliminar pregunta" data-delete-type="faq" data-delete-id="@faq.Id" data-delete-name="@faq.Question"><span class="ms">delete</span></button>
+            </div>
+        </article>
+    }
+</div>

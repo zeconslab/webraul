@@ -1,82 +1,102 @@
 @model AdminDashboardViewModel
-@{ ViewData["Title"] = "Resumen"; }
-<div class="module-head dashboard-welcome">@await Html.PartialAsync("_ModuleHead", new ModuleHeadViewModel("resumen", "Hola, Raúl 👋", "Este es el estado actual de tu portafolio."))<div class="head-actions"><span class="site-status"><i></i>Sitio conectado</span><a class="button" href="/" target="_blank"><b class="material-symbols-outlined">open_in_new</b>Ver sitio</a></div></div>
-
-<div class="dashboard-stats">
-    <a asp-action="Services" class="metric-card metric-blue"><div class="metric-icon"><b class="material-symbols-outlined">design_services</b></div><div><span>Servicios</span><strong>@Model.Services</strong><small>publicados en la web</small></div><b class="material-symbols-outlined metric-arrow">arrow_forward</b></a>
-    <a asp-action="Projects" class="metric-card metric-purple"><div class="metric-icon"><b class="material-symbols-outlined">work</b></div><div><span>Proyectos</span><strong>@Model.Projects</strong><small>casos en portafolio</small></div><b class="material-symbols-outlined metric-arrow">arrow_forward</b></a>
-    <a asp-action="Faqs" class="metric-card metric-amber"><div class="metric-icon"><b class="material-symbols-outlined">quiz</b></div><div><span>Preguntas FAQ</span><strong>@Model.Faqs</strong><small>respuestas disponibles</small></div><b class="material-symbols-outlined metric-arrow">arrow_forward</b></a>
-    <a asp-action="Messages" class="metric-card metric-green"><div class="metric-icon"><b class="material-symbols-outlined">mark_email_unread</b></div><div><span>Mensajes sin leer</span><strong>@Model.UnreadMessages</strong><small>pendientes de revisar</small></div><b class="material-symbols-outlined metric-arrow">arrow_forward</b></a>
+@inject webraul.Data.ApplicationDbContext Db
+@{
+    ViewData["Title"] = "Inicio";
+    ViewData["Crumb"] = "inicio";
+    var culture = System.Globalization.CultureInfo.GetCultureInfo("es-MX");
+    var now = DateTime.Now;
+    var greeting = now.Hour < 12 ? "Buenos días" : now.Hour < 19 ? "Buenas tardes" : "Buenas noches";
+    var firstName = Db.SiteSettings.OrderBy(x => x.Id).Select(x => x.OwnerName).First().Split(' ')[0];
+    string Ago(DateTime utc)
+    {
+        var span = DateTime.UtcNow - utc;
+        return span.TotalMinutes < 60 ? $"hace {Math.Max(1, (int)span.TotalMinutes)} min"
+            : span.TotalHours < 24 ? $"hace {(int)span.TotalHours} h"
+            : span.TotalDays < 2 ? "ayer"
+            : $"hace {(int)span.TotalDays} días";
+    }
+    string Delta(int delta) => delta > 0 ? $"+{delta}" : delta.ToString();
+    string DeltaClass(int delta) => delta > 0 ? "up" : delta < 0 ? "down" : "flat";
+    var okCount = Model.Health.Count(x => x.Ok);
+    var maxVisits = Math.Max(1, Model.Visits.Max(x => x.Count));
+    var funnelTop = Math.Max(1, Model.Funnel[0].Count);
+}
+<div class="page-head">
+    <div><span class="eyebrow">@now.ToString("dddd d 'de' MMMM", culture)</span><h1 style="margin-top:6px">@greeting, @firstName</h1><p>Esto pasó en tu sitio esta semana.</p></div>
 </div>
 
-<div class="dashboard-grid activity-grid">
-    <section class="dashboard-section activity-section">
-        <div class="dashboard-section-head"><div><span class="section-eyebrow">ACTIVIDAD</span><h2>Mensajes recibidos · últimos 14 días</h2></div></div>
-        @{ var maxCount = Math.Max(1, Model.Activity.Max(x => x.Count)); }
-        <div class="activity-chart">
-            @foreach (var day in Model.Activity)
-            {
-                var heightPct = day.Count == 0 ? 4 : (int)Math.Round(day.Count * 100.0 / maxCount);
-                <div class="activity-bar" title="@day.Date.ToString("dd MMM"): @day.Count mensaje@(day.Count == 1 ? "" : "s")">
-                    <span class="activity-bar-fill" style="height:@(heightPct)%"></span>
-                    <small>@day.Date.ToString("dd")</small>
-                </div>
-            }
-        </div>
-    </section>
-    <aside class="dashboard-section health-section">
-        <div class="dashboard-section-head"><div><span class="section-eyebrow">CONTENIDO</span><h2>Estado de publicación</h2></div></div>
-        <div class="health-list">
-            @foreach (var item in Model.ContentHealth)
-            {
-                var total = item.Published + item.Draft;
-                var publishedPct = total == 0 ? 0 : item.Published * 100 / total;
-                <div class="health-row">
-                    <span>@item.Label</span>
-                    <div class="health-bar"><span class="health-bar-fill" style="width:@(publishedPct)%"></span></div>
-                    <small>@item.Published publicado@(item.Published == 1 ? "" : "s")@(item.Draft > 0 ? $" · {item.Draft} oculto{(item.Draft == 1 ? "" : "s")}" : "")</small>
-                </div>
-            }
-        </div>
-    </aside>
+@if (Model.WaitingCount > 0)
+{
+    <div class="alert">
+        <span class="ms">mark_chat_unread</span>
+        <div><strong>@(Model.WaitingCount == 1 ? "1 cliente espera respuesta" : $"{Model.WaitingCount} clientes esperan respuesta")</strong><small>El más antiguo escribió @Ago(Model.OldestWaitingUtc!.Value). En la página prometes responder en menos de 24 h.</small></div>
+        <a class="btn btn-sm" asp-action="Messages" asp-route-stage="@LeadStages.New">Responder ahora <span class="ms">arrow_forward</span></a>
+    </div>
+}
+else
+{
+    <div class="alert calm"><span class="ms">task_alt</span><div><strong>Estás al día</strong><small>Nadie espera respuesta. Los nuevos clientes aparecerán aquí.</small></div></div>
+}
+
+<div class="kpis">
+    <div class="card kpi @(Model.NewLeads.Current > 0 ? "hot" : "")"><span class="eyebrow"><span class="ms">person_add</span>Clientes nuevos</span><b>@Model.NewLeads.Current</b><small>últimos 7 días<span class="delta @DeltaClass(Model.NewLeads.Delta)">@Delta(Model.NewLeads.Delta)</span></small></div>
+    <div class="card kpi"><span class="eyebrow"><span class="ms">visibility</span>Visitantes</span><b>@Model.UniqueVisitors.Current</b><small>únicos, 7 días<span class="delta @DeltaClass(Model.UniqueVisitors.Delta)">@Delta(Model.UniqueVisitors.Delta)</span></small></div>
+    <div class="card kpi"><span class="eyebrow"><span class="ms">conversion_path</span>Te escriben</span><b>@Model.ConversionRate.ToString("0.#", culture)%</b><small>de los visitantes, 30 días</small></div>
+    <div class="card kpi"><span class="eyebrow"><span class="ms">quiz</span>Diagnósticos</span><b>@Model.Diagnostics</b><small>terminados, 7 días · @Model.DiagnosticLeads escribieron</small></div>
 </div>
 
-<div class="dashboard-grid activity-grid">
-    <section class="dashboard-section activity-section">
-        <div class="dashboard-section-head"><div><span class="section-eyebrow">TRÁFICO</span><h2>Visitas al sitio · últimos 14 días</h2></div></div>
-        @{ var maxVisits = Math.Max(1, Model.VisitsActivity.Max(x => x.Count)); }
-        <div class="activity-chart">
-            @foreach (var day in Model.VisitsActivity)
-            {
-                var heightPct = day.Count == 0 ? 4 : (int)Math.Round(day.Count * 100.0 / maxVisits);
-                <div class="activity-bar" title="@day.Date.ToString("dd MMM"): @day.Count visita@(day.Count == 1 ? "" : "s")">
-                    <span class="activity-bar-fill visits" style="height:@(heightPct)%"></span>
-                    <small>@day.Date.ToString("dd")</small>
-                </div>
-            }
-        </div>
+<div class="grid-2">
+    <section class="card">
+        <div class="card-head"><h3>Clientes recientes</h3><a asp-action="Messages">Ver todos <span class="ms" style="font-size:16px">arrow_forward</span></a></div>
+        @if (Model.RecentLeads.Count == 0)
+        {
+            <div class="empty"><span class="ms">inbox</span><h3>Aún no hay mensajes</h3><p>Cuando alguien te escriba desde el sitio aparecerá aquí.</p></div>
+        }
+        @foreach (var lead in Model.RecentLeads)
+        {
+            <a class="lead" asp-action="Messages" asp-route-id="@lead.Id">
+                <div class="avatar av@(lead.Id % 4)">@lead.Name[..1].ToUpperInvariant()</div>
+                <div><strong>@lead.Name</strong><p>@lead.Message.ReplaceLineEndings(" ")</p></div>
+                <div><time>@Ago(lead.CreatedAtUtc)</time><div class="chips"><span class="chip stage-@lead.Stage">@LeadStages.Label(lead.Stage)</span>@if (lead.Source == LeadSources.Diagnostic) {<span class="chip src"><span class="ms">quiz</span>Diagnóstico</span>} else if (!string.IsNullOrWhiteSpace(lead.ServiceCategory)) {<span class="chip">@lead.ServiceCategory</span>}</div></div>
+            </a>
+        }
     </section>
-    <aside class="dashboard-section health-section">
-        <div class="dashboard-section-head"><div><span class="section-eyebrow">VISITANTES</span><h2>Únicos vs. total</h2></div></div>
-        <div class="health-list">
-            @foreach (var item in Model.VisitSummaries)
-            {
-                var uniquePct = item.Total == 0 ? 0 : item.Unique * 100 / item.Total;
-                <div class="health-row">
-                    <span>@item.Label</span>
-                    <div class="health-bar"><span class="health-bar-fill visits" style="width:@(uniquePct)%"></span></div>
-                    <small>@item.Total visita@(item.Total == 1 ? "" : "s") · @item.Unique única@(item.Unique == 1 ? "" : "s")</small>
-                </div>
-            }
-        </div>
-    </aside>
+    <section class="card">
+        <div class="card-head"><h3>Salud del sitio</h3><span class="mono" style="color:var(--accent);font-size:13px">@okCount/@Model.Health.Count</span></div>
+        <div class="meter"><i style="width:@(okCount * 100 / Math.Max(1, Model.Health.Count))%"></i></div>
+        @foreach (var check in Model.Health)
+        {
+            <div class="hrow">
+                <span class="ms @(check.Ok ? "ok" : "warn")">@(check.Ok ? "check_circle" : "warning")</span>
+                <div><strong>@check.Title</strong><small>@check.Detail</small></div>
+                @if (check.ModalUrl is not null) { <button type="button" data-modal-url="@check.ModalUrl">@check.ActionLabel</button> }
+                else if (check.Url is not null) { <a href="@check.Url">@check.ActionLabel</a> }
+            </div>
+        }
+    </section>
 </div>
 
-<div class="dashboard-grid">
-    <section class="dashboard-section recent-section"><div class="dashboard-section-head"><div><span class="section-eyebrow">ACTIVIDAD</span><h2>Mensajes recientes</h2></div><a asp-action="Messages">Ver bandeja <b class="material-symbols-outlined">arrow_forward</b></a></div>
-        @if(Model.RecentMessages.Count == 0){<div class="dashboard-empty"><div class="empty-illustration"><b class="material-symbols-outlined">inbox</b><i></i></div><h3>Todo está al día</h3><p>Los mensajes enviados desde el formulario aparecerán aquí.</p></div>}
-        else{<div class="recent-list">@foreach(var item in Model.RecentMessages){<article><div class="sender-avatar">@item.Name[..1].ToUpperInvariant()</div><div><strong>@item.Name</strong><span>@item.Email</span></div><p>@item.Message</p><time>@item.CreatedAtUtc.ToLocalTime().ToString("dd MMM, HH:mm")</time></article>}</div>}
+<div class="grid-2">
+    <section class="card">
+        <div class="card-head"><h3>Visitas y clientes · 14 días</h3><div class="legend"><span><i></i>Visitas</span><span><i class="g"></i>Clientes</span></div></div>
+        <div class="chart"><div class="bars">
+            @for (var i = 0; i < Model.Visits.Count; i++)
+            {
+                var day = Model.Visits[i];
+                var leads = Model.Leads[i].Count;
+                var pct = day.Count * 100 / maxVisits;
+                <div class="bar" title="@day.Date.ToString("d MMM", culture): @day.Count visitas@(leads > 0 ? $", {leads} cliente(s)" : "")"><i style="height:@pct%"></i>@if (leads > 0) {<em style="bottom:calc(@Math.Min(pct, 72)% + 24px)">@leads</em>}<small>@day.Date.Day</small></div>
+            }
+        </div></div>
     </section>
-
-    <aside class="dashboard-section quick-section"><div class="dashboard-section-head"><div><span class="section-eyebrow">ACCESOS</span><h2>Acciones rápidas</h2></div></div><div class="quick-actions"><button type="button" data-modal-url="@Url.Action("Project", new { modal = true })"><span><b class="material-symbols-outlined">add_photo_alternate</b></span><div><strong>Nuevo proyecto</strong><small>Publicar un caso de estudio</small></div><b class="material-symbols-outlined">chevron_right</b></button><button type="button" data-modal-url="@Url.Action("Service", new { modal = true })"><span><b class="material-symbols-outlined">add_circle</b></span><div><strong>Nuevo servicio</strong><small>Añadir una solución</small></div><b class="material-symbols-outlined">chevron_right</b></button><a asp-action="Settings"><span><b class="material-symbols-outlined">badge</b></span><div><strong>Editar identidad</strong><small>Nombre, contacto y redes</small></div><b class="material-symbols-outlined">chevron_right</b></a></div></aside>
+    <section class="card">
+        <div class="card-head"><h3>De visita a cliente · 30 días</h3></div>
+        <div class="funnel">
+            @foreach (var step in Model.Funnel)
+            {
+                <div class="fstep">@step.Label<div class="track"><i style="width:@((step.Count * 100.0 / funnelTop).ToString("0.##", System.Globalization.CultureInfo.InvariantCulture))%"></i></div><b>@step.Count</b></div>
+            }
+        </div>
+        <p class="funnel-note">Propuesta y Ganados salen de la etapa que marcas en cada cliente.</p>
+    </section>
 </div>

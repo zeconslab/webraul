@@ -1,4 +1,36 @@
 @model IReadOnlyList<ServiceItem>
-@{ ViewData["Title"]="Servicios"; }
-<div class="module-head">@await Html.PartialAsync("_ModuleHead", new ModuleHeadViewModel("servicios", "Servicios", "Administra las soluciones que aparecen en la sección de servicios."))<button type="button" class="button" data-modal-url="@Url.Action("Service", new { modal = true })"><b class="material-symbols-outlined">add</b>Nuevo servicio</button></div>
-@await Html.PartialAsync("_ModuleTable", ("Service", Model.Select(x => (x.Id,x.Title,x.Description,x.IsPublished,x.SortOrder)).ToList()))
+@{
+    ViewData["Title"] = "Servicios";
+    ViewData["Crumb"] = "servicios";
+}
+<div class="page-head">
+    <div><h1>Servicios</h1><p>Cada servicio es una pestaña de "Soluciones" y una opción del formulario de contacto.</p></div>
+    <button type="button" class="btn" data-modal-url="@Url.Action("Service", new { modal = true })"><span class="ms">add</span>Nuevo servicio</button>
+</div>
+@if (Model.Count == 0)
+{
+    <div class="card empty"><span class="ms">design_services</span><h3>Aún no hay servicios</h3><p>Sin servicios, la sección de soluciones no aparece en el sitio.</p></div>
+}
+<div class="list" data-sortable="service" data-layout="list">
+    @foreach (var service in Model)
+    {
+        var incomplete = string.IsNullOrWhiteSpace(service.IdealFor) || string.IsNullOrWhiteSpace(service.Includes) || string.IsNullOrWhiteSpace(service.Timeframe);
+        <article class="card row @(service.IsPublished ? "" : "hidden-item")" data-item="@service.Id">
+            <button type="button" class="grip" aria-label="Arrastrar para reordenar"><span class="ms">drag_indicator</span></button>
+            <span class="row-icon"><span class="ms">@service.Icon</span></span>
+            <div>
+                <h4>@service.Title</h4>
+                <p>@service.Description</p>
+                <div class="chips" style="margin-top:8px">
+                    @if (!string.IsNullOrWhiteSpace(service.Timeframe)) { <span class="chip"><span class="ms">schedule</span>@service.Timeframe</span> }
+                    @if (incomplete) { <span class="chip src"><span class="ms">warning</span>Incompleto</span> }
+                </div>
+            </div>
+            <div class="row-side">
+                <button type="button" class="switch" data-publish="service" aria-pressed="@(service.IsPublished ? "true" : "false")"><i></i><span data-publish-label>@(service.IsPublished ? "Publicado" : "Oculto")</span></button>
+                <button type="button" class="icon-btn" title="Editar" aria-label="Editar @service.Title" data-modal-url="@Url.Action("Service", new { id = service.Id, modal = true })"><span class="ms">edit</span></button>
+                <button type="button" class="icon-btn danger" title="Eliminar" aria-label="Eliminar @service.Title" data-delete-type="service" data-delete-id="@service.Id" data-delete-name="@service.Title"><span class="ms">delete</span></button>
+            </div>
+        </article>
+    }
+</div>

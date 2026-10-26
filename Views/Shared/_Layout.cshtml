@@ -1,9 +1,34 @@
 <!DOCTYPE html>
 <html lang="es">
-<head><script>if(localStorage.getItem('theme')==='light')document.documentElement.classList.add('light');</script><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="robots" content="noindex,nofollow" /><title>@ViewData["Title"] — raul.dev</title><link rel="icon" type="image/svg+xml" href="~/favicon.svg?v=2" /><link rel="shortcut icon" href="~/favicon.svg?v=2" /><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@500;600;700&amp;family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0,0&amp;display=swap" rel="stylesheet"><link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" /><link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" /><link rel="stylesheet" href="~/css/dashboard-v2.css" asp-append-version="true" /><link rel="stylesheet" href="~/css/dashboard-modals.css" asp-append-version="true" /><link rel="stylesheet" href="~/css/dashboard-motion.css" asp-append-version="true" /></head>
-<body><div class="admin-shell"><partial name="_AdminNav" /><main class="admin-main">@RenderBody()</main></div><partial name="_AdminModals" /><script src="~/js/dashboard.js" asp-append-version="true"></script>@if (TempData["Success"] is string message)
-{
-    <script>document.addEventListener('DOMContentLoaded', () => showToast('success', @Html.Raw(System.Text.Json.JsonSerializer.Serialize(message))));</script>
-}
-@await RenderSectionAsync("Scripts", false)</body>
+<head>
+    <meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="robots" content="noindex,nofollow" />
+    <title>@ViewData["Title"] — _admin</title>
+    <style>html,body{background:#070B14}</style>
+    <link rel="icon" type="image/svg+xml" href="~/favicon.svg?v=2" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0,0&amp;display=block" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/panel.css" asp-append-version="true" />
+</head>
+<body>
+    @Html.AntiForgeryToken()
+    <div class="app">
+        <partial name="_AdminNav" />
+        <div class="main">
+            <header class="top">
+                @if (IsSectionDefined("Back")) { @await RenderSectionAsync("Back") }
+                <span class="crumb mono">_admin / <b>@(ViewData["Crumb"] ?? ViewData["Title"])</b></span>
+                <a href="/" target="_blank" rel="noopener" class="btn btn-ghost btn-sm top-site"><span class="ms">open_in_new</span><span class="lbl">Ver sitio</span></a>
+            </header>
+            <main class="view">@RenderBody()</main>
+        </div>
+    </div>
+    <partial name="_AdminModals" />
+    <script src="~/js/panel.js" asp-append-version="true"></script>
+    @if (TempData["Success"] is string message)
+    {
+        <script>document.addEventListener('DOMContentLoaded', () => showToast('success', @Html.Raw(System.Text.Json.JsonSerializer.Serialize(message))));</script>
+    }
+    @await RenderSectionAsync("Scripts", false)
+</body>
 </html>

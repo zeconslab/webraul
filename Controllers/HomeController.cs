@@ -29,8 +29,7 @@ public sealed class HomeController(ApplicationDbContext db, IEmailSender emailSe
             settings,
             await db.Services.AsNoTracking().Where(x => x.IsPublished).OrderBy(x => x.SortOrder).ToListAsync(),
             await db.Projects.AsNoTracking().Where(x => x.IsPublished).OrderBy(x => x.SortOrder).ToListAsync(),
-            await db.Faqs.AsNoTracking().Where(x => x.IsPublished).OrderBy(x => x.SortOrder).ToListAsync(),
-            await db.Apps.AsNoTracking().Where(x => x.IsPublished).OrderBy(x => x.SortOrder).ToListAsync()));
+            await db.Faqs.AsNoTracking().Where(x => x.IsPublished).OrderBy(x => x.SortOrder).ToListAsync()));
     }
 
     private string ComputeVisitorHash()
@@ -46,9 +45,20 @@ public sealed class HomeController(ApplicationDbContext db, IEmailSender emailSe
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Contact(ContactMessage contact)
     {
+        contact.Email = string.IsNullOrWhiteSpace(contact.Email) ? null : contact.Email.Trim();
+        contact.Phone = string.IsNullOrWhiteSpace(contact.Phone) ? null : contact.Phone.Trim();
+        if (contact.Email is null && contact.Phone is null)
+            ModelState.AddModelError(nameof(contact.Email), "Déjame un WhatsApp o un correo para responderte.");
         if (!ModelState.IsValid) return BadRequest(new { ok = false, message = "Revisa los datos del formulario." });
+        // Campos internos del seguimiento: nunca vienen del visitante
         contact.Id = 0;
         contact.CreatedAtUtc = DateTime.UtcNow;
+        contact.IsRead = false;
+        contact.Stage = LeadStages.New;
+        contact.StageUpdatedAtUtc = null;
+        contact.Notes = null;
+        contact.Source = contact.Source == LeadSources.Diagnostic && !string.IsNullOrWhiteSpace(contact.DiagnosticAnswers) ? LeadSources.Diagnostic : LeadSources.Form;
+        if (contact.Source == LeadSources.Form) contact.DiagnosticAnswers = null;
         db.ContactMessages.Add(contact);
         await db.SaveChangesAsync();
 
@@ -64,6 +74,17 @@ public sealed class HomeController(ApplicationDbContext db, IEmailSender emailSe
         }
 
         return Ok(new { ok = true, message = "Gracias. Recibí tu mensaje y te responderé pronto." });
+    }
+
+    private static readonly string[] DiagnosticBusinesses = ["servicios", "tienda", "profesional", "operacion"];
+
+    [HttpPost, ValidateAntiForgeryToken]
+    public async Task<IActionResult> Diagnostic(string business)
+    {
+        if (!DiagnosticBusinesses.Contains(business)) return BadRequest();
+        db.DiagnosticCompletions.Add(new DiagnosticCompletion { Business = business, VisitorHash = ComputeVisitorHash() });
+        await db.SaveChangesAsync();
+        return NoContent();
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

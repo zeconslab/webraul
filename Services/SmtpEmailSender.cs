@@ -21,7 +21,8 @@ public sealed class SmtpEmailSender(IOptions<SmtpOptions> options, ILogger<SmtpE
         var mail = new MimeMessage();
         mail.From.Add(new MailboxAddress(smtp.FromName, smtp.FromEmail));
         mail.To.Add(MailboxAddress.Parse(toEmail));
-        mail.ReplyTo.Add(new MailboxAddress(message.Name, message.Email));
+        if (!string.IsNullOrWhiteSpace(message.Email))
+            mail.ReplyTo.Add(new MailboxAddress(message.Name, message.Email));
         mail.Subject = string.IsNullOrWhiteSpace(message.ServiceCategory)
             ? $"Nuevo mensaje de {message.Name}"
             : $"Nuevo mensaje de {message.Name} · {message.ServiceCategory}";
@@ -29,8 +30,9 @@ public sealed class SmtpEmailSender(IOptions<SmtpOptions> options, ILogger<SmtpE
         var bodyLines = new List<string>
         {
             $"Nombre: {message.Name}",
-            $"Email: {message.Email}",
         };
+        if (!string.IsNullOrWhiteSpace(message.Email)) bodyLines.Add($"Email: {message.Email}");
+        if (!string.IsNullOrWhiteSpace(message.Phone)) bodyLines.Add($"WhatsApp: {message.Phone}");
         if (!string.IsNullOrWhiteSpace(message.ServiceCategory))
             bodyLines.Add($"Tema de interés: {message.ServiceCategory}");
         bodyLines.Add(string.Empty);
@@ -53,7 +55,17 @@ public sealed class SmtpEmailSender(IOptions<SmtpOptions> options, ILogger<SmtpE
     private static string BuildHtmlBody(ContactMessage message)
     {
         var name = WebUtility.HtmlEncode(message.Name);
-        var email = WebUtility.HtmlEncode(message.Email);
+        var email = WebUtility.HtmlEncode(message.Email ?? string.Empty);
+        var phone = WebUtility.HtmlEncode(message.Phone ?? string.Empty);
+        var whatsAppUrl = WebUtility.HtmlEncode(WhatsAppUrl(message.Phone));
+        var contactLine = string.Join(" · ", new[]
+        {
+            string.IsNullOrEmpty(email) ? null : $"<a href=\"mailto:{email}\" style=\"color:#4a9eff;text-decoration:none\">{email}</a>",
+            string.IsNullOrEmpty(phone) ? null : $"<a href=\"{whatsAppUrl}\" style=\"color:#16a34a;text-decoration:none\">WhatsApp {phone}</a>",
+        }.Where(x => x is not null));
+        var (replyUrl, replyLabel, replyColor) = string.IsNullOrEmpty(email)
+            ? (whatsAppUrl, "Responder por WhatsApp →", "#25D366")
+            : ($"mailto:{email}", "Responder por email →", "#4a9eff");
         var body = WebUtility.HtmlEncode(message.Message).Replace("\n", "<br>");
         var received = message.CreatedAtUtc.ToLocalTime().ToString("dd MMM yyyy, HH:mm");
         var categoryBadge = string.IsNullOrWhiteSpace(message.ServiceCategory) ? "" : $"""
@@ -88,7 +100,7 @@ public sealed class SmtpEmailSender(IOptions<SmtpOptions> options, ILogger<SmtpE
               <tr>
                 <td style="padding:32px">
                   <h1 style="margin:0 0 4px;font-size:20px;line-height:1.3;color:#0f172a;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif">{name}</h1>
-                  <p style="margin:0 0 20px;font-size:14px"><a href="mailto:{email}" style="color:#4a9eff;text-decoration:none">{email}</a></p>
+                  <p style="margin:0 0 20px;font-size:14px">{contactLine}</p>
                   {categoryBadge}
                   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;margin-bottom:24px">
                     <tr><td style="padding:20px;font-family:'Courier New',Consolas,monospace;font-size:13px;line-height:1.7;color:#334155">{body}</td></tr>
@@ -96,8 +108,8 @@ public sealed class SmtpEmailSender(IOptions<SmtpOptions> options, ILogger<SmtpE
                   <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
                     <td align="center">
                       <table role="presentation" cellpadding="0" cellspacing="0"><tr>
-                        <td style="background-color:#4a9eff;border-radius:10px">
-                          <a href="mailto:{email}" style="display:inline-block;padding:12px 22px;color:#ffffff;font-weight:700;font-size:14px;text-decoration:none;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif">Responder por email →</a>
+                        <td style="background-color:{replyColor};border-radius:10px">
+                          <a href="{replyUrl}" style="display:inline-block;padding:12px 22px;color:#ffffff;font-weight:700;font-size:14px;text-decoration:none;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif">{replyLabel}</a>
                         </td>
                       </tr></table>
                     </td>
@@ -116,4 +128,6 @@ public sealed class SmtpEmailSender(IOptions<SmtpOptions> options, ILogger<SmtpE
             </html>
             """;
     }
+
+    private static string WhatsAppUrl(string? phone) => "https://wa.me/" + new string((phone ?? string.Empty).Where(char.IsDigit).ToArray());
 }

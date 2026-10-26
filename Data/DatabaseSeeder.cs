@@ -25,11 +25,32 @@ public static class DatabaseSeeder
                 IsIndexable = true
             });
             db.Services.AddRange(
-                new ServiceItem { Title = "Diseño web a medida", Description = "Interfaces personalizadas, responsivas y enfocadas en conversión.", Icon = "design_services", SortOrder = 1 },
-                new ServiceItem { Title = "Desarrollo Full Stack", Description = "Aplicaciones robustas con frontend, backend y base de datos.", Icon = "deployed_code", SortOrder = 2 },
-                new ServiceItem { Title = "SEO técnico", Description = "Optimización para buscadores, rendimiento y visibilidad orgánica.", Icon = "query_stats", SortOrder = 3 });
+                new ServiceItem { Title = "Página web profesional", Icon = "language", SortOrder = 1,
+                    Description = "Tu tarjeta de presentación en internet, abierta las 24 horas. Explica lo que haces, genera confianza y lleva a la gente a escribirte.",
+                    IdealFor = "Negocios que hoy dependen solo de redes o de recomendaciones.",
+                    Includes = "Sitio rápido en celular, aparecer en Google Maps y Google, botón de WhatsApp y formulario.",
+                    Timeframe = "2 a 4 semanas",
+                    Highlights = "Carga en menos de 2 s\nSe ve perfecto en celular\nVisible en Google Maps\nBotón directo a WhatsApp" },
+                new ServiceItem { Title = "Sistema de citas y reservas", Icon = "event_available", SortOrder = 2,
+                    Description = "Tus clientes eligen día y hora desde su celular, reciben confirmación y tú ves la agenda completa sin contestar mensajes a las 11 de la noche.",
+                    IdealFor = "Spas, clínicas, consultorios, barberías, estudios.",
+                    Includes = "Agenda en línea, recordatorios, historial de clientes y panel para administrar.",
+                    Timeframe = "4 a 8 semanas",
+                    Highlights = "Agenda en línea 24/7\nConfirmación automática\nHistorial de cada cliente" },
+                new ServiceItem { Title = "Tienda en línea", Icon = "shopping_cart", SortOrder = 3,
+                    Description = "Vende mientras duermes. Catálogo, carrito, pagos con tarjeta y control de pedidos en un solo lugar.",
+                    IdealFor = "Negocios que venden productos y hoy cobran por transferencia o en persona.",
+                    Includes = "Catálogo administrable, pagos seguros, avisos de pedido y reportes de ventas.",
+                    Timeframe = "5 a 10 semanas",
+                    Highlights = "Catálogo que tú actualizas\nPagos con tarjeta\nAviso de cada pedido" },
+                new ServiceItem { Title = "Sistema a la medida", Icon = "dashboard", SortOrder = 4,
+                    Description = "Cuando ningún programa genérico se adapta a cómo trabajas. Lo construimos alrededor de tu operación, no al revés.",
+                    IdealFor = "Empresas que hoy viven en Excel, libretas o con varios programas que no se hablan.",
+                    Includes = "Control de clientes, inventario, usuarios con permisos y reportes al instante.",
+                    Timeframe = "Según alcance, se define en el diagnóstico",
+                    Highlights = "Clientes e inventario\nUsuarios con permisos\nReportes al instante" });
             db.Projects.Add(new Project {
-                Title = "Everglow Spa", Slug = "everglow", Category = "wellness", Badge = "Cliente satisfecho", SortOrder = 1,
+                Title = "Everglow Spa", Slug = "everglow", Types = "web,sistema", Badge = "Cliente satisfecho", SortOrder = 1,
                 Description = "Sistema integral para spa con gestión de citas, pacientes y tratamientos.",
                 Technologies = "Laravel, MySQL, HTML, CSS", Features = "Sistema de citas online\nGestión de pacientes\nHistorial de tratamientos\nPanel administrativo",
                 WebsiteUrl = "https://everglow.com.mx/", DesktopImageUrl = "/assets/img/everglow.png", MobileImageUrl = "/assets/img/everglow-movil.png"
